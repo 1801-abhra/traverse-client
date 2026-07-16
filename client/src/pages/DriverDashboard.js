@@ -68,6 +68,19 @@ function DriverDashboard() {
       console.log('Rating fetch failed');
     }
   };
+  const rejectRide = async (rideId) => {
+    try {
+      await axios.put(
+        `https://traverse-app-production.up.railway.app/api/rides/reject/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setRides(prev => prev.filter(r => r._id !== rideId));
+      setMessage('Ride rejected');
+    } catch (err) {
+      setMessage('Failed to reject ride');
+    }
+  };
   const acceptRide = async (rideId) => {
     try {
       const res = await axios.put(
@@ -182,9 +195,15 @@ function DriverDashboard() {
                 <p>From: <b>{ride.pickup}</b></p>
                 <p>To: <b>{ride.dropoff}</b></p>
                 <p>Time: <b>{new Date(ride.createdAt).toLocaleTimeString()}</b></p>
-                <button onClick={() => acceptRide(ride._id)} style={styles.button}>
-                  Accept Ride
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => acceptRide(ride._id)} style={styles.button}>
+                    Accept Ride
+                  </button>
+                  <button onClick={() => rejectRide(ride._id)}
+                    style={{ ...styles.button, background: '#ef4444' }}>
+                    Reject
+                  </button>
+                </div>
               </div>
             ))}
           </div>
