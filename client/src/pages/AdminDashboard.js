@@ -17,7 +17,7 @@ function AdminDashboard() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/auth/admin/login',
+        'https://traverse-app-production.up.railway.app/api/auth/admin/login',
         { email, password }
       );
       setToken(res.data.token);
@@ -31,9 +31,9 @@ function AdminDashboard() {
   const fetchData = async (t) => {
     try {
       const [ridesRes, usersRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/rides/admin/rides',
+        axios.get('https://traverse-app-production.up.railway.app/api/rides/admin/rides',
           { headers: { Authorization: `Bearer ${t}` } }),
-        axios.get('http://localhost:5000/api/auth/admin/users',
+        axios.get('https://traverse-app-production.up.railway.app/api/auth/admin/users',
           { headers: { Authorization: `Bearer ${t}` } })
       ]);
       setRides(ridesRes.data);
@@ -46,7 +46,7 @@ function AdminDashboard() {
   const cancelRide = async (rideId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/rides/admin/cancel/${rideId}`,
+        `https://traverse-app-production.up.railway.app/api/rides/admin/cancel/${rideId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -59,7 +59,7 @@ function AdminDashboard() {
   const blockUser = async (userId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/auth/admin/block/${userId}`,
+        `https://traverse-app-production.up.railway.app/api/auth/admin/block/${userId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

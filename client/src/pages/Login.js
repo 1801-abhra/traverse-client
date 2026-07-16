@@ -12,7 +12,7 @@ function Login() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        'http://localhost:5000/api/auth/login',
+        'https://traverse-app-production.up.railway.app/api/auth/login',
         { email, password }
       );
       localStorage.setItem('user', JSON.stringify(data));

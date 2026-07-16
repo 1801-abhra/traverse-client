@@ -58,7 +58,7 @@ function DriverDashboard() {
   const fetchMyRating = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:5000/api/rides/my-rating',
+        'https://traverse-app-production.up.railway.app/api/rides/my-rating',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMyRating(res.data);

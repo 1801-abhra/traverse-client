@@ -45,7 +45,7 @@ function StudentDashboard() {
   const [driverLocation, setDriverLocation] = useState(null);
 
   useEffect(() => {
-    socket = io('http://localhost:5000');
+    socket = io('https://traverse-app-production.up.railway.app');
     socket.emit('join', { userId: user._id, role: 'student' });
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
@@ -121,7 +121,7 @@ function StudentDashboard() {
     try {
       if (rideType === 'shared') {
         const res = await axios.post(
-          'http://localhost:5000/api/rides/book-shared',
+          'https://traverse-app-production.up.railway.app/api/rides/book-shared',
           { pickup, dropoff, fare },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -134,7 +134,7 @@ function StudentDashboard() {
         }
       } else {
         const res = await axios.post(
-          'http://localhost:5000/api/rides/book',
+          'https://traverse-app-production.up.railway.app/api/rides/book',
           { pickup, dropoff, fare },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -148,7 +148,7 @@ function StudentDashboard() {
   const cancelRide = async () => {
     try {
       await axios.put(
-        `http://localhost:5000/api/rides/cancel/${activeRide._id}`,
+        `https://traverse-app-production.up.railway.app/api/rides/cancel/${activeRide._id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -165,7 +165,7 @@ function StudentDashboard() {
   const fetchSharedRides = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:5000/api/rides/shared/available',
+        'https://traverse-app-production.up.railway.app/api/rides/shared/available',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSharedRides(res.data);
@@ -176,7 +176,7 @@ function StudentDashboard() {
   const rateRide = async (stars) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/rides/rate/${activeRide._id}`,
+        `https://traverse-app-production.up.railway.app/api/rides/rate/${activeRide._id}`,
         { rating: stars },
         { headers: { Authorization: `Bearer ${token}` } }
       );
