@@ -45,7 +45,9 @@ function StudentDashboard() {
   const [driverLocation, setDriverLocation] = useState(null);
 
   useEffect(() => {
-    socket = io('https://traverse-app-production.up.railway.app');
+    socket = io('https://traverse-app-production.up.railway.app', {
+      transports: ['websocket', 'polling']
+    });
     socket.emit('join', { userId: user._id, role: 'student' });
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
