@@ -84,7 +84,7 @@ function DriverDashboard() {
   const acceptRide = async (rideId) => {
     try {
       const res = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/rides/accept/${rideId}`,
+        `https://traverse-app-production.up.railway.app/api/rides/accept/${rideId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +95,6 @@ function DriverDashboard() {
       setMessage(err.response?.data?.message || 'Cannot accept ride');
     }
   };
-
   const updateStatus = async (status) => {
     try {
       const res = await axios.put(
