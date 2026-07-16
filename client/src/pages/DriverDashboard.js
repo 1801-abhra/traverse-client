@@ -49,7 +49,7 @@ function DriverDashboard() {
   const fetchAvailableRides = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/rides/available`,
+        `https://traverse-app-production.up.railway.app/api/rides/available`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setRides(res.data);
@@ -98,7 +98,7 @@ function DriverDashboard() {
   const updateStatus = async (status) => {
     try {
       const res = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/rides/status/${activeRide._id}`,
+        `https://traverse-app-production.up.railway.app/api/rides/status/${activeRide._id}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -112,6 +112,7 @@ function DriverDashboard() {
       setMessage(err.response?.data?.message || 'Failed to update status');
     }
   };
+
 
   const logout = () => {
     localStorage.clear();
