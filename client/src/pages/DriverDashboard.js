@@ -17,7 +17,9 @@ function DriverDashboard() {
   useEffect(() => {
     fetchAvailableRides();
     fetchMyRating();
-    socket = io(process.env.REACT_APP_API_URL);
+    socket = io('https://traverse-app-production.up.railway.app', {
+      transports: ['websocket', 'polling']
+    });
     socket.emit('join', { userId: user._id, role: 'driver' });
 
     socket.on('new:ride', (ride) => {
