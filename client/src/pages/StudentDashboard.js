@@ -362,13 +362,35 @@ function StudentDashboard() {
                   <span>⏱ ETA: <b>{eta} mins</b></span>
                 </div>
               )}
+              <div style={styles.scheduleRow}>
+                <label style={{ color: '#94a3b8' }}>
+                  <input
+                    type='checkbox'
+                    checked={isScheduled}
+                    onChange={e => setIsScheduled(e.target.checked)}
+                    style={{ marginRight: '8px' }}
+                  />
+                  Schedule Ride for Later
+                </label>
+              </div>
+
+              {isScheduled && (
+                <input
+                  type='datetime-local'
+                  style={styles.input}
+                  value={scheduledTime}
+                  onChange={e => setScheduledTime(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
+                  required={isScheduled}
+                />
+              )}
 
               <button style={styles.button} type='submit'>Request Ride</button>
             </form>
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 

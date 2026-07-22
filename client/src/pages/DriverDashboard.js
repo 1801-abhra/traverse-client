@@ -194,7 +194,12 @@ function DriverDashboard() {
                 </p>
                 <p>From: <b>{ride.pickup}</b></p>
                 <p>To: <b>{ride.dropoff}</b></p>
-                <p>Time: <b>{new Date(ride.createdAt).toLocaleTimeString()}</b></p>
+                {ride.isScheduled && ride.scheduledTime && (
+                  <p style={{ color: '#f59e0b' }}>🕐 Scheduled: <b>{new Date(ride.scheduledTime).toLocaleString()}</b></p>
+                )}
+                {!ride.isScheduled && (
+                  <p>Requested: <b>{new Date(ride.createdAt).toLocaleTimeString()}</b></p>
+                )}
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button onClick={() => acceptRide(ride._id)} style={styles.button}>
                     Accept Ride
