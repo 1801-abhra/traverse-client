@@ -25,6 +25,8 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [isScheduled, setIsScheduled] = useState(false);
+  const [scheduledTime, setScheduledTime] = useState('');
   const [rideType, setRideType] = useState('private');
   const [sharedRides, setSharedRides] = useState([]);
   const [matchMessage, setMatchMessage] = useState('');
@@ -137,11 +139,11 @@ function StudentDashboard() {
       } else {
         const res = await axios.post(
           'https://traverse-app-production.up.railway.app/api/rides/book',
-          { pickup, dropoff, fare },
+          { pickup, dropoff, fare, scheduledTime: isScheduled ? scheduledTime : null },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setActiveRide(res.data);
-        setMessage('Searching for a driver...');
+        setMessage(isScheduled ? `Ride scheduled for ${new Date(scheduledTime).toLocaleString()}` : 'Searching for a driver...');
       }
     } catch (err) {
       setMessage(err.response?.data?.message || 'Booking failed');
