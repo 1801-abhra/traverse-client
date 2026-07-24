@@ -18,7 +18,10 @@ function DriverDashboard() {
     fetchAvailableRides();
     fetchMyRating();
     socket = io('https://traverse-app-production.up.railway.app', {
-      transports: ['websocket', 'polling']
+      transports: ['polling', 'websocket'],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
     });
     socket.emit('join', { userId: user._id, role: 'driver' });
 
