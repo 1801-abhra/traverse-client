@@ -156,6 +156,9 @@ function DriverDashboard() {
             <p>Student: <b>{activeRide.student?.name}</b></p>
             <p>From: <b>{activeRide.pickup}</b></p>
             <p>To: <b>{activeRide.dropoff}</b></p>
+            {activeRide.isScheduled && activeRide.scheduledTime && (
+              <p style={{ color: '#f59e0b' }}>🕐 Scheduled for: <b>{new Date(activeRide.scheduledTime).toLocaleString()}</b></p>
+            )}
             <p>Status: <span style={{ color: statusColor[activeRide.status], fontWeight: 'bold' }}>
               {activeRide.status.toUpperCase()}
             </span></p>
