@@ -233,9 +233,7 @@ function StudentDashboard() {
                 {activeRide.driver?.carName && (
                   <p>Car: <b>{activeRide.driver.carName} {activeRide.driver.carModel}</b></p>
                 )}
-                {activeRide.driver?.phone && (
-                  <p>📞 Contact: <a href={`tel:${activeRide.driver.phone}`} style={{ color: '#3b82f6' }}>{activeRide.driver.phone}</a></p>
-                )}
+              
                 {activeRide.driver.phone && (
                   <p>📞 Contact Driver: <a href={`tel:${activeRide.driver.phone}`} style={{ color: '#3b82f6' }}>{activeRide.driver.phone}</a></p>
                 )}
