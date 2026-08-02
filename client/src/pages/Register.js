@@ -45,7 +45,7 @@ function Register() {
         {error && <p style={styles.error}>{error}</p>}
         <form onSubmit={handleRegister}>
           <input style={styles.input} name='name' placeholder='Full Name' value={form.name} onChange={handleChange} required />
-          <input style={styles.input} name='email' type='email' placeholder='University Email' value={form.email} onChange={handleChange} required />
+          <input style={styles.input} name='email' type='email' placeholder={form.role === 'student' ? 'RollNo@juitsolan.in' : 'Personal Email'} value={form.email} onChange={handleChange} required />
           <input style={styles.input} name='password' type='password' placeholder='Password' value={form.password} onChange={handleChange} required />
           <select style={styles.input} name='role' value={form.role} onChange={handleChange}>
             <option value='student'>Student</option>
