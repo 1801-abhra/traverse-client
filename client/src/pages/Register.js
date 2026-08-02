@@ -15,14 +15,17 @@ function Register() {
     carModel: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError('');
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { data } = await axios.post(
         'https://traverse-app-production.up.railway.app/api/auth/register',
@@ -35,56 +38,245 @@ function Register() {
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
+    setLoading(false);
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>🚌 Traverse</h1>
-        <p style={styles.subtitle}>Create Account</p>
-        {error && <p style={styles.error}>{error}</p>}
-        <form onSubmit={handleRegister}>
-          <input style={styles.input} name='name' placeholder='Full Name' value={form.name} onChange={handleChange} required />
-          <input style={styles.input} name='email' type='email' placeholder={form.role === 'student' ? 'RollNo@juitsolan.in' : 'Personal Email'} value={form.email} onChange={handleChange} required />
-          <input style={styles.input} name='password' type='password' placeholder='Password' value={form.password} onChange={handleChange} required />
-          <select style={styles.input} name='role' value={form.role} onChange={handleChange}>
-            <option value='student'>Student</option>
-            <option value='driver'>Driver</option>
-          </select>
-          {form.role === 'student' && (
-            <input style={styles.input} name='studentId' placeholder='Student ID' value={form.studentId} onChange={handleChange} required />
+      <div style={styles.leftPanel}>
+        <div style={styles.brandSection}>
+          <div style={styles.logo}>
+            <span style={styles.logoIcon}>🚖</span>
+            <span style={styles.logoText}>TRAVERSE</span>
+          </div>
+          <h1 style={styles.tagline}>Join the<br /><span style={styles.red}>Community.</span></h1>
+          <p style={styles.subTagline}>Register as a student or driver and start your journey with Traverse</p>
+          <div style={styles.features}>
+            <div style={styles.feature}>✅ Safe & Verified Drivers</div>
+            <div style={styles.feature}>✅ Real-time Tracking</div>
+            <div style={styles.feature}>✅ Affordable Fares</div>
+            <div style={styles.feature}>✅ 24/7 Available</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={styles.rightPanel}>
+        <div style={styles.card}>
+          <h2 style={styles.title}>Create Account</h2>
+          <p style={styles.subtitle}>Fill in your details to get started</p>
+
+          {error && (
+            <div style={styles.errorBox}>⚠️ {error}</div>
           )}
-          {form.role === 'driver' && (
-            <input style={styles.input} name='vehicleNumber' placeholder='Vehicle Number' value={form.vehicleNumber} onChange={handleChange} required />
-          )}
-          {form.role === 'driver' && (
-            <input style={styles.input} name='carName' placeholder='Car Name (e.g. Suzuki)' value={form.carName || ''} onChange={handleChange} />
-          )}
-          {form.role === 'driver' && (
-            <input style={styles.input} name='carModel' placeholder='Car Model (e.g. Swift)' value={form.carModel || ''} onChange={handleChange} />
-          )}
-          {form.role === 'driver' && (
-            <input style={styles.input} name='phone' placeholder='+91 Phone Number' value={form.phone || ''} onChange={handleChange} />
-          )}
-          <button style={styles.button} type='submit'>Register</button>
-        </form>
-        <p style={styles.link}>
-          Already have an account? <Link to='/login'>Login</Link>
-        </p>
+
+          <form onSubmit={handleRegister}>
+            <div style={styles.roleToggle}>
+              <button
+                type='button'
+                onClick={() => setForm({ ...form, role: 'student' })}
+                style={form.role === 'student' ? styles.roleActive : styles.roleInactive}
+              >
+                🎓 Student
+              </button>
+              <button
+                type='button'
+                onClick={() => setForm({ ...form, role: 'driver' })}
+                style={form.role === 'driver' ? styles.roleActive : styles.roleInactive}
+              >
+                🚗 Driver
+              </button>
+            </div>
+
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Full Name</label>
+              <input
+                style={styles.input}
+                name='name'
+                placeholder='Enter your full name'
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Email</label>
+              <input
+                style={styles.input}
+                name='email'
+                type='email'
+                placeholder={form.role === 'student' ? 'RollNo@juitsolan.in' : 'Personal Email'}
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div style={styles.inputGroup}>
+              <label style={styles.label}>Password</label>
+              <input
+                style={styles.input}
+                name='password'
+                type='password'
+                placeholder='Create a password'
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {form.role === 'student' && (
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Student ID</label>
+                <input
+                  style={styles.input}
+                  name='studentId'
+                  placeholder='Your enrollment number'
+                  value={form.studentId}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
+
+            {form.role === 'driver' && (
+              <>
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>Vehicle Number</label>
+                  <input
+                    style={styles.input}
+                    name='vehicleNumber'
+                    placeholder='e.g. HP01AB1234'
+                    value={form.vehicleNumber}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>Car Name</label>
+                  <input
+                    style={styles.input}
+                    name='carName'
+                    placeholder='e.g. Suzuki'
+                    value={form.carName || ''}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>Car Model</label>
+                  <input
+                    style={styles.input}
+                    name='carModel'
+                    placeholder='e.g. Swift'
+                    value={form.carModel || ''}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>Phone Number</label>
+                  <input
+                    style={styles.input}
+                    name='phone'
+                    placeholder='+91 Phone Number'
+                    value={form.phone || ''}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </>
+            )}
+
+            <button
+              style={loading ? styles.buttonLoading : styles.button}
+              type='submit'
+              disabled={loading}
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div style={styles.divider}>
+            <span>Already have an account?</span>
+          </div>
+
+          <Link to='/login' style={styles.loginBtn}>
+            Sign In
+          </Link>
+        </div>
       </div>
     </div>
   );
 }
 
 const styles = {
-  container: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a' },
-  card: { background: '#1e293b', padding: '40px', borderRadius: '12px', width: '100%', maxWidth: '400px', color: 'white' },
-  title: { textAlign: 'center', fontSize: '28px', marginBottom: '4px' },
-  subtitle: { textAlign: 'center', color: '#94a3b8', marginBottom: '24px' },
-  input: { width: '100%', padding: '12px', marginBottom: '12px', borderRadius: '8px', border: '1px solid #334155', background: '#0f172a', color: 'white', fontSize: '14px', boxSizing: 'border-box' },
-  button: { width: '100%', padding: '12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer' },
-  error: { color: '#ef4444', marginBottom: '12px', textAlign: 'center' },
-  link: { textAlign: 'center', marginTop: '16px', color: '#94a3b8' }
+  container: { minHeight: '100vh', display: 'flex', background: '#0a0a0a', color: 'white' },
+  leftPanel: {
+    flex: 1,
+    background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 50%, #1a0000 100%)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '60px', borderRight: '1px solid #2a0000'
+  },
+  brandSection: { maxWidth: '400px' },
+  logo: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' },
+  logoIcon: { fontSize: '36px' },
+  logoText: { fontSize: '28px', fontWeight: '800', letterSpacing: '4px', color: '#e63946' },
+  tagline: { fontSize: '52px', fontWeight: '800', lineHeight: '1.1', marginBottom: '24px', color: 'white' },
+  red: { color: '#e63946' },
+  subTagline: { fontSize: '18px', color: '#666', lineHeight: '1.6', marginBottom: '32px' },
+  features: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  feature: { color: '#999', fontSize: '16px' },
+  rightPanel: {
+    width: '520px', display: 'flex', alignItems: 'center',
+    justifyContent: 'center', padding: '40px', background: '#111',
+    overflowY: 'auto'
+  },
+  card: { width: '100%', maxWidth: '420px', paddingTop: '20px', paddingBottom: '20px' },
+  title: { fontSize: '32px', fontWeight: '700', marginBottom: '8px', color: 'white' },
+  subtitle: { color: '#666', marginBottom: '32px', fontSize: '15px' },
+  errorBox: {
+    background: '#2a0000', border: '1px solid #e63946',
+    color: '#ff6b6b', padding: '12px 16px', borderRadius: '8px',
+    marginBottom: '20px', fontSize: '14px'
+  },
+  roleToggle: { display: 'flex', gap: '8px', marginBottom: '24px' },
+  roleActive: {
+    flex: 1, padding: '12px', background: '#e63946', color: 'white',
+    border: 'none', borderRadius: '8px', fontSize: '15px',
+    fontWeight: '600', cursor: 'pointer'
+  },
+  roleInactive: {
+    flex: 1, padding: '12px', background: '#1a1a1a', color: '#666',
+    border: '1px solid #2a2a2a', borderRadius: '8px', fontSize: '15px',
+    fontWeight: '600', cursor: 'pointer'
+  },
+  inputGroup: { marginBottom: '16px' },
+  label: {
+    display: 'block', color: '#999', fontSize: '13px',
+    fontWeight: '500', marginBottom: '8px',
+    textTransform: 'uppercase', letterSpacing: '1px'
+  },
+  input: {
+    width: '100%', padding: '14px 16px', background: '#1a1a1a',
+    border: '1px solid #2a2a2a', borderRadius: '8px', color: 'white',
+    fontSize: '15px', boxSizing: 'border-box', outline: 'none'
+  },
+  button: {
+    width: '100%', padding: '14px', background: '#e63946', color: 'white',
+    border: 'none', borderRadius: '8px', fontSize: '16px',
+    fontWeight: '600', cursor: 'pointer', marginTop: '8px'
+  },
+  buttonLoading: {
+    width: '100%', padding: '14px', background: '#7a1a1a', color: '#999',
+    border: 'none', borderRadius: '8px', fontSize: '16px',
+    fontWeight: '600', cursor: 'not-allowed', marginTop: '8px'
+  },
+  divider: { textAlign: 'center', color: '#444', margin: '24px 0', fontSize: '14px' },
+  loginBtn: {
+    display: 'block', width: '100%', padding: '14px', background: 'transparent',
+    color: '#e63946', border: '1px solid #e63946', borderRadius: '8px',
+    fontSize: '16px', fontWeight: '600', cursor: 'pointer',
+    textAlign: 'center', textDecoration: 'none', boxSizing: 'border-box'
+  }
 };
 
 export default Register;
