@@ -6,7 +6,6 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Fix leaflet marker icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -40,14 +39,15 @@ function StudentDashboard() {
   const [message, setMessage] = useState('');
   const [fare, setFare] = useState(null);
   const [eta, setEta] = useState(null);
-  const [searching, setSearching] = useState(false);
+  const [driverLocation, setDriverLocation] = useState(null);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
-  const [driverLocation, setDriverLocation] = useState(null);
+
+  const API = 'https://traverse-app-production.up.railway.app';
 
   useEffect(() => {
-    socket = io('https://traverse-app-production.up.railway.app', {
+    socket = io(API, {
       transports: ['polling', 'websocket'],
       reconnection: true,
       reconnectionAttempts: 5,
@@ -69,18 +69,13 @@ function StudentDashboard() {
     socket.on('driver:location', ({ lat, lng }) => {
       setDriverLocation([lat, lng]);
     });
-
     return () => socket.disconnect();
   }, []);
 
   const geocode = async (address) => {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
-    );
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
     const data = await res.json();
-    if (data.length > 0) {
-      return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-    }
+    if (data.length > 0) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
     return null;
   };
 
@@ -91,338 +86,333 @@ function StudentDashboard() {
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(pickCoords[0] * Math.PI / 180) * Math.cos(dropCoords[0] * Math.PI / 180) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    const calculatedFare = Math.max(30, Math.round(distance * 10));
-    const calculatedEta = Math.max(5, Math.round(distance * 3));
-    setFare(calculatedFare);
-    setEta(calculatedEta);
+    const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    setFare(Math.max(30, Math.round(distance * 10)));
+    setEta(Math.max(5, Math.round(distance * 3)));
   };
 
   const handlePickupSearch = async () => {
     const coords = await geocode(pickup);
-    if (coords) {
-      setPickupCoords(coords);
-      if (dropoffCoords) calculateFareEta(coords, dropoffCoords);
-    } else {
-      setMessage('Pickup location not found');
-    }
+    if (coords) { setPickupCoords(coords); if (dropoffCoords) calculateFareEta(coords, dropoffCoords); }
+    else setMessage('Pickup location not found');
   };
 
   const handleDropoffSearch = async () => {
     const coords = await geocode(dropoff);
-    if (coords) {
-      setDropoffCoords(coords);
-      if (pickupCoords) calculateFareEta(pickupCoords, coords);
-    } else {
-      setMessage('Dropoff location not found');
-    }
+    if (coords) { setDropoffCoords(coords); if (pickupCoords) calculateFareEta(pickupCoords, coords); }
+    else setMessage('Dropoff location not found');
   };
 
   const bookRide = async (e) => {
     e.preventDefault();
-    if (!pickupCoords || !dropoffCoords) {
-      setMessage('Please search both locations first');
-      return;
-    }
+    if (!pickupCoords || !dropoffCoords) { setMessage('Please search both locations first'); return; }
     try {
       if (rideType === 'shared') {
-        const res = await axios.post(
-          'https://traverse-app-production.up.railway.app/api/rides/book-shared',
-          { pickup, dropoff, fare },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (res.data.ride) {
-          setActiveRide(res.data.ride);
-        }
+        const res = await axios.post(`${API}/api/rides/book-shared`, { pickup, dropoff, fare }, { headers: { Authorization: `Bearer ${token}` } });
+        if (res.data.ride) setActiveRide(res.data.ride);
         setMessage(res.data.message || 'Looking for someone to share with...');
-        if (res.data.matched) {
-          setMatchMessage(res.data.message);
-        }
+        if (res.data.matched) setMatchMessage(res.data.message);
       } else {
-        const res = await axios.post(
-          'https://traverse-app-production.up.railway.app/api/rides/book',
+        const res = await axios.post(`${API}/api/rides/book`,
           { pickup, dropoff, fare, scheduledTime: isScheduled ? scheduledTime : null },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+          { headers: { Authorization: `Bearer ${token}` } });
         setActiveRide(res.data);
         setMessage(isScheduled ? `Ride scheduled for ${new Date(scheduledTime).toLocaleString()}` : 'Searching for a driver...');
       }
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Booking failed');
-    }
+    } catch (err) { setMessage(err.response?.data?.message || 'Booking failed'); }
   };
+
   const cancelRide = async () => {
     try {
-      await axios.put(
-        `https://traverse-app-production.up.railway.app/api/rides/cancel/${activeRide._id}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`${API}/api/rides/cancel/${activeRide._id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
       setActiveRide(null);
-      setSearching(false);
       setMessage('Ride cancelled');
       setFare(null);
       setEta(null);
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Cannot cancel');
-    }
+    } catch (err) { setMessage(err.response?.data?.message || 'Cannot cancel'); }
   };
 
   const fetchSharedRides = async () => {
     try {
-      const res = await axios.get(
-        'https://traverse-app-production.up.railway.app/api/rides/shared/available',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await axios.get(`${API}/api/rides/shared/available`, { headers: { Authorization: `Bearer ${token}` } });
       setSharedRides(res.data);
-    } catch (err) {
-      console.log('Failed to fetch shared rides');
-    }
+    } catch (err) { console.log('Failed to fetch shared rides'); }
   };
+
   const rateRide = async (stars) => {
     try {
-      await axios.put(
-        `https://traverse-app-production.up.railway.app/api/rides/rate/${activeRide._id}`,
-        { rating: stars },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`${API}/api/rides/rate/${activeRide._id}`, { rating: stars }, { headers: { Authorization: `Bearer ${token}` } });
       setRating(stars);
       setRated(true);
       setMessage('Thanks for rating!');
-    } catch (err) {
-      setMessage('Rating failed');
-    }
+    } catch (err) { setMessage('Rating failed'); }
   };
 
   const logout = () => { localStorage.clear(); navigate('/login'); };
 
   const statusColor = {
-    searching: '#f59e0b', accepted: '#3b82f6',
-    ontheway: '#8b5cf6', completed: '#10b981', cancelled: '#ef4444'
+    searching: '#f59e0b', accepted: '#e63946',
+    ontheway: '#e63946', completed: '#10b981', cancelled: '#666'
+  };
+
+  const statusLabel = {
+    searching: 'Searching for driver...',
+    accepted: 'Driver Accepted ✓',
+    ontheway: 'Driver On The Way 🚗',
+    completed: 'Ride Completed ✓',
+    cancelled: 'Cancelled'
   };
 
   const mapCenter = pickupCoords || [31.3260, 75.5762];
 
   return (
     <div style={styles.container}>
+      {/* Navbar */}
       <div style={styles.navbar}>
-        <h2 style={styles.logo}>🚌 Traverse</h2>
-        <div>
+        <div style={styles.navBrand}>
+          <span style={styles.navLogo}>🚖</span>
+          <span style={styles.navTitle}>TRAVERSE</span>
+        </div>
+        <div style={styles.navRight}>
+          <span style={styles.navUser}>👤 {user.name}</span>
           <button onClick={() => navigate('/history')} style={styles.navBtn}>History</button>
-          <button onClick={logout} style={styles.navBtn}>Logout</button>
+          <button onClick={logout} style={styles.navBtnRed}>Logout</button>
         </div>
       </div>
 
       <div style={styles.content}>
-        <h2>Welcome, {user.name}!</h2>
 
-        {message && <div style={styles.messagebox}>{message}</div>}
+        {/* Message */}
+        {message && (
+          <div style={styles.messagebox}>
+            <span style={styles.messageIcon}>ℹ️</span> {message}
+          </div>
+        )}
 
+        {/* Active Ride Card */}
         {activeRide && (
           <div style={styles.rideCard}>
-            <h3>Active Ride</h3>
-            <p>From: <b>{activeRide.pickup}</b></p>
-            <p>To: <b>{activeRide.dropoff}</b></p>
-            <p>Status: <span style={{ color: statusColor[activeRide.status], fontWeight: 'bold' }}>
-              {activeRide.status.toUpperCase()}
-            </span></p>
+            <div style={styles.rideCardHeader}>
+              <h3 style={styles.rideCardTitle}>Active Ride</h3>
+              <span style={{ ...styles.statusBadge, background: statusColor[activeRide.status] + '22', color: statusColor[activeRide.status], border: `1px solid ${statusColor[activeRide.status]}` }}>
+                {statusLabel[activeRide.status]}
+              </span>
+            </div>
+
+            <div style={styles.routeInfo}>
+              <div style={styles.routePoint}>
+                <span style={styles.routeDot}>🟢</span>
+                <span>{activeRide.pickup}</span>
+              </div>
+              <div style={styles.routeLine}>|</div>
+              <div style={styles.routePoint}>
+                <span style={styles.routeDot}>🔴</span>
+                <span>{activeRide.dropoff}</span>
+              </div>
+            </div>
+
             {activeRide.driver && (
-              <div>
-                <p>Driver: <b>{activeRide.driver?.name}</b> | Vehicle: <b>{activeRide.driver?.vehicleNumber}</b></p>
-                {activeRide.driver?.carName && (
-                  <p>Car: <b>{activeRide.driver.carName} {activeRide.driver.carModel}</b></p>
-                )}
-              
-                {activeRide.driver.phone && (
-                  <p>📞 Contact Driver: <a href={`tel:${activeRide.driver.phone}`} style={{ color: '#3b82f6' }}>{activeRide.driver.phone}</a></p>
+              <div style={styles.driverCard}>
+                <div style={styles.driverInfo}>
+                  <div style={styles.driverAvatar}>🧑</div>
+                  <div>
+                    <p style={styles.driverName}>{activeRide.driver?.name}</p>
+                    <p style={styles.driverDetails}>{activeRide.driver?.vehicleNumber} {activeRide.driver?.carName && `• ${activeRide.driver.carName} ${activeRide.driver.carModel}`}</p>
+                  </div>
+                </div>
+                {activeRide.driver?.phone && (
+                  <a href={`tel:${activeRide.driver.phone}`} style={styles.callBtn}>
+                    📞 Call Driver
+                  </a>
                 )}
               </div>
             )}
+
             {driverLocation && (
               <div style={{ marginTop: '16px' }}>
-                <p>🚗 Driver Live Location:</p>
-                <MapContainer
-                  center={driverLocation}
-                  zoom={15}
-                  style={{ height: '250px', borderRadius: '8px' }}
-                >
+                <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>🚗 Driver Live Location</p>
+                <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  <Marker position={driverLocation}>
-                    <Popup>Your Driver is here 🚗</Popup>
-                  </Marker>
-                  {pickupCoords && (
-                    <Marker position={pickupCoords}>
-                      <Popup>Your Pickup 📍</Popup>
-                    </Marker>
-                  )}
+                  <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
+                  {pickupCoords && <Marker position={pickupCoords}><Popup>Your Pickup 📍</Popup></Marker>}
                   <FlyTo coords={driverLocation} />
                 </MapContainer>
               </div>
             )}
-            {fare && <p>Fare: <b>₹{fare}</b></p>}
+
+            {fare && (
+              <div style={styles.fareInfo}>
+                <span>💰 Fare: <b>₹{fare}</b></span>
+              </div>
+            )}
+
             {activeRide.status === 'searching' && (
               <button onClick={cancelRide} style={styles.cancelBtn}>Cancel Ride</button>
             )}
+
             {activeRide.status === 'completed' && !rated && (
               <div style={styles.ratingBox}>
-                <p>Rate your ride:</p>
+                <p style={{ color: '#999', marginBottom: '8px' }}>Rate your experience</p>
                 <div>
                   {[1, 2, 3, 4, 5].map(star => (
-                    <span
-                      key={star}
-                      onClick={() => rateRide(star)}
-                      style={{ fontSize: '28px', cursor: 'pointer', color: star <= rating ? '#f59e0b' : '#334155' }}
-                    >★</span>
+                    <span key={star} onClick={() => rateRide(star)}
+                      style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333' }}>★</span>
                   ))}
                 </div>
               </div>
             )}
-            {rated && <p style={{ color: '#10b981' }}>✅ Rated {rating} stars!</p>}
+            {rated && <p style={{ color: '#10b981', marginTop: '8px' }}>✅ Rated {rating} stars!</p>}
           </div>
         )}
 
+        {/* Book Ride */}
         {!activeRide && (
           <div style={styles.bookCard}>
-            <h3>Book a Ride</h3>
+            <h3 style={styles.bookTitle}>Book a Ride</h3>
+
+            {/* Ride Type */}
             <div style={styles.rideTypeRow}>
-              <button
-                type='button'
+              <button type='button'
                 onClick={() => { setRideType('private'); setSharedRides([]); }}
-                style={{ ...styles.rideTypeBtn, ...(rideType === 'private' ? styles.activeRideType : {}) }}
-              >
+                style={rideType === 'private' ? styles.rideTypeActive : styles.rideTypeInactive}>
                 🚗 Private Ride
               </button>
-              <button
-                type='button'
+              <button type='button'
                 onClick={() => { setRideType('shared'); fetchSharedRides(); }}
-                style={{ ...styles.rideTypeBtn, ...(rideType === 'shared' ? styles.activeRideType : {}) }}
-              >
+                style={rideType === 'shared' ? styles.rideTypeActive : styles.rideTypeInactive}>
                 👥 Share Ride
               </button>
             </div>
 
             {rideType === 'shared' && sharedRides.length > 0 && (
               <div style={styles.sharedList}>
-                <p style={{ color: '#94a3b8', marginBottom: '8px' }}>Available shared rides:</p>
+                <p style={{ color: '#999', marginBottom: '8px', fontSize: '14px' }}>Available shared rides:</p>
                 {sharedRides.map(ride => (
                   <div key={ride._id} style={styles.sharedCard}>
-                    <p>👤 {ride.student?.name} going to <b>{ride.dropoff}</b></p>
-                    <p>📍 Pickup: {ride.pickup}</p>
+                    <p>👤 {ride.student?.name} → <b>{ride.dropoff}</b></p>
+                    <p style={{ color: '#999', fontSize: '13px' }}>📍 From: {ride.pickup}</p>
                   </div>
                 ))}
               </div>
             )}
 
             {matchMessage && (
-              <div style={{ ...styles.messagebox, borderColor: '#10b981' }}>
-                🎉 {matchMessage}
-              </div>
+              <div style={{ ...styles.messagebox, borderColor: '#10b981' }}>🎉 {matchMessage}</div>
             )}
+
+            {/* Map */}
             <div style={styles.mapContainer}>
-              <MapContainer center={mapCenter} zoom={13} style={{ height: '300px', borderRadius: '8px' }}>
+              <MapContainer center={mapCenter} zoom={13} style={{ height: '280px', borderRadius: '12px' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {pickupCoords && (
-                  <Marker position={pickupCoords}>
-                    <Popup>Pickup: {pickup}</Popup>
-                  </Marker>
-                )}
-                {dropoffCoords && (
-                  <Marker position={dropoffCoords}>
-                    <Popup>Drop: {dropoff}</Popup>
-                  </Marker>
-                )}
+                {pickupCoords && <Marker position={pickupCoords}><Popup>Pickup: {pickup}</Popup></Marker>}
+                {dropoffCoords && <Marker position={dropoffCoords}><Popup>Drop: {dropoff}</Popup></Marker>}
                 {pickupCoords && <FlyTo coords={pickupCoords} />}
-                {driverLocation && (
-                  <Marker position={driverLocation}>
-                    <Popup>Driver is here 🚗</Popup>
-                  </Marker>
-                )}
+                {driverLocation && <Marker position={driverLocation}><Popup>Driver 🚗</Popup></Marker>}
               </MapContainer>
             </div>
 
             <form onSubmit={bookRide}>
               <div style={styles.searchRow}>
-                <input
-                  style={styles.searchInput}
-                  placeholder='Pickup Location'
-                  value={pickup}
-                  onChange={e => setPickup(e.target.value)}
-                  required
-                />
-                <button type='button' onClick={handlePickupSearch} style={styles.searchBtn}>📍</button>
+                <input style={styles.searchInput} placeholder='📍 Pickup Location' value={pickup}
+                  onChange={e => setPickup(e.target.value)} required />
+                <button type='button' onClick={handlePickupSearch} style={styles.searchBtn}>Search</button>
               </div>
               <div style={styles.searchRow}>
-                <input
-                  style={styles.searchInput}
-                  placeholder='Drop Location'
-                  value={dropoff}
-                  onChange={e => setDropoff(e.target.value)}
-                  required
-                />
-                <button type='button' onClick={handleDropoffSearch} style={styles.searchBtn}>📍</button>
+                <input style={styles.searchInput} placeholder='📍 Drop Location' value={dropoff}
+                  onChange={e => setDropoff(e.target.value)} required />
+                <button type='button' onClick={handleDropoffSearch} style={styles.searchBtn}>Search</button>
               </div>
 
               {fare && eta && (
                 <div style={styles.fareBox}>
-                  <span>💰 Estimated Fare: <b>₹{fare}</b></span>
-                  <span>⏱ ETA: <b>{eta} mins</b></span>
+                  <div style={styles.fareItem}>
+                    <span style={styles.fareLabel}>Estimated Fare</span>
+                    <span style={styles.fareValue}>₹{fare}</span>
+                  </div>
+                  <div style={styles.fareDivider} />
+                  <div style={styles.fareItem}>
+                    <span style={styles.fareLabel}>ETA</span>
+                    <span style={styles.fareValue}>{eta} mins</span>
+                  </div>
                 </div>
               )}
+
               <div style={styles.scheduleRow}>
-                <label style={{ color: '#94a3b8' }}>
-                  <input
-                    type='checkbox'
-                    checked={isScheduled}
+                <label style={styles.scheduleLabel}>
+                  <input type='checkbox' checked={isScheduled}
                     onChange={e => setIsScheduled(e.target.checked)}
-                    style={{ marginRight: '8px' }}
-                  />
-                  Schedule Ride for Later
+                    style={{ marginRight: '8px', accentColor: '#e63946' }} />
+                  🕐 Schedule for Later
                 </label>
               </div>
 
               {isScheduled && (
-                <input
-                  type='datetime-local'
-                  style={styles.input}
-                  value={scheduledTime}
-                  onChange={e => setScheduledTime(e.target.value)}
-                  min={new Date().toISOString().slice(0, 16)}
-                  required={isScheduled}
-                />
+                <input type='datetime-local' style={styles.dateInput}
+                  value={scheduledTime} onChange={e => setScheduledTime(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)} required={isScheduled} />
               )}
 
-              <button style={styles.button} type='submit'>Request Ride</button>
+              <button style={styles.bookBtn} type='submit'>
+                {rideType === 'shared' ? '👥 Find Shared Ride' : '🚖 Request Ride'}
+              </button>
             </form>
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 }
 
 const styles = {
-  container: { minHeight: '100vh', background: '#0f172a', color: 'white' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#1e293b' },
-  logo: { margin: 0 },
-  navBtn: { background: 'transparent', color: 'white', border: '1px solid #334155', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', marginLeft: '8px' },
-  content: { maxWidth: '700px', margin: '40px auto', padding: '0 16px' },
-  messagebox: { background: '#1e293b', padding: '16px', borderRadius: '8px', marginBottom: '24px', borderLeft: '4px solid #3b82f6' },
-  rideCard: { background: '#1e293b', padding: '24px', borderRadius: '12px', marginBottom: '24px' },
-  bookCard: { background: '#1e293b', padding: '24px', borderRadius: '12px' },
-  mapContainer: { marginBottom: '16px' },
-  searchRow: { display: 'flex', gap: '8px', marginBottom: '12px' },
-  searchInput: { flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #334155', background: '#0f172a', color: 'white', fontSize: '14px' },
-  searchBtn: { padding: '12px', background: '#334155', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '18px' },
-  fareBox: { display: 'flex', justifyContent: 'space-between', background: '#0f172a', padding: '12px 16px', borderRadius: '8px', marginBottom: '12px' },
-  button: { width: '100%', padding: '12px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer' },
-  cancelBtn: { padding: '10px 20px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', marginTop: '12px' },
-  ratingBox: { marginTop: '16px', padding: '12px', background: '#0f172a', borderRadius: '8px' },
-  rideTypeRow: { display: 'flex', gap: '8px', marginBottom: '16px' },
-  rideTypeBtn: { flex: 1, padding: '10px', background: '#0f172a', color: '#94a3b8', border: '1px solid #334155', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  activeRideType: { background: '#3b82f6', color: 'white', border: '1px solid #3b82f6' },
+  container: { minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, sans-serif' },
+  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#111', borderBottom: '1px solid #1a1a1a' },
+  navBrand: { display: 'flex', alignItems: 'center', gap: '10px' },
+  navLogo: { fontSize: '24px' },
+  navTitle: { fontSize: '20px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
+  navRight: { display: 'flex', alignItems: 'center', gap: '12px' },
+  navUser: { color: '#666', fontSize: '14px' },
+  navBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
+  navBtnRed: { background: 'transparent', color: '#e63946', border: '1px solid #e63946', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
+  content: { maxWidth: '720px', margin: '32px auto', padding: '0 16px' },
+  messagebox: { background: '#111', padding: '14px 18px', borderRadius: '10px', marginBottom: '20px', borderLeft: '3px solid #e63946', fontSize: '14px', color: '#ccc' },
+  messageIcon: { marginRight: '8px' },
+  rideCard: { background: '#111', border: '1px solid #1a1a1a', padding: '24px', borderRadius: '16px', marginBottom: '24px' },
+  rideCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
+  rideCardTitle: { fontSize: '18px', fontWeight: '700', margin: 0 },
+  statusBadge: { padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' },
+  routeInfo: { background: '#0a0a0a', padding: '16px', borderRadius: '10px', marginBottom: '16px' },
+  routePoint: { display: 'flex', alignItems: 'center', gap: '10px', padding: '4px 0' },
+  routeDot: { fontSize: '12px' },
+  routeLine: { color: '#333', paddingLeft: '6px', fontSize: '18px' },
+  driverCard: { background: '#0a0a0a', padding: '16px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
+  driverInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
+  driverAvatar: { width: '44px', height: '44px', background: '#1a1a1a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' },
+  driverName: { fontWeight: '600', margin: '0 0 4px 0', fontSize: '15px' },
+  driverDetails: { color: '#666', fontSize: '13px', margin: 0 },
+  callBtn: { background: '#e63946', color: 'white', padding: '8px 16px', borderRadius: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' },
+  fareInfo: { background: '#0a0a0a', padding: '12px 16px', borderRadius: '8px', marginBottom: '12px' },
+  cancelBtn: { padding: '10px 20px', background: 'transparent', color: '#e63946', border: '1px solid #e63946', borderRadius: '8px', cursor: 'pointer', marginTop: '12px', fontSize: '14px' },
+  ratingBox: { marginTop: '16px', padding: '16px', background: '#0a0a0a', borderRadius: '10px' },
+  bookCard: { background: '#111', border: '1px solid #1a1a1a', padding: '24px', borderRadius: '16px' },
+  bookTitle: { fontSize: '20px', fontWeight: '700', marginBottom: '20px', marginTop: 0 },
+  rideTypeRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
+  rideTypeActive: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' },
+  rideTypeInactive: { flex: 1, padding: '12px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' },
   sharedList: { marginBottom: '16px' },
-  sharedCard: { background: '#0f172a', padding: '12px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px' },
+  sharedCard: { background: '#1a1a1a', padding: '12px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px' },
+  mapContainer: { marginBottom: '16px', borderRadius: '12px', overflow: 'hidden' },
+  searchRow: { display: 'flex', gap: '8px', marginBottom: '12px' },
+  searchInput: { flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid #2a2a2a', background: '#1a1a1a', color: 'white', fontSize: '14px', outline: 'none' },
+  searchBtn: { padding: '12px 16px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', whiteSpace: 'nowrap' },
+  fareBox: { background: '#1a1a1a', padding: '16px', borderRadius: '10px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-around' },
+  fareItem: { textAlign: 'center' },
+  fareLabel: { display: 'block', color: '#666', fontSize: '12px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '1px' },
+  fareValue: { fontSize: '22px', fontWeight: '700', color: '#e63946' },
+  fareDivider: { width: '1px', height: '40px', background: '#2a2a2a' },
+  scheduleRow: { marginBottom: '12px' },
+  scheduleLabel: { color: '#999', fontSize: '14px', cursor: 'pointer' },
+  dateInput: { width: '100%', padding: '12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px', color: 'white', fontSize: '14px', marginBottom: '12px', boxSizing: 'border-box' },
+  bookBtn: { width: '100%', padding: '14px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', letterSpacing: '0.5px' },
 };
 
 export default StudentDashboard;
