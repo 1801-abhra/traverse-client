@@ -73,6 +73,7 @@ function StudentDashboard() {
     socket.emit('join', { userId: user._id, role: 'student' });
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
+      setDriverLocation(null);
       setMessage(`Driver ${ride.driver.name} accepted! Vehicle: ${ride.driver.vehicleNumber}`);
     });
     socket.on('ride:updated', (ride) => {
@@ -141,6 +142,20 @@ function StudentDashboard() {
       setSharedRides(res.data);
     } catch (err) {
       console.log('Failed to fetch shared rides');
+    }
+  };
+
+  const joinSharedRide = async (rideId) => {
+    try {
+      const res = await axios.put(
+        `${API}/api/rides/join-shared/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMatchMessage(res.data.message);
+      setActiveRide(res.data.ride);
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Failed to join ride');
     }
   };
 
@@ -297,11 +312,24 @@ function StudentDashboard() {
 
             {rideType === 'shared' && sharedRides.length > 0 && (
               <div style={styles.sharedList}>
-                <p style={{ color: '#999', marginBottom: '8px', fontSize: '14px' }}>Available shared rides:</p>
+                <p style={{ color: '#999', marginBottom: '8px', fontSize: '14px' }}>
+                  👥 People going your way — choose to join:
+                </p>
                 {sharedRides.map(ride => (
                   <div key={ride._id} style={styles.sharedCard}>
-                    <p>👤 {ride.student?.name} → <b>{ride.dropoff}</b></p>
-                    <p style={{ color: '#999', fontSize: '13px' }}>🚗 {ride.vehicleType} • ₹{ride.fare}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <p style={{ margin: '0 0 4px 0' }}>👤 <b>{ride.student?.name}</b> → <b>{ride.dropoff}</b></p>
+                        <p style={{ color: '#999', fontSize: '13px', margin: 0 }}>🚗 {ride.vehicleType} • ₹{Math.ceil(ride.fare / 2)} each</p>
+                      </div>
+                      <button
+                        type='button'
+                        onClick={() => joinSharedRide(ride._id)}
+                        style={styles.joinBtn}
+                      >
+                        Join
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -502,6 +530,7 @@ const styles = {
   discountBadge: { display: 'inline-block', background: '#e6394622', color: '#e63946', border: '1px solid #e63946', padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: '600', marginTop: '4px' },
   scheduleRow: { marginBottom: '12px' },
   scheduleLabel: { color: '#999', fontSize: '14px', cursor: 'pointer' },
+  joinBtn: { padding: '8px 16px', background: '#e63946', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', whiteSpace: 'nowrap' },
   dateInput: { width: '100%', padding: '12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px', color: 'white', fontSize: '14px', marginBottom: '12px', boxSizing: 'border-box' },
   bookBtn: { width: '100%', padding: '14px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', letterSpacing: '0.5px' },
   bookBtnDisabled: { width: '100%', padding: '14px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', fontSize: '16px', cursor: 'not-allowed' },
