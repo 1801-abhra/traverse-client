@@ -13,6 +13,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+const ROUTES = [
+  { destination: 'Waknaghat', fare4: 200, fare6: 300, disc4: null, disc6: null },
+  { destination: 'Shoghi', fare4: 600, fare6: 800, disc4: null, disc6: null },
+  { destination: 'Shimla', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260 },
+  { destination: 'Kandaghat', fare4: 600, fare6: 800, disc4: null, disc6: null },
+  { destination: 'Solan', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260 },
+  { destination: 'Heritage Park Solan', fare4: 1500, fare6: 1800, disc4: 1350, disc6: 1620 },
+  { destination: 'Chail', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250 },
+  { destination: 'Sadhupul', fare4: 1400, fare6: 1800, disc4: 1260, disc6: 1620 },
+  { destination: 'Kufri', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250 },
+  { destination: 'Mashobra', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250 },
+  { destination: 'Tatapani', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050 },
+  { destination: 'Narkanda', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050 },
+];
+
 let socket;
 
 function FlyTo({ coords }) {
@@ -31,15 +46,12 @@ function StudentDashboard() {
   const [matchMessage, setMatchMessage] = useState('');
   const [rating, setRating] = useState(0);
   const [rated, setRated] = useState(false);
-  const [pickup, setPickup] = useState('');
-  const [dropoff, setDropoff] = useState('');
-  const [pickupCoords, setPickupCoords] = useState(null);
-  const [dropoffCoords, setDropoffCoords] = useState(null);
   const [activeRide, setActiveRide] = useState(null);
   const [message, setMessage] = useState('');
   const [fare, setFare] = useState(null);
-  const [eta, setEta] = useState(null);
   const [driverLocation, setDriverLocation] = useState(null);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
@@ -72,54 +84,36 @@ function StudentDashboard() {
     return () => socket.disconnect();
   }, []);
 
-  const geocode = async (address) => {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-    const data = await res.json();
-    if (data.length > 0) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-    return null;
-  };
-
-  const calculateFareEta = (pickCoords, dropCoords) => {
-    const R = 6371;
-    const dLat = (dropCoords[0] - pickCoords[0]) * Math.PI / 180;
-    const dLon = (dropCoords[1] - pickCoords[1]) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(pickCoords[0] * Math.PI / 180) * Math.cos(dropCoords[0] * Math.PI / 180) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const distance = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    setFare(Math.max(30, Math.round(distance * 10)));
-    setEta(Math.max(5, Math.round(distance * 3)));
-  };
-
-  const handlePickupSearch = async () => {
-    const coords = await geocode(pickup);
-    if (coords) { setPickupCoords(coords); if (dropoffCoords) calculateFareEta(coords, dropoffCoords); }
-    else setMessage('Pickup location not found');
-  };
-
-  const handleDropoffSearch = async () => {
-    const coords = await geocode(dropoff);
-    if (coords) { setDropoffCoords(coords); if (pickupCoords) calculateFareEta(pickupCoords, coords); }
-    else setMessage('Dropoff location not found');
-  };
-
   const bookRide = async (e) => {
     e.preventDefault();
-    if (!pickupCoords || !dropoffCoords) { setMessage('Please search both locations first'); return; }
+    if (!selectedRoute || !selectedVehicle) {
+      setMessage('Please select destination and vehicle type');
+      return;
+    }
     try {
+      const pickup = 'JUIT Campus, Waknaghat';
+      const dropoff = selectedRoute.destination;
       if (rideType === 'shared') {
-        const res = await axios.post(`${API}/api/rides/book-shared`, { pickup, dropoff, fare }, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.post(
+          `${API}/api/rides/book-shared`,
+          { pickup, dropoff, fare, vehicleType: selectedVehicle },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         if (res.data.ride) setActiveRide(res.data.ride);
         setMessage(res.data.message || 'Looking for someone to share with...');
         if (res.data.matched) setMatchMessage(res.data.message);
       } else {
-        const res = await axios.post(`${API}/api/rides/book`,
-          { pickup, dropoff, fare, scheduledTime: isScheduled ? scheduledTime : null },
-          { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.post(
+          `${API}/api/rides/book`,
+          { pickup, dropoff, fare, vehicleType: selectedVehicle, scheduledTime: isScheduled ? scheduledTime : null },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         setActiveRide(res.data);
         setMessage(isScheduled ? `Ride scheduled for ${new Date(scheduledTime).toLocaleString()}` : 'Searching for a driver...');
       }
-    } catch (err) { setMessage(err.response?.data?.message || 'Booking failed'); }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Booking failed');
+    }
   };
 
   const cancelRide = async () => {
@@ -128,15 +122,18 @@ function StudentDashboard() {
       setActiveRide(null);
       setMessage('Ride cancelled');
       setFare(null);
-      setEta(null);
-    } catch (err) { setMessage(err.response?.data?.message || 'Cannot cancel'); }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Cannot cancel');
+    }
   };
 
   const fetchSharedRides = async () => {
     try {
       const res = await axios.get(`${API}/api/rides/shared/available`, { headers: { Authorization: `Bearer ${token}` } });
       setSharedRides(res.data);
-    } catch (err) { console.log('Failed to fetch shared rides'); }
+    } catch (err) {
+      console.log('Failed to fetch shared rides');
+    }
   };
 
   const rateRide = async (stars) => {
@@ -145,7 +142,9 @@ function StudentDashboard() {
       setRating(stars);
       setRated(true);
       setMessage('Thanks for rating!');
-    } catch (err) { setMessage('Rating failed'); }
+    } catch (err) {
+      setMessage('Rating failed');
+    }
   };
 
   const logout = () => { localStorage.clear(); navigate('/login'); };
@@ -163,11 +162,8 @@ function StudentDashboard() {
     cancelled: 'Cancelled'
   };
 
-  const mapCenter = pickupCoords || [31.3260, 75.5762];
-
   return (
     <div style={styles.container}>
-      {/* Navbar */}
       <div style={styles.navbar}>
         <div style={styles.navBrand}>
           <span style={styles.navLogo}>🚖</span>
@@ -181,15 +177,12 @@ function StudentDashboard() {
       </div>
 
       <div style={styles.content}>
-
-        {/* Message */}
         {message && (
           <div style={styles.messagebox}>
             <span style={styles.messageIcon}>ℹ️</span> {message}
           </div>
         )}
 
-        {/* Active Ride Card */}
         {activeRide && (
           <div style={styles.rideCard}>
             <div style={styles.rideCardHeader}>
@@ -201,12 +194,12 @@ function StudentDashboard() {
 
             <div style={styles.routeInfo}>
               <div style={styles.routePoint}>
-                <span style={styles.routeDot}>🟢</span>
+                <span>🟢</span>
                 <span>{activeRide.pickup}</span>
               </div>
               <div style={styles.routeLine}>|</div>
               <div style={styles.routePoint}>
-                <span style={styles.routeDot}>🔴</span>
+                <span>🔴</span>
                 <span>{activeRide.dropoff}</span>
               </div>
             </div>
@@ -217,13 +210,15 @@ function StudentDashboard() {
                   <div style={styles.driverAvatar}>🧑</div>
                   <div>
                     <p style={styles.driverName}>{activeRide.driver?.name}</p>
-                    <p style={styles.driverDetails}>{activeRide.driver?.vehicleNumber} {activeRide.driver?.carName && `• ${activeRide.driver.carName} ${activeRide.driver.carModel}`}</p>
+                    <p style={styles.driverDetails}>
+                      {activeRide.driver?.vehicleNumber}
+                      {activeRide.driver?.carName && ` • ${activeRide.driver.carName} ${activeRide.driver.carModel}`}
+                      {activeRide.vehicleType && ` • ${activeRide.vehicleType}`}
+                    </p>
                   </div>
                 </div>
                 {activeRide.driver?.phone && (
-                  <a href={`tel:${activeRide.driver.phone}`} style={styles.callBtn}>
-                    📞 Call Driver
-                  </a>
+                  <a href={`tel:${activeRide.driver.phone}`} style={styles.callBtn}>📞 Call Driver</a>
                 )}
               </div>
             )}
@@ -234,15 +229,14 @@ function StudentDashboard() {
                 <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
-                  {pickupCoords && <Marker position={pickupCoords}><Popup>Your Pickup 📍</Popup></Marker>}
                   <FlyTo coords={driverLocation} />
                 </MapContainer>
               </div>
             )}
 
-            {fare && (
+            {activeRide.fare > 0 && (
               <div style={styles.fareInfo}>
-                <span>💰 Fare: <b>₹{fare}</b></span>
+                <span>💰 Fare: <b>₹{activeRide.fare}</b></span>
               </div>
             )}
 
@@ -265,12 +259,10 @@ function StudentDashboard() {
           </div>
         )}
 
-        {/* Book Ride */}
         {!activeRide && (
           <div style={styles.bookCard}>
             <h3 style={styles.bookTitle}>Book a Ride</h3>
 
-            {/* Ride Type */}
             <div style={styles.rideTypeRow}>
               <button type='button'
                 onClick={() => { setRideType('private'); setSharedRides([]); }}
@@ -290,7 +282,7 @@ function StudentDashboard() {
                 {sharedRides.map(ride => (
                   <div key={ride._id} style={styles.sharedCard}>
                     <p>👤 {ride.student?.name} → <b>{ride.dropoff}</b></p>
-                    <p style={{ color: '#999', fontSize: '13px' }}>📍 From: {ride.pickup}</p>
+                    <p style={{ color: '#999', fontSize: '13px' }}>🚗 {ride.vehicleType} • ₹{ride.fare}</p>
                   </div>
                 ))}
               </div>
@@ -300,39 +292,81 @@ function StudentDashboard() {
               <div style={{ ...styles.messagebox, borderColor: '#10b981' }}>🎉 {matchMessage}</div>
             )}
 
-            {/* Map */}
-            <div style={styles.mapContainer}>
-              <MapContainer center={mapCenter} zoom={13} style={{ height: '280px', borderRadius: '12px' }}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {pickupCoords && <Marker position={pickupCoords}><Popup>Pickup: {pickup}</Popup></Marker>}
-                {dropoffCoords && <Marker position={dropoffCoords}><Popup>Drop: {dropoff}</Popup></Marker>}
-                {pickupCoords && <FlyTo coords={pickupCoords} />}
-                {driverLocation && <Marker position={driverLocation}><Popup>Driver 🚗</Popup></Marker>}
-              </MapContainer>
-            </div>
-
             <form onSubmit={bookRide}>
-              <div style={styles.searchRow}>
-                <input style={styles.searchInput} placeholder='📍 Pickup Location' value={pickup}
-                  onChange={e => setPickup(e.target.value)} required />
-                <button type='button' onClick={handlePickupSearch} style={styles.searchBtn}>Search</button>
-              </div>
-              <div style={styles.searchRow}>
-                <input style={styles.searchInput} placeholder='📍 Drop Location' value={dropoff}
-                  onChange={e => setDropoff(e.target.value)} required />
-                <button type='button' onClick={handleDropoffSearch} style={styles.searchBtn}>Search</button>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Pickup Location</label>
+                <div style={styles.fixedLocation}>📍 JUIT Campus, Waknaghat</div>
               </div>
 
-              {fare && eta && (
-                <div style={styles.fareBox}>
-                  <div style={styles.fareItem}>
-                    <span style={styles.fareLabel}>Estimated Fare</span>
-                    <span style={styles.fareValue}>₹{fare}</span>
-                  </div>
-                  <div style={styles.fareDivider} />
-                  <div style={styles.fareItem}>
-                    <span style={styles.fareLabel}>ETA</span>
-                    <span style={styles.fareValue}>{eta} mins</span>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Select Destination</label>
+                <select
+                  style={styles.select}
+                  value={selectedRoute ? selectedRoute.destination : ''}
+                  onChange={e => {
+                    const route = ROUTES.find(r => r.destination === e.target.value);
+                    setSelectedRoute(route || null);
+                    setSelectedVehicle(null);
+                    setFare(null);
+                  }}
+                  required
+                >
+                  <option value=''>Choose destination...</option>
+                  {ROUTES.map(route => (
+                    <option key={route.destination} value={route.destination}>
+                      {route.destination}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedRoute && (
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>Select Vehicle Type</label>
+                  <div style={styles.vehicleCards}>
+                    <div
+                      onClick={() => { setSelectedVehicle('4+1'); setFare(selectedRoute.disc4 || selectedRoute.fare4); }}
+                      style={{ ...styles.vehicleCard, ...(selectedVehicle === '4+1' ? styles.vehicleCardActive : {}) }}
+                    >
+                      <div style={styles.vehicleIcon}>🚗</div>
+                      <div style={styles.vehicleInfo}>
+                        <p style={styles.vehicleTypeTxt}>4+1 Sedan</p>
+                        <p style={styles.vehicleSeats}>Up to 4 passengers</p>
+                      </div>
+                      <div style={styles.vehicleFare}>
+                        {selectedRoute.disc4 ? (
+                          <>
+                            <span style={styles.originalFare}>₹{selectedRoute.fare4}</span>
+                            <span style={styles.discountedFare}>₹{selectedRoute.disc4}</span>
+                            <span style={styles.discountBadge}>10% OFF</span>
+                          </>
+                        ) : (
+                          <span style={styles.discountedFare}>₹{selectedRoute.fare4}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div
+                      onClick={() => { setSelectedVehicle('6+1'); setFare(selectedRoute.disc6 || selectedRoute.fare6); }}
+                      style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
+                    >
+                      <div style={styles.vehicleIcon}>🚐</div>
+                      <div style={styles.vehicleInfo}>
+                        <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
+                        <p style={styles.vehicleSeats}>Up to 6 passengers</p>
+                      </div>
+                      <div style={styles.vehicleFare}>
+                        {selectedRoute.disc6 ? (
+                          <>
+                            <span style={styles.originalFare}>₹{selectedRoute.fare6}</span>
+                            <span style={styles.discountedFare}>₹{selectedRoute.disc6}</span>
+                            <span style={styles.discountBadge}>10% OFF</span>
+                          </>
+                        ) : (
+                          <span style={styles.discountedFare}>₹{selectedRoute.fare6}</span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -352,8 +386,12 @@ function StudentDashboard() {
                   min={new Date().toISOString().slice(0, 16)} required={isScheduled} />
               )}
 
-              <button style={styles.bookBtn} type='submit'>
-                {rideType === 'shared' ? '👥 Find Shared Ride' : '🚖 Request Ride'}
+              <button
+                style={selectedVehicle ? styles.bookBtn : styles.bookBtnDisabled}
+                type='submit'
+                disabled={!selectedVehicle}
+              >
+                {selectedVehicle ? `🚖 Request ${selectedVehicle} Ride — ₹${fare}` : 'Select vehicle to continue'}
               </button>
             </form>
           </div>
@@ -382,7 +420,6 @@ const styles = {
   statusBadge: { padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' },
   routeInfo: { background: '#0a0a0a', padding: '16px', borderRadius: '10px', marginBottom: '16px' },
   routePoint: { display: 'flex', alignItems: 'center', gap: '10px', padding: '4px 0' },
-  routeDot: { fontSize: '12px' },
   routeLine: { color: '#333', paddingLeft: '6px', fontSize: '18px' },
   driverCard: { background: '#0a0a0a', padding: '16px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   driverInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
@@ -400,19 +437,26 @@ const styles = {
   rideTypeInactive: { flex: 1, padding: '12px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' },
   sharedList: { marginBottom: '16px' },
   sharedCard: { background: '#1a1a1a', padding: '12px', borderRadius: '8px', marginBottom: '8px', fontSize: '14px' },
-  mapContainer: { marginBottom: '16px', borderRadius: '12px', overflow: 'hidden' },
-  searchRow: { display: 'flex', gap: '8px', marginBottom: '12px' },
-  searchInput: { flex: 1, padding: '12px 16px', borderRadius: '10px', border: '1px solid #2a2a2a', background: '#1a1a1a', color: 'white', fontSize: '14px', outline: 'none' },
-  searchBtn: { padding: '12px 16px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', whiteSpace: 'nowrap' },
-  fareBox: { background: '#1a1a1a', padding: '16px', borderRadius: '10px', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-around' },
-  fareItem: { textAlign: 'center' },
-  fareLabel: { display: 'block', color: '#666', fontSize: '12px', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '1px' },
-  fareValue: { fontSize: '22px', fontWeight: '700', color: '#e63946' },
-  fareDivider: { width: '1px', height: '40px', background: '#2a2a2a' },
+  inputGroup: { marginBottom: '20px' },
+  label: { display: 'block', color: '#999', fontSize: '12px', fontWeight: '500', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' },
+  fixedLocation: { background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '14px 16px', borderRadius: '10px', color: '#666', fontSize: '14px' },
+  select: { width: '100%', padding: '14px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px', color: 'white', fontSize: '15px', outline: 'none', cursor: 'pointer' },
+  vehicleCards: { display: 'flex', flexDirection: 'column', gap: '12px' },
+  vehicleCard: { background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '16px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' },
+  vehicleCardActive: { border: '2px solid #e63946', background: '#2a0000' },
+  vehicleIcon: { fontSize: '28px' },
+  vehicleInfo: { flex: 1 },
+  vehicleTypeTxt: { fontWeight: '600', margin: '0 0 4px 0', fontSize: '15px' },
+  vehicleSeats: { color: '#666', fontSize: '13px', margin: 0 },
+  vehicleFare: { textAlign: 'right' },
+  originalFare: { display: 'block', color: '#666', fontSize: '13px', textDecoration: 'line-through' },
+  discountedFare: { display: 'block', color: '#e63946', fontSize: '20px', fontWeight: '700' },
+  discountBadge: { display: 'inline-block', background: '#e6394622', color: '#e63946', border: '1px solid #e63946', padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: '600', marginTop: '4px' },
   scheduleRow: { marginBottom: '12px' },
   scheduleLabel: { color: '#999', fontSize: '14px', cursor: 'pointer' },
   dateInput: { width: '100%', padding: '12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px', color: 'white', fontSize: '14px', marginBottom: '12px', boxSizing: 'border-box' },
   bookBtn: { width: '100%', padding: '14px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', letterSpacing: '0.5px' },
+  bookBtnDisabled: { width: '100%', padding: '14px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', fontSize: '16px', cursor: 'not-allowed' },
 };
 
 export default StudentDashboard;
