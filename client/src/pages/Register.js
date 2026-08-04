@@ -45,23 +45,33 @@ function Register() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.leftPanel}>
-        <div style={styles.brandSection}>
+      {window.innerWidth <= 768 && (
+        <div style={styles.mobileHeader}>
           <div style={styles.logo}>
             <span style={styles.logoIcon}>🚖</span>
             <span style={styles.logoText}>TRAVERSE</span>
           </div>
-          <h1 style={styles.tagline}>Join the<br /><span style={styles.red}>Community.</span></h1>
-          <p style={styles.subTagline}>Register as a student or driver and start your journey with Traverse</p>
-          <div style={styles.features}>
-            <div style={styles.feature}>✅ Safe & Verified Drivers</div>
-            <div style={styles.feature}>✅ Real-time Tracking</div>
-            <div style={styles.feature}>✅ Affordable Fares</div>
-            <div style={styles.feature}>✅ 24/7 Available</div>
+          <p style={styles.mobileTagline}>Join the <span style={styles.red}>Community.</span></p>
+        </div>
+      )}
+      {window.innerWidth > 768 && (
+        <div style={styles.leftPanel}>
+          <div style={styles.brandSection}>
+            <div style={styles.logo}>
+              <span style={styles.logoIcon}>🚖</span>
+              <span style={styles.logoText}>TRAVERSE</span>
+            </div>
+            <h1 style={styles.tagline}>Join the<br /><span style={styles.red}>Community.</span></h1>
+            <p style={styles.subTagline}>Register as a student or driver and start your journey with Traverse</p>
+            <div style={styles.features}>
+              <div style={styles.feature}>✅ Safe & Verified Drivers</div>
+              <div style={styles.feature}>✅ Real-time Tracking</div>
+              <div style={styles.feature}>✅ Affordable Fares</div>
+              <div style={styles.feature}>✅ 24/7 Available</div>
+            </div>
           </div>
         </div>
-      </div>
-
+      )}
       <div style={styles.rightPanel}>
         <div style={styles.card}>
           <h2 style={styles.title}>Create Account</h2>
@@ -233,7 +243,13 @@ function Register() {
 }
 
 const styles = {
-  container: { minHeight: '100vh', display: 'flex', background: '#0a0a0a', color: 'white' },
+  container: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+    background: '#0a0a0a',
+    color: 'white'
+  },
   leftPanel: {
     flex: 1,
     background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 50%, #1a0000 100%)',
@@ -255,12 +271,12 @@ const styles = {
   rightPanel: {
     width: window.innerWidth <= 768 ? '100%' : '520px',
     display: 'flex',
-    alignItems: 'center',
+    alignItems: window.innerWidth <= 768 ? 'flex-start' : 'center',
     justifyContent: 'center',
     padding: window.innerWidth <= 768 ? '24px 16px' : '40px',
     background: '#111',
     overflowY: 'auto',
-    minHeight: '100vh'
+    minHeight: window.innerWidth <= 768 ? 'auto' : '100vh'
   },
   card: { width: '100%', maxWidth: '420px', paddingTop: '20px', paddingBottom: '20px' },
   title: { fontSize: '32px', fontWeight: '700', marginBottom: '8px', color: 'white' },
@@ -301,6 +317,17 @@ const styles = {
     width: '100%', padding: '14px', background: '#7a1a1a', color: '#999',
     border: 'none', borderRadius: '8px', fontSize: '16px',
     fontWeight: '600', cursor: 'not-allowed', marginTop: '8px'
+  },
+  mobileHeader: {
+    background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 100%)',
+    padding: '24px 20px',
+    borderBottom: '1px solid #2a0000',
+    textAlign: 'center'
+  },
+  mobileTagline: {
+    fontSize: '16px',
+    color: '#999',
+    marginTop: '8px'
   },
   divider: { textAlign: 'center', color: '#444', margin: '24px 0', fontSize: '14px' },
   loginBtn: {

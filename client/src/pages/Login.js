@@ -31,16 +31,30 @@ function Login() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.leftPanel}>
-        <div style={styles.brandSection}>
+      {/* Mobile Header - shows only on mobile */}
+      {window.innerWidth <= 768 && (
+        <div style={styles.mobileHeader}>
           <div style={styles.logo}>
             <span style={styles.logoIcon}>🚖</span>
             <span style={styles.logoText}>TRAVERSE</span>
           </div>
-          <h1 style={styles.tagline}>Campus Travel,<br /><span style={styles.red}>Simplified.</span></h1>
-          <p style={styles.subTagline}>Safe, fast and affordable rides for university students</p>
+          <p style={styles.mobileTagline}>Campus Travel, <span style={styles.red}>Simplified.</span></p>
         </div>
-      </div>
+      )}
+
+      {/* Desktop Left Panel */}
+      {window.innerWidth > 768 && (
+        <div style={styles.leftPanel}>
+          <div style={styles.brandSection}>
+            <div style={styles.logo}>
+              <span style={styles.logoIcon}>🚖</span>
+              <span style={styles.logoText}>TRAVERSE</span>
+            </div>
+            <h1 style={styles.tagline}>Campus Travel,<br /><span style={styles.red}>Simplified.</span></h1>
+            <p style={styles.subTagline}>Safe, fast and affordable rides for university students</p>
+          </div>
+        </div>
+      )}
 
       <div style={styles.rightPanel}>
         <div style={styles.card}>
@@ -78,11 +92,7 @@ function Login() {
               />
             </div>
 
-            <button
-              style={loading ? styles.buttonLoading : styles.button}
-              type='submit'
-              disabled={loading}
-            >
+            <button style={loading ? styles.buttonLoading : styles.button} type='submit' disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
@@ -99,11 +109,11 @@ function Login() {
     </div>
   );
 }
-
 const styles = {
   container: {
     minHeight: '100vh',
     display: 'flex',
+    flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
     background: '#0a0a0a',
     color: 'white',
   },
@@ -152,11 +162,11 @@ const styles = {
   rightPanel: {
     width: window.innerWidth <= 768 ? '100%' : '480px',
     display: 'flex',
-    alignItems: 'center',
+    alignItems: window.innerWidth <= 768 ? 'flex-start' : 'center',
     justifyContent: 'center',
     padding: window.innerWidth <= 768 ? '24px 16px' : '40px',
     background: '#111',
-    minHeight: '100vh'
+    minHeight: window.innerWidth <= 768 ? 'auto' : '100vh'
   },
   card: {
     width: '100%',
@@ -234,6 +244,17 @@ const styles = {
     color: '#444',
     margin: '24px 0',
     fontSize: '14px'
+  },
+  mobileHeader: {
+    background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 100%)',
+    padding: '24px 20px',
+    borderBottom: '1px solid #2a0000',
+    textAlign: 'center'
+  },
+  mobileTagline: {
+    fontSize: '16px',
+    color: '#999',
+    marginTop: '8px'
   },
   registerBtn: {
     display: 'block',
