@@ -12,7 +12,8 @@ function Register() {
     vehicleNumber: '',
     phone: '',
     carName: '',
-    carModel: ''
+    carModel: '',
+    vehicleType: '4+1'
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -185,6 +186,28 @@ function Register() {
                   />
                 </div>
               </>
+            )}
+            
+            {form.role === 'driver' && (
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Vehicle Type</label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type='button'
+                    onClick={() => setForm({ ...form, vehicleType: '4+1' })}
+                    style={form.vehicleType === '4+1' ? styles.roleActive : styles.roleInactive}
+                  >
+                    🚗 4+1 Sedan
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => setForm({ ...form, vehicleType: '6+1' })}
+                    style={form.vehicleType === '6+1' ? styles.roleActive : styles.roleInactive}
+                  >
+                    🚐 6+1 SUV
+                  </button>
+                </div>
+              </div>
             )}
 
             <button
