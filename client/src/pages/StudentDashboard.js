@@ -78,6 +78,9 @@ function StudentDashboard() {
     socket.on('ride:updated', (ride) => {
       setActiveRide(ride);
       setMessage(`Status: ${ride.status.toUpperCase()}`);
+      if (ride.status === 'completed' || ride.status === 'cancelled') {
+        setDriverLocation(null);
+      }
     });
     socket.on('ride:matched', ({ message, ride }) => {
       setMatchMessage(message);
