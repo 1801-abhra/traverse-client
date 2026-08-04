@@ -29,7 +29,8 @@ function Register() {
     try {
       const { data } = await axios.post(
         'https://traverse-app-production.up.railway.app/api/auth/register',
-        form
+        form,
+        { withCredentials: false }
       );
       localStorage.setItem('user', JSON.stringify(data));
       localStorage.setItem('token', data.token);

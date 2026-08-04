@@ -16,7 +16,8 @@ function Login() {
     try {
       const { data } = await axios.post(
         'https://traverse-app-production.up.railway.app/api/auth/login',
-        { email, password }
+        { email, password },
+        { withCredentials: false }
       );
       localStorage.setItem('user', JSON.stringify(data));
       localStorage.setItem('token', data.token);
