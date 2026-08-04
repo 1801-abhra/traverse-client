@@ -14,19 +14,21 @@ L.Icon.Default.mergeOptions({
 });
 
 const ROUTES = [
-  { destination: 'Waknaghat', fare4: 200, fare6: 300, disc4: null, disc6: null },
-  { destination: 'Shoghi', fare4: 600, fare6: 800, disc4: null, disc6: null },
-  { destination: 'Shimla', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260 },
-  { destination: 'Kandaghat', fare4: 600, fare6: 800, disc4: null, disc6: null },
-  { destination: 'Solan', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260 },
-  { destination: 'Heritage Park Solan', fare4: 1500, fare6: 1800, disc4: 1350, disc6: 1620 },
-  { destination: 'Chail', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250 },
-  { destination: 'Sadhupul', fare4: 1400, fare6: 1800, disc4: 1260, disc6: 1620 },
-  { destination: 'Kufri', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250 },
-  { destination: 'Mashobra', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250 },
-  { destination: 'Tatapani', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050 },
-  { destination: 'Narkanda', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050 },
+  { destination: 'Waknaghat', fare4: 200, fare6: 300, disc4: null, disc6: null, coords: [30.8826, 77.1490] },
+  { destination: 'Shoghi', fare4: 600, fare6: 800, disc4: null, disc6: null, coords: [31.0167, 77.1833] },
+  { destination: 'Shimla', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260, coords: [31.1048, 77.1734] },
+  { destination: 'Kandaghat', fare4: 600, fare6: 800, disc4: null, disc6: null, coords: [30.9833, 77.1167] },
+  { destination: 'Solan', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260, coords: [30.9045, 77.0967] },
+  { destination: 'Heritage Park Solan', fare4: 1500, fare6: 1800, disc4: 1350, disc6: 1620, coords: [30.9045, 77.0967] },
+  { destination: 'Chail', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250, coords: [30.9667, 77.2000] },
+  { destination: 'Sadhupul', fare4: 1400, fare6: 1800, disc4: 1260, disc6: 1620, coords: [30.9500, 77.1667] },
+  { destination: 'Kufri', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250, coords: [31.0833, 77.2667] },
+  { destination: 'Mashobra', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250, coords: [31.1333, 77.2167] },
+  { destination: 'Tatapani', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050, coords: [31.2833, 77.2000] },
+  { destination: 'Narkanda', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050, coords: [31.4167, 77.4500] },
 ];
+
+const JUIT_COORDS = [30.8826, 77.1490];
 
 let socket;
 
@@ -39,6 +41,9 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [mapCenter, setMapCenter] = useState(JUIT_COORDS);
+  const [destCoords, setDestCoords] = useState(null);
+  const [distance, setDistance] = useState(null);
   const [isScheduled, setIsScheduled] = useState(false);
   const [scheduledTime, setScheduledTime] = useState('');
   const [rideType, setRideType] = useState('private');
@@ -134,6 +139,17 @@ function StudentDashboard() {
     } catch (err) {
       console.log('Failed to fetch shared rides');
     }
+  };
+
+  const calculateDistance = (coord1, coord2) => {
+    const R = 6371;
+    const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
+    const dLon = (coord2[1] - coord1[1]) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c);
   };
 
   const rateRide = async (stars) => {
@@ -308,6 +324,14 @@ function StudentDashboard() {
                     setSelectedRoute(route || null);
                     setSelectedVehicle(null);
                     setFare(null);
+                    if (route) {
+                      setDestCoords(route.coords);
+                      setMapCenter(route.coords);
+                      setDistance(calculateDistance(JUIT_COORDS, route.coords));
+                    } else {
+                      setDestCoords(null);
+                      setDistance(null);
+                    }
                   }}
                   required
                 >
@@ -319,7 +343,28 @@ function StudentDashboard() {
                   ))}
                 </select>
               </div>
-
+              {destCoords && (
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>
+                    Route Preview
+                    {distance && <span style={{ color: '#e63946', marginLeft: '8px' }}>~{distance} km</span>}
+                  </label>
+                  <MapContainer
+                    center={mapCenter}
+                    zoom={11}
+                    style={{ height: '220px', borderRadius: '12px' }}
+                  >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    <Marker position={JUIT_COORDS}>
+                      <Popup>📍 JUIT Campus (Pickup)</Popup>
+                    </Marker>
+                    <Marker position={destCoords}>
+                      <Popup>🏁 {selectedRoute?.destination} (Drop)</Popup>
+                    </Marker>
+                    <FlyTo coords={destCoords} />
+                  </MapContainer>
+                </div>
+              )}
               {selectedRoute && (
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>Select Vehicle Type</label>
