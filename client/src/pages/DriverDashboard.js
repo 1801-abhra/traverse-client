@@ -31,15 +31,13 @@ function DriverDashboard() {
     });
     if (navigator.geolocation) {
       const watchId = navigator.geolocation.watchPosition((pos) => {
-        if (activeRide) {
-          socket.emit('driver:location', {
-            rideId: activeRide._id,
-            studentId: activeRide.student,
-            sharedWithId: activeRide.sharedWith || null,
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
-          });
-        }
+        socket.emit('driver:location', {
+          rideId: null,
+          studentId: null,
+          sharedWithId: null,
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
       });
       return () => {
         navigator.geolocation.clearWatch(watchId);
@@ -48,7 +46,20 @@ function DriverDashboard() {
     }
     return () => socket.disconnect();
   }, []);
-
+  
+  useEffect(() => {
+    if (activeRide && socket) {
+      navigator.geolocation.watchPosition((pos) => {
+        socket.emit('driver:location', {
+          rideId: activeRide._id,
+          studentId: activeRide.student,
+          sharedWithId: activeRide.sharedWith || null,
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
+      });
+    }
+  }, [activeRide]);
   const fetchAvailableRides = async () => {
     try {
       const res = await axios.get(`${API}/api/rides/available`, { headers: { Authorization: `Bearer ${token}` } });
