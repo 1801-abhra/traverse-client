@@ -46,7 +46,7 @@ function DriverDashboard() {
     }
     return () => socket.disconnect();
   }, []);
-  
+
   useEffect(() => {
     if (activeRide && socket) {
       navigator.geolocation.watchPosition((pos) => {
@@ -290,17 +290,48 @@ function DriverDashboard() {
 
 const styles = {
   container: { minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, sans-serif' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#111', borderBottom: '1px solid #1a1a1a' },
-  navBrand: { display: 'flex', alignItems: 'center', gap: '10px' },
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
+    background: '#111',
+    borderBottom: '1px solid #1a1a1a',
+    flexWrap: 'wrap',
+    gap: '8px'
+  },
   navLogo: { fontSize: '24px' },
   navTitle: { fontSize: '20px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
-  navRight: { display: 'flex', alignItems: 'center', gap: '12px' },
-  navUser: { color: '#666', fontSize: '14px' },
+  navRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexWrap: 'wrap'
+  },
+  navUser: {
+    color: '#666',
+    fontSize: '13px',
+    display: window.innerWidth <= 768 ? 'none' : 'block'
+  },
   navBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
   navBtnRed: { background: 'transparent', color: '#e63946', border: '1px solid #e63946', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  content: { maxWidth: '720px', margin: '32px auto', padding: '0 16px' },
-  ratingCard: { background: '#111', border: '1px solid #1a1a1a', padding: '20px 24px', borderRadius: '16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  ratingLeft: {},
+  content: {
+    maxWidth: '720px',
+    margin: '24px auto',
+    padding: '0 16px'
+  },
+  ratingCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: '20px 24px',
+    borderRadius: '16px',
+    marginBottom: '24px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '12px'
+  },
   ratingLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 4px 0' },
   ratingValue: { fontSize: '36px', fontWeight: '800', color: '#e63946', margin: 0 },
   ratingMax: { fontSize: '18px', color: '#666' },
@@ -309,7 +340,14 @@ const styles = {
   ratingRight: {},
   ratingStatus: { fontSize: '14px', fontWeight: '600', margin: 0 },
   messagebox: { background: '#111', padding: '14px 18px', borderRadius: '10px', marginBottom: '20px', borderLeft: '3px solid #e63946', fontSize: '14px', color: '#ccc' },
-  rideCard: { background: '#111', border: '1px solid #1a1a1a', padding: '24px', borderRadius: '16px', marginBottom: '16px' },
+  rideCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: window.innerWidth <= 768 ? '16px' : '24px',
+    borderRadius: '16px',
+    marginBottom: '16px'
+  },
+
   rideCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   rideCardTitle: { fontSize: '18px', fontWeight: '700', margin: 0 },
   statusBadge: { padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' },

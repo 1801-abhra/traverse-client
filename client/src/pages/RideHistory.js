@@ -172,19 +172,50 @@ function RideHistory() {
 
 const styles = {
   container: { minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, sans-serif' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#111', borderBottom: '1px solid #1a1a1a' },
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
+    background: '#111',
+    borderBottom: '1px solid #1a1a1a',
+    flexWrap: 'wrap',
+    gap: '8px'
+  },
   navBrand: { display: 'flex', alignItems: 'center', gap: '10px' },
   navLogo: { fontSize: '24px' },
   navTitle: { fontSize: '20px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
   backBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  content: { maxWidth: '720px', margin: '32px auto', padding: '0 16px' },
+  content: {
+    maxWidth: '720px',
+    margin: '24px auto',
+    padding: '0 16px'
+  },
   pageTitle: { fontSize: '28px', fontWeight: '800', margin: '0 0 4px 0' },
   pageSubtitle: { color: '#666', fontSize: '15px', marginBottom: '24px' },
-  statsRow: { display: 'flex', gap: '12px', marginBottom: '24px' },
-  statCard: { flex: 1, background: '#111', border: '1px solid #1a1a1a', padding: '16px', borderRadius: '12px', textAlign: 'center' },
+  statsRow: {
+    display: 'flex',
+    gap: '12px',
+    marginBottom: '24px',
+    flexWrap: 'wrap'
+  },
+  statCard: {
+    flex: 1,
+    minWidth: '80px',
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: '16px',
+    borderRadius: '12px',
+    textAlign: 'center'
+  },
   statValue: { fontSize: '28px', fontWeight: '800', color: '#e63946', margin: '0 0 4px 0' },
   statLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 },
-  filterRow: { display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' },
+  filterRow: {
+    display: 'flex',
+    gap: '8px',
+    marginBottom: '20px',
+    flexWrap: 'wrap'
+  },
   filterActive: { padding: '8px 16px', background: '#e63946', color: 'white', border: 'none', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', fontWeight: '600' },
   filterInactive: { padding: '8px 16px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '20px', cursor: 'pointer', fontSize: '13px' },
   loadingBox: { textAlign: 'center', padding: '48px', color: '#666' },
@@ -192,7 +223,13 @@ const styles = {
   emptyIcon: { fontSize: '48px', margin: '0 0 16px 0' },
   emptyTitle: { fontSize: '18px', fontWeight: '600', margin: '0 0 8px 0' },
   emptySubtitle: { color: '#666', fontSize: '14px', margin: 0 },
-  rideCard: { background: '#111', border: '1px solid #1a1a1a', padding: '20px', borderRadius: '16px', marginBottom: '12px' },
+  rideCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: window.innerWidth <= 768 ? '16px' : '20px',
+    borderRadius: '16px',
+    marginBottom: '12px'
+  },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   statusBadge: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' },
   sharedBadge: { background: '#1a0a00', color: '#f59e0b', padding: '4px 10px', borderRadius: '20px', fontSize: '12px', marginLeft: '8px' },

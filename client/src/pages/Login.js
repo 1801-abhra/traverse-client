@@ -110,7 +110,7 @@ const styles = {
   leftPanel: {
     flex: 1,
     background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 50%, #1a0000 100%)',
-    display: 'flex',
+    display: window.innerWidth <= 768 ? 'none' : 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '60px',
@@ -150,12 +150,13 @@ const styles = {
     lineHeight: '1.6'
   },
   rightPanel: {
-    width: '480px',
+    width: window.innerWidth <= 768 ? '100%' : '480px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '40px',
-    background: '#111'
+    padding: window.innerWidth <= 768 ? '24px 16px' : '40px',
+    background: '#111',
+    minHeight: '100vh'
   },
   card: {
     width: '100%',

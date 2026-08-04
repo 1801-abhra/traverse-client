@@ -187,7 +187,7 @@ function Register() {
                 </div>
               </>
             )}
-            
+
             {form.role === 'driver' && (
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Vehicle Type</label>
@@ -237,8 +237,11 @@ const styles = {
   leftPanel: {
     flex: 1,
     background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 50%, #1a0000 100%)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    padding: '60px', borderRight: '1px solid #2a0000'
+    display: window.innerWidth <= 768 ? 'none' : 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '60px',
+    borderRight: '1px solid #2a0000'
   },
   brandSection: { maxWidth: '400px' },
   logo: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' },
@@ -250,9 +253,14 @@ const styles = {
   features: { display: 'flex', flexDirection: 'column', gap: '12px' },
   feature: { color: '#999', fontSize: '16px' },
   rightPanel: {
-    width: '520px', display: 'flex', alignItems: 'center',
-    justifyContent: 'center', padding: '40px', background: '#111',
-    overflowY: 'auto'
+    width: window.innerWidth <= 768 ? '100%' : '520px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: window.innerWidth <= 768 ? '24px 16px' : '40px',
+    background: '#111',
+    overflowY: 'auto',
+    minHeight: '100vh'
   },
   card: { width: '100%', maxWidth: '420px', paddingTop: '20px', paddingBottom: '20px' },
   title: { fontSize: '32px', fontWeight: '700', marginBottom: '8px', color: 'white' },

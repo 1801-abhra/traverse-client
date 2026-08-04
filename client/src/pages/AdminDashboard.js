@@ -260,23 +260,56 @@ const styles = {
   btn: { width: '100%', padding: '14px', background: '#e63946', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer', marginTop: '8px' },
   btnLoading: { width: '100%', padding: '14px', background: '#7a1a1a', color: '#999', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'not-allowed', marginTop: '8px' },
   backBtn: { width: '100%', padding: '12px', background: 'transparent', color: '#666', border: '1px solid #2a2a2a', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', marginTop: '12px' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#111', borderBottom: '1px solid #1a1a1a' },
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
+    background: '#111',
+    borderBottom: '1px solid #1a1a1a',
+    flexWrap: 'wrap',
+    gap: '8px'
+  },
   navBrand: { display: 'flex', alignItems: 'center', gap: '10px' },
   navLogo: { fontSize: '24px' },
   navTitle: { fontSize: '16px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
-  navRight: { display: 'flex', gap: '12px' },
+  navRight: {
+    display: 'flex',
+    gap: '8px',
+    flexWrap: 'wrap'
+  },
   refreshBtn: { background: '#1a1a1a', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
   navBtnRed: { background: 'transparent', color: '#e63946', border: '1px solid #e63946', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  content: { maxWidth: '960px', margin: '32px auto', padding: '0 16px' },
-  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '28px' },
+  content: {
+    maxWidth: '960px',
+    margin: '24px auto',
+    padding: '0 16px'
+  },
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: window.innerWidth <= 768 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
+    gap: '12px',
+    marginBottom: '28px'
+  },
   statCard: { background: '#111', border: '1px solid #1a1a1a', padding: '20px', borderRadius: '12px', textAlign: 'center' },
   statLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 8px 0' },
   statValue: { fontSize: '32px', fontWeight: '800', color: 'white', margin: 0 },
-  tabs: { display: 'flex', gap: '8px', marginBottom: '24px' },
+  tabs: {
+    display: 'flex',
+    gap: '8px',
+    marginBottom: '24px',
+    flexWrap: 'wrap'
+  },
   tabActive: { padding: '10px 24px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' },
   tabInactive: { padding: '10px 24px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '14px' },
   tabTitle: { color: '#666', fontSize: '14px', marginBottom: '16px' },
-  card: { background: '#111', border: '1px solid #1a1a1a', padding: '20px', borderRadius: '14px', marginBottom: '12px' },
+  card: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: window.innerWidth <= 768 ? '16px' : '20px',
+    borderRadius: '14px',
+    marginBottom: '12px'
+  },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
   statusBadge: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' },
   dateText: { color: '#666', fontSize: '12px' },

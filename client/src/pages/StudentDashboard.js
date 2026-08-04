@@ -479,18 +479,46 @@ function StudentDashboard() {
 
 const styles = {
   container: { minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, sans-serif' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#111', borderBottom: '1px solid #1a1a1a' },
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
+    background: '#111',
+    borderBottom: '1px solid #1a1a1a',
+    flexWrap: 'wrap',
+    gap: '8px'
+  },
   navBrand: { display: 'flex', alignItems: 'center', gap: '10px' },
   navLogo: { fontSize: '24px' },
   navTitle: { fontSize: '20px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
-  navRight: { display: 'flex', alignItems: 'center', gap: '12px' },
-  navUser: { color: '#666', fontSize: '14px' },
+  navRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexWrap: 'wrap'
+  },
+  navUser: {
+    color: '#666',
+    fontSize: '13px',
+    display: window.innerWidth <= 768 ? 'none' : 'block'
+  },
   navBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
   navBtnRed: { background: 'transparent', color: '#e63946', border: '1px solid #e63946', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  content: { maxWidth: '720px', margin: '32px auto', padding: '0 16px' },
+  content: {
+    maxWidth: '720px',
+    margin: '24px auto',
+    padding: '0 16px'
+  },
   messagebox: { background: '#111', padding: '14px 18px', borderRadius: '10px', marginBottom: '20px', borderLeft: '3px solid #e63946', fontSize: '14px', color: '#ccc' },
   messageIcon: { marginRight: '8px' },
-  rideCard: { background: '#111', border: '1px solid #1a1a1a', padding: '24px', borderRadius: '16px', marginBottom: '24px' },
+  rideCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: window.innerWidth <= 768 ? '16px' : '24px',
+    borderRadius: '16px',
+    marginBottom: '24px'
+  },
   rideCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   rideCardTitle: { fontSize: '18px', fontWeight: '700', margin: 0 },
   statusBadge: { padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' },
@@ -506,7 +534,12 @@ const styles = {
   fareInfo: { background: '#0a0a0a', padding: '12px 16px', borderRadius: '8px', marginBottom: '12px' },
   cancelBtn: { padding: '10px 20px', background: 'transparent', color: '#e63946', border: '1px solid #e63946', borderRadius: '8px', cursor: 'pointer', marginTop: '12px', fontSize: '14px' },
   ratingBox: { marginTop: '16px', padding: '16px', background: '#0a0a0a', borderRadius: '10px' },
-  bookCard: { background: '#111', border: '1px solid #1a1a1a', padding: '24px', borderRadius: '16px' },
+  bookCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: window.innerWidth <= 768 ? '16px' : '24px',
+    borderRadius: '16px'
+  },
   bookTitle: { fontSize: '20px', fontWeight: '700', marginBottom: '20px', marginTop: 0 },
   rideTypeRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
   rideTypeActive: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600' },
