@@ -61,7 +61,7 @@ function StudentDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
 
-  const API = 'https://traverse-app-production.up.railway.app';
+  const API = 'https://traverse-app.onrender.com';
 
   useEffect(() => {
     socket = io(API, {

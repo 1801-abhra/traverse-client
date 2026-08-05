@@ -22,7 +22,7 @@ function Register() {
     setLoading(true);
     try {
       const { data } = await axios.post(
-        'https://traverse-app-production.up.railway.app/api/auth/register',
+        'https://traverse-app.onrender.com/api/auth/register',
         form,
         { withCredentials: false }
       );

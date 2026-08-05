@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 
 let socket;
 
-const API = 'https://traverse-app-production.up.railway.app';
+const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
   const [myRating, setMyRating] = useState({ average: 0, total: 0 });

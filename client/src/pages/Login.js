@@ -15,7 +15,7 @@ function Login() {
     setError('');
     try {
       const { data } = await axios.post(
-        'https://traverse-app-production.up.railway.app/api/auth/login',
+        'https://traverse-app.onrender.com/api/auth/login',
         { email, password },
         { withCredentials: false }
       );
