@@ -4,16 +4,9 @@ import { useNavigate, Link } from 'react-router-dom';
 
 function Register() {
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'student',
-    studentId: '',
-    vehicleNumber: '',
-    phone: '',
-    carName: '',
-    carModel: '',
-    vehicleType: '4+1'
+    name: '', email: '', password: '', role: 'student',
+    studentId: '', vehicleNumber: '', phone: '',
+    carName: '', carModel: '', vehicleType: '4+1'
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -43,298 +36,258 @@ function Register() {
     setLoading(false);
   };
 
+  const isMobile = window.innerWidth <= 768;
+
   return (
     <div style={styles.container}>
-      {window.innerWidth <= 768 && (
-        <div style={styles.mobileHeader}>
-          <div style={styles.logo}>
-            <span style={styles.logoIcon}>🚖</span>
-            <span style={styles.logoText}>TRAVERSE</span>
-          </div>
-          <p style={styles.mobileTagline}>Join the <span style={styles.red}>Community.</span></p>
-        </div>
-      )}
-      {window.innerWidth > 768 && (
-        <div style={styles.leftPanel}>
-          <div style={styles.brandSection}>
-            <div style={styles.logo}>
-              <span style={styles.logoIcon}>🚖</span>
-              <span style={styles.logoText}>TRAVERSE</span>
+      {/* Brand Panel */}
+      <div style={isMobile ? styles.brandMobile : styles.brandDesktop}>
+        <div style={styles.brandInner}>
+          <div style={styles.logoRow}>
+            <div style={styles.logoBox}>
+              <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="10" fill="#e63946" />
+                <path d="M8,14 L32,14 L32,20 L23,20 L23,32 L17,32 L17,20 L8,20 Z" fill="white" />
+              </svg>
             </div>
-            <h1 style={styles.tagline}>Join the<br /><span style={styles.red}>Community.</span></h1>
-            <p style={styles.subTagline}>Register as a student or driver and start your journey with Traverse</p>
-            <div style={styles.features}>
-              <div style={styles.feature}>✅ Safe & Verified Drivers</div>
-              <div style={styles.feature}>✅ Real-time Tracking</div>
-              <div style={styles.feature}>✅ Affordable Fares</div>
-              <div style={styles.feature}>✅ 24/7 Available</div>
-            </div>
+            <span style={styles.brandName}>TRAVERSE</span>
           </div>
-        </div>
-      )}
-      <div style={styles.rightPanel}>
-        <div style={styles.card}>
-          <h2 style={styles.title}>Create Account</h2>
-          <p style={styles.subtitle}>Fill in your details to get started</p>
-
-          {error && (
-            <div style={styles.errorBox}>⚠️ {error}</div>
+          <h1 style={isMobile ? styles.taglineMobile : styles.taglineDesktop}>
+            Join the<br /><span style={styles.red}>Community.</span>
+          </h1>
+          {!isMobile && (
+            <p style={styles.subTagline}>
+              Register as a student or driver<br />and start your journey today
+            </p>
           )}
+          <div style={styles.pills}>
+            <div style={styles.pill}>✅ Verified Drivers</div>
+            <div style={styles.pill}>📍 Live Tracking</div>
+            {!isMobile && <div style={styles.pill}>💰 Best Fares</div>}
+            {!isMobile && <div style={styles.pill}>⚡ Instant Booking</div>}
+          </div>
+        </div>
+      </div>
+
+      {/* Register Form Panel */}
+      <div style={isMobile ? styles.formMobile : styles.formDesktop}>
+        <div style={styles.formInner}>
+          <h2 style={styles.formTitle}>Create Account</h2>
+          <p style={styles.formSubtitle}>Fill in your details to get started</p>
+
+          {error && <div style={styles.errorBox}>⚠️ {error}</div>}
 
           <form onSubmit={handleRegister}>
-            <div style={styles.roleToggle}>
-              <button
-                type='button'
+            {/* Role Toggle */}
+            <div style={styles.roleRow}>
+              <button type='button'
                 onClick={() => setForm({ ...form, role: 'student' })}
-                style={form.role === 'student' ? styles.roleActive : styles.roleInactive}
-              >
+                style={form.role === 'student' ? styles.roleActive : styles.roleInactive}>
                 🎓 Student
               </button>
-              <button
-                type='button'
+              <button type='button'
                 onClick={() => setForm({ ...form, role: 'driver' })}
-                style={form.role === 'driver' ? styles.roleActive : styles.roleInactive}
-              >
+                style={form.role === 'driver' ? styles.roleActive : styles.roleInactive}>
                 🚗 Driver
               </button>
             </div>
 
             <div style={styles.inputGroup}>
-              <label style={styles.label}>Full Name</label>
-              <input
-                style={styles.input}
-                name='name'
-                placeholder='Enter your full name'
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
+              <label style={styles.label}>FULL NAME</label>
+              <input style={styles.input} name='name' placeholder='Enter your full name'
+                value={form.name} onChange={handleChange} required />
             </div>
 
             <div style={styles.inputGroup}>
-              <label style={styles.label}>Email</label>
-              <input
-                style={styles.input}
-                name='email'
-                type='email'
+              <label style={styles.label}>EMAIL</label>
+              <input style={styles.input} name='email' type='email'
                 placeholder={form.role === 'student' ? 'RollNo@juitsolan.in' : 'Personal Email'}
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
+                value={form.email} onChange={handleChange} required />
             </div>
 
             <div style={styles.inputGroup}>
-              <label style={styles.label}>Password</label>
-              <input
-                style={styles.input}
-                name='password'
-                type='password'
-                placeholder='Create a password'
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
+              <label style={styles.label}>PASSWORD</label>
+              <input style={styles.input} name='password' type='password'
+                placeholder='Create a password' value={form.password}
+                onChange={handleChange} required />
             </div>
 
             {form.role === 'student' && (
               <div style={styles.inputGroup}>
-                <label style={styles.label}>Student ID</label>
-                <input
-                  style={styles.input}
-                  name='studentId'
+                <label style={styles.label}>STUDENT ID</label>
+                <input style={styles.input} name='studentId'
                   placeholder='Your enrollment number'
-                  value={form.studentId}
-                  onChange={handleChange}
-                  required
-                />
+                  value={form.studentId} onChange={handleChange} required />
               </div>
             )}
 
             {form.role === 'driver' && (
               <>
                 <div style={styles.inputGroup}>
-                  <label style={styles.label}>Vehicle Number</label>
-                  <input
-                    style={styles.input}
-                    name='vehicleNumber'
+                  <label style={styles.label}>VEHICLE NUMBER</label>
+                  <input style={styles.input} name='vehicleNumber'
                     placeholder='e.g. HP01AB1234'
-                    value={form.vehicleNumber}
-                    onChange={handleChange}
-                    required
-                  />
+                    value={form.vehicleNumber} onChange={handleChange} required />
                 </div>
                 <div style={styles.inputGroup}>
-                  <label style={styles.label}>Car Name</label>
-                  <input
-                    style={styles.input}
-                    name='carName'
+                  <label style={styles.label}>CAR NAME</label>
+                  <input style={styles.input} name='carName'
                     placeholder='e.g. Suzuki'
-                    value={form.carName || ''}
-                    onChange={handleChange}
-                  />
+                    value={form.carName || ''} onChange={handleChange} />
                 </div>
                 <div style={styles.inputGroup}>
-                  <label style={styles.label}>Car Model</label>
-                  <input
-                    style={styles.input}
-                    name='carModel'
+                  <label style={styles.label}>CAR MODEL</label>
+                  <input style={styles.input} name='carModel'
                     placeholder='e.g. Swift'
-                    value={form.carModel || ''}
-                    onChange={handleChange}
-                  />
+                    value={form.carModel || ''} onChange={handleChange} />
                 </div>
                 <div style={styles.inputGroup}>
-                  <label style={styles.label}>Phone Number</label>
-                  <input
-                    style={styles.input}
-                    name='phone'
+                  <label style={styles.label}>VEHICLE TYPE</label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button type='button'
+                      onClick={() => setForm({ ...form, vehicleType: '4+1' })}
+                      style={form.vehicleType === '4+1' ? styles.roleActive : styles.roleInactive}>
+                      🚗 4+1 Sedan
+                    </button>
+                    <button type='button'
+                      onClick={() => setForm({ ...form, vehicleType: '6+1' })}
+                      style={form.vehicleType === '6+1' ? styles.roleActive : styles.roleInactive}>
+                      🚐 6+1 SUV
+                    </button>
+                  </div>
+                </div>
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>PHONE NUMBER</label>
+                  <input style={styles.input} name='phone'
                     placeholder='+91 Phone Number'
-                    value={form.phone || ''}
-                    onChange={handleChange}
-                    required
-                  />
+                    value={form.phone || ''} onChange={handleChange} required />
                 </div>
               </>
             )}
 
-            {form.role === 'driver' && (
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Vehicle Type</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button
-                    type='button'
-                    onClick={() => setForm({ ...form, vehicleType: '4+1' })}
-                    style={form.vehicleType === '4+1' ? styles.roleActive : styles.roleInactive}
-                  >
-                    🚗 4+1 Sedan
-                  </button>
-                  <button
-                    type='button'
-                    onClick={() => setForm({ ...form, vehicleType: '6+1' })}
-                    style={form.vehicleType === '6+1' ? styles.roleActive : styles.roleInactive}
-                  >
-                    🚐 6+1 SUV
-                  </button>
-                </div>
-              </div>
-            )}
-
             <button
-              style={loading ? styles.buttonLoading : styles.button}
-              type='submit'
-              disabled={loading}
-            >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              style={loading ? styles.btnLoading : styles.btn}
+              type='submit' disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account →'}
             </button>
           </form>
 
           <div style={styles.divider}>
-            <span>Already have an account?</span>
+            <div style={styles.dividerLine} />
+            <span style={styles.dividerText}>Already have an account?</span>
+            <div style={styles.dividerLine} />
           </div>
 
-          <Link to='/login' style={styles.loginBtn}>
-            Sign In
-          </Link>
+          <Link to='/login' style={styles.loginBtn}>Sign In</Link>
         </div>
       </div>
     </div>
   );
 }
 
+const isMobile = window.innerWidth <= 768;
+
 const styles = {
   container: {
     minHeight: '100vh',
     display: 'flex',
-    flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+    flexDirection: isMobile ? 'column' : 'row',
     background: '#0a0a0a',
-    color: 'white'
+    color: 'white',
+    fontFamily: 'Inter, -apple-system, sans-serif'
   },
-  leftPanel: {
+  brandDesktop: {
     flex: 1,
-    background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 50%, #1a0000 100%)',
-    display: window.innerWidth <= 768 ? 'none' : 'flex',
+    background: 'linear-gradient(145deg, #1a0000 0%, #0d0d0d 40%, #1a0000 100%)',
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '60px',
     borderRight: '1px solid #2a0000'
   },
-  brandSection: { maxWidth: '400px' },
-  logo: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' },
-  logoIcon: { fontSize: '36px' },
-  logoText: { fontSize: '28px', fontWeight: '800', letterSpacing: '4px', color: '#e63946' },
-  tagline: { fontSize: '52px', fontWeight: '800', lineHeight: '1.1', marginBottom: '24px', color: 'white' },
-  red: { color: '#e63946' },
-  subTagline: { fontSize: '18px', color: '#666', lineHeight: '1.6', marginBottom: '32px' },
-  features: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  feature: { color: '#999', fontSize: '16px' },
-  rightPanel: {
-    width: window.innerWidth <= 768 ? '100%' : '520px',
-    display: 'flex',
-    alignItems: window.innerWidth <= 768 ? 'flex-start' : 'center',
-    justifyContent: 'center',
-    padding: window.innerWidth <= 768 ? '24px 16px' : '40px',
-    background: '#111',
-    overflowY: 'auto',
-    minHeight: window.innerWidth <= 768 ? 'auto' : '100vh'
+  brandMobile: {
+    background: 'linear-gradient(145deg, #1a0000 0%, #0d0d0d 100%)',
+    padding: '40px 24px 32px',
+    borderBottom: '1px solid #2a0000'
   },
-  card: { width: '100%', maxWidth: '420px', paddingTop: '20px', paddingBottom: '20px' },
-  title: { fontSize: '32px', fontWeight: '700', marginBottom: '8px', color: 'white' },
-  subtitle: { color: '#666', marginBottom: '32px', fontSize: '15px' },
+  brandInner: { maxWidth: '420px', width: '100%' },
+  logoRow: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    marginBottom: isMobile ? '20px' : '48px'
+  },
+  logoBox: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  brandName: {
+    fontSize: isMobile ? '22px' : '26px',
+    fontWeight: '800', letterSpacing: '5px', color: 'white'
+  },
+  taglineDesktop: {
+    fontSize: '52px', fontWeight: '800', lineHeight: '1.1',
+    marginBottom: '20px', color: 'white'
+  },
+  taglineMobile: {
+    fontSize: '28px', fontWeight: '800', lineHeight: '1.2',
+    marginBottom: '16px', color: 'white'
+  },
+  red: { color: '#e63946' },
+  subTagline: { fontSize: '17px', color: '#888', lineHeight: '1.7', marginBottom: '40px' },
+  pills: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: isMobile ? '16px' : '0' },
+  pill: {
+    background: '#1a1a1a', border: '1px solid #2a2a2a',
+    padding: '8px 14px', borderRadius: '20px', fontSize: '13px', color: '#999'
+  },
+  formDesktop: {
+    width: '480px', display: 'flex', alignItems: 'center',
+    justifyContent: 'center', padding: '40px', background: '#111',
+    overflowY: 'auto'
+  },
+  formMobile: { flex: 1, padding: '32px 24px 40px', background: '#111' },
+  formInner: { width: '100%', maxWidth: '380px', margin: '0 auto' },
+  formTitle: { fontSize: '28px', fontWeight: '700', marginBottom: '6px', color: 'white' },
+  formSubtitle: { color: '#666', marginBottom: '24px', fontSize: '15px' },
   errorBox: {
-    background: '#2a0000', border: '1px solid #e63946',
-    color: '#ff6b6b', padding: '12px 16px', borderRadius: '8px',
+    background: '#1a0000', border: '1px solid #e63946',
+    color: '#ff6b6b', padding: '12px 16px', borderRadius: '10px',
     marginBottom: '20px', fontSize: '14px'
   },
-  roleToggle: { display: 'flex', gap: '8px', marginBottom: '24px' },
+  roleRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
   roleActive: {
-    flex: 1, padding: '12px', background: '#e63946', color: 'white',
-    border: 'none', borderRadius: '8px', fontSize: '15px',
+    flex: 1, padding: '11px', background: '#e63946', color: 'white',
+    border: 'none', borderRadius: '10px', fontSize: '14px',
     fontWeight: '600', cursor: 'pointer'
   },
   roleInactive: {
-    flex: 1, padding: '12px', background: '#1a1a1a', color: '#666',
-    border: '1px solid #2a2a2a', borderRadius: '8px', fontSize: '15px',
+    flex: 1, padding: '11px', background: '#1a1a1a', color: '#666',
+    border: '1px solid #222', borderRadius: '10px', fontSize: '14px',
     fontWeight: '600', cursor: 'pointer'
   },
   inputGroup: { marginBottom: '16px' },
   label: {
-    display: 'block', color: '#999', fontSize: '13px',
-    fontWeight: '500', marginBottom: '8px',
-    textTransform: 'uppercase', letterSpacing: '1px'
+    display: 'block', color: '#555', fontSize: '11px',
+    fontWeight: '600', marginBottom: '8px', letterSpacing: '1.5px'
   },
   input: {
     width: '100%', padding: '14px 16px', background: '#1a1a1a',
-    border: '1px solid #2a2a2a', borderRadius: '8px', color: 'white',
+    border: '1px solid #222', borderRadius: '10px', color: 'white',
     fontSize: '15px', boxSizing: 'border-box', outline: 'none'
   },
-  button: {
-    width: '100%', padding: '14px', background: '#e63946', color: 'white',
-    border: 'none', borderRadius: '8px', fontSize: '16px',
-    fontWeight: '600', cursor: 'pointer', marginTop: '8px'
+  btn: {
+    width: '100%', padding: '15px', background: '#e63946', color: 'white',
+    border: 'none', borderRadius: '10px', fontSize: '16px',
+    fontWeight: '600', cursor: 'pointer', marginTop: '4px'
   },
-  buttonLoading: {
-    width: '100%', padding: '14px', background: '#7a1a1a', color: '#999',
-    border: 'none', borderRadius: '8px', fontSize: '16px',
-    fontWeight: '600', cursor: 'not-allowed', marginTop: '8px'
+  btnLoading: {
+    width: '100%', padding: '15px', background: '#6a1520', color: '#999',
+    border: 'none', borderRadius: '10px', fontSize: '16px',
+    cursor: 'not-allowed', marginTop: '4px'
   },
-  mobileHeader: {
-    background: 'linear-gradient(135deg, #1a0000 0%, #0a0a0a 100%)',
-    padding: '24px 20px',
-    borderBottom: '1px solid #2a0000',
-    textAlign: 'center'
-  },
-  mobileTagline: {
-    fontSize: '16px',
-    color: '#999',
-    marginTop: '8px'
-  },
-  divider: { textAlign: 'center', color: '#444', margin: '24px 0', fontSize: '14px' },
+  divider: { display: 'flex', alignItems: 'center', gap: '12px', margin: '24px 0' },
+  dividerLine: { flex: 1, height: '1px', background: '#222' },
+  dividerText: { color: '#555', fontSize: '13px', whiteSpace: 'nowrap' },
   loginBtn: {
     display: 'block', width: '100%', padding: '14px', background: 'transparent',
-    color: '#e63946', border: '1px solid #e63946', borderRadius: '8px',
-    fontSize: '16px', fontWeight: '600', cursor: 'pointer',
-    textAlign: 'center', textDecoration: 'none', boxSizing: 'border-box'
+    color: '#e63946', border: '1px solid #e63946', borderRadius: '10px',
+    fontSize: '15px', fontWeight: '600', textAlign: 'center',
+    textDecoration: 'none', boxSizing: 'border-box'
   }
 };
 
