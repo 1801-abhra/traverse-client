@@ -257,14 +257,18 @@ function StudentDashboard() {
               </div>
             )}
 
-            {driverLocation && (
+            {activeRide && activeRide.status !== 'searching' && (
               <div style={{ marginTop: '16px' }}>
-                <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>🚗 Driver Live Location</p>
-                <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
-                  <FlyTo coords={driverLocation} />
-                </MapContainer>
+                <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
+                  🚗 Driver Live Location {!driverLocation && <span style={{ color: '#f59e0b' }}>— Waiting for GPS...</span>}
+                </p>
+                {driverLocation && (
+                  <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                    <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
+                    <FlyTo coords={driverLocation} />
+                  </MapContainer>
+                )}
               </div>
             )}
 
