@@ -40,7 +40,7 @@ function DriverDashboard() {
       setRides(prev => [ride, ...prev]);
     });
     socket.on('ride:cancelled', ({ rideId }) => {
-      setRides(prev => prev.filter(r => r._id !== rideId));
+      setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
     });
     if (navigator.geolocation) {
       const watchId = navigator.geolocation.watchPosition((pos) => {
