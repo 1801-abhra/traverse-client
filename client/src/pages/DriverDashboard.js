@@ -67,6 +67,18 @@ function DriverDashboard() {
 
   useEffect(() => {
     if (activeRide && socket) {
+      // Get location immediately first
+      navigator.geolocation.getCurrentPosition((pos) => {
+        socket.emit('driver:location', {
+          rideId: activeRide._id,
+          studentId: activeRide.student,
+          sharedWithId: activeRide.sharedWith || null,
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
+      }, null, { enableHighAccuracy: true });
+
+      // Then keep watching
       navigator.geolocation.watchPosition((pos) => {
         socket.emit('driver:location', {
           rideId: activeRide._id,
@@ -75,7 +87,7 @@ function DriverDashboard() {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude
         });
-      });
+      }, null, { enableHighAccuracy: true, maximumAge: 0 });
     }
   }, [activeRide]);
   const fetchAvailableRides = async () => {
