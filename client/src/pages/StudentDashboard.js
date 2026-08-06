@@ -87,6 +87,13 @@ function StudentDashboard() {
   }, []);
 
   useEffect(() => {
+    if (activeRide?.status !== 'completed') {
+      setRated(false);
+      setRating(0);
+    }
+  }, [activeRide]);
+
+  useEffect(() => {
     if (socket) socket.disconnect();
     socket = io(API, {
       transports: ['polling', 'websocket'],
@@ -94,12 +101,6 @@ function StudentDashboard() {
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
     });
-    useEffect(() => {
-      if (activeRide?.status !== 'completed') {
-        setRated(false);
-        setRating(0);
-      }
-    }, [activeRide]);
     socket.emit('join', { userId: user._id, role: 'student' });
     requestNotificationPermission().then(fcmToken => {
       if (fcmToken) {
