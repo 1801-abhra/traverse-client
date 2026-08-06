@@ -524,7 +524,8 @@ function StudentDashboard() {
               {isScheduled && (
                 <input type='datetime-local' style={styles.dateInput}
                   value={scheduledTime} onChange={e => setScheduledTime(e.target.value)}
-                  min={new Date().toISOString().slice(0, 16)} required={isScheduled} />
+                  min={new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000)).toISOString().slice(0, 16)}
+                  required={isScheduled} />
               )}
 
               <button

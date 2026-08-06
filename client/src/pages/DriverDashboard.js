@@ -208,7 +208,7 @@ function DriverDashboard() {
 
             {activeRide.isScheduled && activeRide.scheduledTime && (
               <div style={styles.scheduledBadge}>
-                🕐 Scheduled for: <b>{new Date(activeRide.scheduledTime).toLocaleString()}</b>
+                🕐 Scheduled for: <b>{new Date(activeRide.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
               </div>
             )}
 
@@ -277,7 +277,7 @@ function DriverDashboard() {
 
                 {ride.isScheduled && ride.scheduledTime && (
                   <div style={styles.scheduledBadge}>
-                    🕐 Scheduled: <b>{new Date(ride.scheduledTime).toLocaleString()}</b>
+                    🕐 Scheduled: <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
                   </div>
                 )}
                 {!ride.isScheduled && (
