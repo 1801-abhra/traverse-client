@@ -408,7 +408,16 @@ function StudentDashboard() {
                       onClick={() => { setSelectedVehicle('4+1'); setFare(selectedRoute.disc4 || selectedRoute.fare4); }}
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '4+1' ? styles.vehicleCardActive : {}) }}
                     >
-                      <div style={styles.vehicleIcon}>🚗</div>
+                      <div style={styles.vehicleIcon}>
+                        <svg width="48" height="28" viewBox="0 0 48 28" fill="none">
+                          <path d="M8,18 L8,22 Q8,24 10,24 L12,24 Q14,24 14,22 L14,20 L34,20 L34,22 Q34,24 36,24 L38,24 Q40,24 40,22 L40,18 L42,16 L42,12 Q42,10 40,10 L36,10 L30,4 Q29,3 27,3 L16,3 Q14,3 13,4 L8,10 L6,10 Q4,10 4,12 L4,16 Z" fill="#e63946" />
+                          <path d="M13,4 L8,10 L36,10 L30,4 Z" fill="#ff6070" />
+                          <circle cx="14" cy="21" r="3" fill="#1a1a1a" stroke="#666" stroke-width="1" />
+                          <circle cx="34" cy="21" r="3" fill="#1a1a1a" stroke="#666" stroke-width="1" />
+                          <path d="M16,7 L14,10 L26,10 L26,7 Z" fill="#0a0a0a" opacity="0.4" />
+                          <path d="M27,7 L26,10 L34,10 L30,7 Z" fill="#0a0a0a" opacity="0.4" />
+                        </svg>
+                      </div>
                       <div style={styles.vehicleInfo}>
                         <p style={styles.vehicleTypeTxt}>4+1 Sedan</p>
                         <p style={styles.vehicleSeats}>Up to 4 passengers</p>
@@ -430,7 +439,17 @@ function StudentDashboard() {
                       onClick={() => { setSelectedVehicle('6+1'); setFare(selectedRoute.disc6 || selectedRoute.fare6); }}
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
-                      <div style={styles.vehicleIcon}>🚐</div>
+                      <div style={styles.vehicleIcon}>
+                        <svg width="52" height="30" viewBox="0 0 52 30" fill="none">
+                          <path d="M6,20 L6,24 Q6,26 8,26 L11,26 Q13,26 13,24 L13,22 L39,22 L39,24 Q39,26 41,26 L44,26 Q46,26 46,24 L46,20 L47,18 L47,8 Q47,6 45,6 L10,6 Q8,6 7,7 L5,10 L4,12 L4,18 Z" fill="#e63946" />
+                          <path d="M10,6 L7,10 L45,10 L45,6 Z" fill="#ff6070" />
+                          <rect x="8" y="11" width="10" height="7" rx="1" fill="#0a0a0a" opacity="0.5" />
+                          <rect x="21" y="11" width="10" height="7" rx="1" fill="#0a0a0a" opacity="0.5" />
+                          <rect x="34" y="11" width="9" height="7" rx="1" fill="#0a0a0a" opacity="0.5" />
+                          <circle cx="13" cy="23" r="3.5" fill="#1a1a1a" stroke="#666" stroke-width="1" />
+                          <circle cx="39" cy="23" r="3.5" fill="#1a1a1a" stroke="#666" stroke-width="1" />
+                        </svg>
+                      </div>
                       <div style={styles.vehicleInfo}>
                         <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
                         <p style={styles.vehicleSeats}>Up to 6 passengers</p>
@@ -557,7 +576,12 @@ const styles = {
   vehicleCards: { display: 'flex', flexDirection: 'column', gap: '12px' },
   vehicleCard: { background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '16px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' },
   vehicleCardActive: { border: '2px solid #e63946', background: '#2a0000' },
-  vehicleIcon: { fontSize: '28px' },
+  vehicleIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '60px'
+  },
   vehicleInfo: { flex: 1 },
   vehicleTypeTxt: { fontWeight: '600', margin: '0 0 4px 0', fontSize: '15px' },
   vehicleSeats: { color: '#666', fontSize: '13px', margin: 0 },
