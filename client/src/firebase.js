@@ -13,11 +13,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-// Handle foreground messages - prevent duplicate with service worker
+// Show notification when app is open (foreground)
 onMessage(messaging, (payload) => {
-    console.log('Foreground message received - handled by app UI');
-    // Do NOT show notification here - Socket.io already updates the UI
-    // Service worker handles background notifications
+    console.log('Foreground message:', payload);
+    const { title, body } = payload.notification;
+    if (Notification.permission === 'granted') {
+        new Notification(title, {
+            body,
+            icon: '/logo192.png',
+            badge: '/logo192.png',
+            vibrate: [200, 100, 200]
+        });
+    }
 });
 
 export const requestNotificationPermission = async () => {
