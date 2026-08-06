@@ -78,21 +78,15 @@ function StudentDashboard() {
   const API = 'https://traverse-app.onrender.com';
 
   useEffect(() => {
-    useEffect(() => {
-      fetchActiveRide();
+    fetchActiveRide();
+    const handleVisibilityChange = () => {
+      if (!document.hidden) fetchActiveRide();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
-      // Re-fetch when user comes back to app
-      const handleVisibilityChange = () => {
-        if (!document.hidden) {
-          fetchActiveRide();
-        }
-      };
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-
-      return () => {
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-      };
-    }, []);
+  useEffect(() => {
     socket = io(API, {
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -100,12 +94,11 @@ function StudentDashboard() {
       reconnectionDelay: 1000
     });
     socket.emit('join', { userId: user._id, role: 'student' });
-    // Request notification permission
-    requestNotificationPermission().then(token => {
-      if (token) {
+    requestNotificationPermission().then(fcmToken => {
+      if (fcmToken) {
         axios.post(
-          `https://traverse-app.onrender.com/api/auth/save-token`,
-          { fcmToken: token },
+          `${API}/api/auth/save-token`,
+          { fcmToken },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
@@ -115,7 +108,6 @@ function StudentDashboard() {
       setDriverLocation(null);
       setMessage(`Driver ${ride.driver.name} accepted! Vehicle: ${ride.driver.vehicleNumber}`);
     });
-
     socket.on('ride:updated', (ride) => {
       setActiveRide(ride);
       setMessage(`Status: ${ride.status.toUpperCase()}`);
@@ -132,7 +124,6 @@ function StudentDashboard() {
     });
     return () => socket.disconnect();
   }, []);
-
   const bookRide = async (e) => {
     e.preventDefault();
     if (!selectedRoute || !selectedVehicle) {
