@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-
+import { requestNotificationPermission } from '../firebase';
 let socket;
 
 const API = 'https://traverse-app.onrender.com';
@@ -26,6 +26,16 @@ function DriverDashboard() {
       reconnectionDelay: 1000
     });
     socket.emit('join', { userId: user._id, role: 'driver' });
+    // Request notification permission
+    requestNotificationPermission().then(token => {
+      if (token) {
+        axios.post(
+          `https://traverse-app.onrender.com/api/auth/save-token`,
+          { fcmToken: token },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+    });
     socket.on('new:ride', (ride) => {
       setRides(prev => [ride, ...prev]);
     });

@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { requestNotificationPermission } from '../firebase';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -71,11 +72,22 @@ function StudentDashboard() {
       reconnectionDelay: 1000
     });
     socket.emit('join', { userId: user._id, role: 'student' });
+    // Request notification permission
+    requestNotificationPermission().then(token => {
+      if (token) {
+        axios.post(
+          `https://traverse-app.onrender.com/api/auth/save-token`,
+          { fcmToken: token },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+    });
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
       setDriverLocation(null);
       setMessage(`Driver ${ride.driver.name} accepted! Vehicle: ${ride.driver.vehicleNumber}`);
     });
+
     socket.on('ride:updated', (ride) => {
       setActiveRide(ride);
       setMessage(`Status: ${ride.status.toUpperCase()}`);
