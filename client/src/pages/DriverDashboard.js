@@ -15,6 +15,7 @@ function DriverDashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
+  const [accepting, setAccepting] = useState(false);
 
   useEffect(() => {
     fetchAvailableRides();
@@ -100,12 +101,21 @@ function DriverDashboard() {
   };
 
   const acceptRide = async (rideId) => {
+    if (accepting) return;
+    setAccepting(true);
     try {
-      const res = await axios.put(`${API}/api/rides/accept/${rideId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.put(
+        `${API}/api/rides/accept/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setActiveRide(res.data);
       setRides([]);
       setMessage('Ride accepted! Head to pickup location.');
-    } catch (err) { setMessage(err.response?.data?.message || 'Cannot accept ride'); }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Cannot accept ride');
+    }
+    setAccepting(false);
   };
 
   const updateStatus = async (status) => {
@@ -289,8 +299,8 @@ function DriverDashboard() {
                 )}
 
                 <div style={styles.actionBtns}>
-                  <button onClick={() => acceptRide(ride._id)} style={styles.acceptBtn}>
-                    ✓ Accept
+                  <button onClick={() => acceptRide(ride._id)} style={styles.acceptBtn} disabled={accepting}>
+                    {accepting ? 'Accepting...' : '✓ Accept'}
                   </button>
                   <button onClick={() => rejectRide(ride._id)} style={styles.rejectBtn}>
                     ✕ Reject
