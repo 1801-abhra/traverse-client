@@ -110,7 +110,16 @@ function RideHistory() {
         )}
 
         {filteredRides.map(ride => (
-          <div key={ride._id} style={styles.rideCard}>
+          <div key={ride._id} style={{
+            ...styles.rideCard,
+            cursor: (ride.status === 'searching' || ride.status === 'accepted' || ride.status === 'ontheway') ? 'pointer' : 'default'
+          }}
+            onClick={() => {
+              if (ride.status === 'searching' || ride.status === 'accepted' || ride.status === 'ontheway') {
+                navigate('/student');
+              }
+            }}
+          >
             <div style={styles.cardHeader}>
               <div>
                 <span style={{ ...styles.statusBadge, background: statusColor[ride.status] + '22', color: statusColor[ride.status], border: `1px solid ${statusColor[ride.status]}` }}>
