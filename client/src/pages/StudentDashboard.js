@@ -78,6 +78,7 @@ function StudentDashboard() {
   const API = 'https://traverse-app.onrender.com';
 
   useEffect(() => {
+    fetchActiveRide();
     socket = io(API, {
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -167,6 +168,21 @@ function StudentDashboard() {
       setSharedRides(res.data);
     } catch (err) {
       console.log('Failed to fetch shared rides');
+    }
+  };
+
+  const fetchActiveRide = async () => {
+    try {
+      const res = await axios.get(
+        `${API}/api/rides/active`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data) {
+        setActiveRide(res.data);
+        setFare(res.data.fare);
+      }
+    } catch (err) {
+      console.log('No active ride');
     }
   };
 
