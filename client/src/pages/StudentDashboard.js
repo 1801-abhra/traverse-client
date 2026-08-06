@@ -251,6 +251,7 @@ function StudentDashboard() {
         </div>
         <div style={styles.navRight}>
           <span style={styles.navUser}>👤 {user.name}</span>
+          <button onClick={fetchActiveRide} style={styles.navBtn}>🔄</button>
           <button onClick={() => navigate('/history')} style={styles.navBtn}>History</button>
           <button onClick={logout} style={styles.navBtnRed}>Logout</button>
         </div>
@@ -267,9 +268,12 @@ function StudentDashboard() {
           <div style={styles.rideCard}>
             <div style={styles.rideCardHeader}>
               <h3 style={styles.rideCardTitle}>Active Ride</h3>
-              <span style={{ ...styles.statusBadge, background: statusColor[activeRide.status] + '22', color: statusColor[activeRide.status], border: `1px solid ${statusColor[activeRide.status]}` }}>
-                {statusLabel[activeRide.status]}
-              </span>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <button onClick={fetchActiveRide} style={{ background: 'transparent', border: 'none', color: '#999', cursor: 'pointer', fontSize: '18px' }}>🔄</button>
+                <span style={{ ...styles.statusBadge, background: statusColor[activeRide.status] + '22', color: statusColor[activeRide.status], border: `1px solid ${statusColor[activeRide.status]}` }}>
+                  {statusLabel[activeRide.status]}
+                </span>
+              </div>
             </div>
 
             <div style={styles.routeInfo}>
@@ -303,7 +307,7 @@ function StudentDashboard() {
               </div>
             )}
 
-            {activeRide && activeRide.status !== 'searching' && (
+            {activeRide.status !== 'searching' && (
               <div style={{ marginTop: '16px' }}>
                 <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
                   🚗 Driver Live Location {!driverLocation && <span style={{ color: '#f59e0b' }}>— Waiting for GPS...</span>}
@@ -544,7 +548,7 @@ function StudentDashboard() {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 
