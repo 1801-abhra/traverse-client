@@ -106,7 +106,6 @@ function StudentDashboard() {
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
       setDriverLocation(null);
-      setMessage(`Driver ${ride.driver.name} accepted! Vehicle: ${ride.driver.vehicleNumber}`);
     });
     socket.on('ride:updated', (ride) => {
       setActiveRide(prev => ({ ...prev, ...ride }));
