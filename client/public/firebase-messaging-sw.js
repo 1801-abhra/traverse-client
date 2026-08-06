@@ -21,7 +21,8 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-    const { title, body } = payload.notification;
+    const title = payload.data?.title || 'Traverse';
+    const body = payload.data?.body || 'You have a new update';
     self.registration.showNotification(title, {
         body,
         icon: '/logo192.png',
