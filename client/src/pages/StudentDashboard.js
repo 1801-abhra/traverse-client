@@ -109,10 +109,11 @@ function StudentDashboard() {
       setMessage(`Driver ${ride.driver.name} accepted! Vehicle: ${ride.driver.vehicleNumber}`);
     });
     socket.on('ride:updated', (ride) => {
-      setActiveRide(ride);
+      setActiveRide(prev => ({ ...prev, ...ride }));
       setMessage(`Status: ${ride.status.toUpperCase()}`);
       if (ride.status === 'completed' || ride.status === 'cancelled') {
         setDriverLocation(null);
+        fetchActiveRide();
       }
     });
     socket.on('ride:matched', ({ message, ride }) => {
