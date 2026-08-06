@@ -78,7 +78,21 @@ function StudentDashboard() {
   const API = 'https://traverse-app.onrender.com';
 
   useEffect(() => {
-    fetchActiveRide();
+    useEffect(() => {
+      fetchActiveRide();
+
+      // Re-fetch when user comes back to app
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          fetchActiveRide();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }, []);
     socket = io(API, {
       transports: ['polling', 'websocket'],
       reconnection: true,
