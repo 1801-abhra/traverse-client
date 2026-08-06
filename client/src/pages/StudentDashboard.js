@@ -87,6 +87,7 @@ function StudentDashboard() {
   }, []);
 
   useEffect(() => {
+    if (socket) socket.disconnect();
     socket = io(API, {
       transports: ['polling', 'websocket'],
       reconnection: true,
