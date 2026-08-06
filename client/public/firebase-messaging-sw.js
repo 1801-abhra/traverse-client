@@ -1,6 +1,15 @@
 importScripts('https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging-compat.js');
 
+// Take control immediately
+self.addEventListener('install', (event) => {
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(clients.claim());
+});
+
 firebase.initializeApp({
     apiKey: "AIzaSyCPWTTudaVUIa8ZYJA6BE8SiWALq3RzAwQ",
     authDomain: "traverse-unicab.firebaseapp.com",
@@ -15,8 +24,6 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log('Background message received');
     const { title, body } = payload.notification;
-
-    // Only show if app is not in foreground
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
         .then(clients => {
             const appIsOpen = clients.some(client => client.visibilityState === 'visible');
