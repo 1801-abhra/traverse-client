@@ -450,19 +450,10 @@ function StudentDashboard() {
                       onClick={() => { setSelectedVehicle('6+1'); setFare(selectedRoute.disc6 || selectedRoute.fare6); }}
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
-                      <div style={styles.vehicleIcon}>
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/3774/3774278.png"
-                          alt="Sedan"
-                          style={{ width: '70px', height: '40px', objectFit: 'contain', filter: 'hue-rotate(330deg) saturate(2)' }}
-                        />
-                      </div>
-                      <div style={styles.vehicleIcon}>
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/3774/3774288.png"
-                          alt="SUV"
-                          style={{ width: '76px', height: '44px', objectFit: 'contain', filter: 'hue-rotate(330deg) saturate(2)' }}
-                        />
+                      <div style={styles.vehicleIcon}>🚐</div>
+                      <div style={styles.vehicleInfo}>
+                        <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
+                        <p style={styles.vehicleSeats}>Up to 6 passengers</p>
                       </div>
                       <div style={styles.vehicleFare}>
                         {selectedRoute.disc6 ? (
