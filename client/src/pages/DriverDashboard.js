@@ -28,11 +28,11 @@ function DriverDashboard() {
     });
     socket.emit('join', { userId: user._id, role: 'driver' });
     // Request notification permission
-    requestNotificationPermission().then(token => {
-      if (token) {
+    requestNotificationPermission().then(fcmToken => {
+      if (fcmToken) {
         axios.post(
           `https://traverse-app.onrender.com/api/auth/save-token`,
-          { fcmToken: token },
+          { fcmToken },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
