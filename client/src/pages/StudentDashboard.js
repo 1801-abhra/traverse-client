@@ -451,30 +451,17 @@ function StudentDashboard() {
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <svg width="80" height="44" viewBox="0 0 80 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="18" cy="36" r="6" fill="#222" stroke="#555" stroke-width="1.5" />
-                          <circle cx="18" cy="36" r="3" fill="#444" />
-                          <circle cx="62" cy="36" r="6" fill="#222" stroke="#555" stroke-width="1.5" />
-                          <circle cx="62" cy="36" r="3" fill="#444" />
-                          <path d="M6,30 L6,22 Q6,18 10,16 L18,14 L22,8 Q24,6 27,6 L53,6 Q56,6 58,8 L62,14 L70,16 Q74,18 74,22 L74,30 Q74,32 72,32 L8,32 Q6,32 6,30 Z" fill="#e63946" />
-                          <path d="M22,8 L18,14 L62,14 L58,8 Z" fill="#cc2233" />
-                          <rect x="20" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
-                          <rect x="34" y="8" width="12" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
-                          <rect x="49" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
-                          <path d="M8,20 L12,14 L20,14 L16,20 Z" fill="#1a2a3a" opacity="0.6" />
-                          <path d="M72,20 L68,14 L60,14 L64,20 Z" fill="#1a2a3a" opacity="0.6" />
-                          <rect x="6" y="26" width="68" height="5" rx="1" fill="#cc2233" />
-                          <rect x="72" y="18" width="4" height="4" rx="1" fill="#ffdd88" opacity="0.9" />
-                          <rect x="4" y="18" width="4" height="4" rx="1" fill="#ff4444" opacity="0.7" />
-                          <path d="M6,30 L74,30" stroke="#aa1122" stroke-width="0.5" />
-                          <rect x="30" y="28" width="20" height="2" rx="1" fill="#aa1122" opacity="0.5" />
-                        </svg>
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/512/3774/3774278.png"
+                          alt="Sedan"
+                          style={{ width: '70px', height: '40px', objectFit: 'contain', filter: 'hue-rotate(330deg) saturate(2)' }}
+                        />
                       </div>
                       <div style={styles.vehicleIcon}>
                         <img
-                          src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_637/v1684926413/assets/eb/8abb07-c33e-4a10-8d7e-e5cfba4a46df/original/UberXL.png"
+                          src="https://cdn-icons-png.flaticon.com/512/3774/3774288.png"
                           alt="SUV"
-                          style={{ width: '80px', height: '45px', objectFit: 'contain' }}
+                          style={{ width: '76px', height: '44px', objectFit: 'contain', filter: 'hue-rotate(330deg) saturate(2)' }}
                         />
                       </div>
                       <div style={styles.vehicleFare}>
