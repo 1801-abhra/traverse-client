@@ -342,9 +342,21 @@ function StudentDashboard() {
                       style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333' }}>★</span>
                   ))}
                 </div>
+                <button onClick={() => setActiveRide(null)}
+                  style={{ ...styles.cancelBtn, marginTop: '12px', color: '#666', borderColor: '#333', fontSize: '13px' }}>
+                  Skip Rating
+                </button>
               </div>
             )}
-            {rated && <p style={{ color: '#10b981', marginTop: '8px' }}>✅ Rated {rating} stars!</p>}
+            {rated && (
+              <div>
+                <p style={{ color: '#10b981', marginTop: '8px' }}>✅ Rated {rating} stars!</p>
+                <button onClick={() => setActiveRide(null)}
+                  style={{ ...styles.cancelBtn, marginTop: '12px', color: '#10b981', borderColor: '#10b981' }}>
+                  Done ✓
+                </button>
+              </div>
+            )}
           </div>
         )}
 
