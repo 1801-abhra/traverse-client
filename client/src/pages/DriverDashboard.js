@@ -37,7 +37,11 @@ function DriverDashboard() {
       }
     });
     socket.on('new:ride', (ride) => {
-      setRides(prev => [ride, ...prev]);
+      setRides(prev => {
+        const exists = prev.some(r => r._id === ride._id);
+        if (exists) return prev;
+        return [ride, ...prev];
+      });
     });
     socket.on('ride:cancelled', ({ rideId }) => {
       setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
