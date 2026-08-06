@@ -14,8 +14,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+const getNightSurgeFare = (baseFare) => {
+  const hour = new Date().getHours();
+  const isNightTime = hour >= 21 || hour < 7;
+  return isNightTime ? Math.round(baseFare * 1.5) : baseFare;
+};
+
 const ROUTES = [
-  { destination: 'Waknaghat', fare4: 200, fare6: 300, disc4: null, disc6: null, coords: [30.8826, 77.1490] },
+  {
+    destination: 'Waknaghat',
+    fare4: getNightSurgeFare(200),
+    fare6: getNightSurgeFare(300),
+    disc4: null,
+    disc6: null,
+    coords: [30.8826, 77.1490]
+  },
   { destination: 'Shoghi', fare4: 600, fare6: 800, disc4: null, disc6: null, coords: [31.0167, 77.1833] },
   { destination: 'Shimla', fare4: 1200, fare6: 1400, disc4: 1080, disc6: 1260, coords: [31.1048, 77.1734] },
   { destination: 'Kandaghat', fare4: 600, fare6: 800, disc4: null, disc6: null, coords: [30.9833, 77.1167] },
