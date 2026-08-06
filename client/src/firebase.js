@@ -13,6 +13,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
+// Handle foreground messages - prevent duplicate with service worker
+onMessage(messaging, (payload) => {
+    console.log('Foreground message received - handled by app UI');
+    // Do NOT show notification here - Socket.io already updates the UI
+    // Service worker handles background notifications
+});
+
 export const requestNotificationPermission = async () => {
     try {
         const permission = await Notification.requestPermission();
@@ -28,12 +35,5 @@ export const requestNotificationPermission = async () => {
         return null;
     }
 };
-
-export const onMessageListener = () =>
-    new Promise((resolve) => {
-        onMessage(messaging, (payload) => {
-            resolve(payload);
-        });
-    });
 
 export default messaging;
