@@ -409,13 +409,24 @@ function StudentDashboard() {
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '4+1' ? styles.vehicleCardActive : {}) }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <svg width="48" height="28" viewBox="0 0 48 28" fill="none">
-                          <path d="M8,18 L8,22 Q8,24 10,24 L12,24 Q14,24 14,22 L14,20 L34,20 L34,22 Q34,24 36,24 L38,24 Q40,24 40,22 L40,18 L42,16 L42,12 Q42,10 40,10 L36,10 L30,4 Q29,3 27,3 L16,3 Q14,3 13,4 L8,10 L6,10 Q4,10 4,12 L4,16 Z" fill="#e63946" />
-                          <path d="M13,4 L8,10 L36,10 L30,4 Z" fill="#ff6070" />
-                          <circle cx="14" cy="21" r="3" fill="#1a1a1a" stroke="#666" stroke-width="1" />
-                          <circle cx="34" cy="21" r="3" fill="#1a1a1a" stroke="#666" stroke-width="1" />
-                          <path d="M16,7 L14,10 L26,10 L26,7 Z" fill="#0a0a0a" opacity="0.4" />
-                          <path d="M27,7 L26,10 L34,10 L30,7 Z" fill="#0a0a0a" opacity="0.4" />
+                        <svg width="72" height="40" viewBox="0 0 72 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12,28 L12,32 Q12,34 14,34 L18,34 Q20,34 20,32 L20,28 Z" fill="#333" />
+                          <circle cx="16" cy="32" r="5" fill="#222" stroke="#555" stroke-width="1.5" />
+                          <circle cx="16" cy="32" r="2.5" fill="#444" />
+                          <path d="M52,28 L52,32 Q52,34 54,34 L58,34 Q60,34 60,32 L60,28 Z" fill="#333" />
+                          <circle cx="56" cy="32" r="5" fill="#222" stroke="#555" stroke-width="1.5" />
+                          <circle cx="56" cy="32" r="2.5" fill="#444" />
+                          <path d="M8,28 L10,18 Q11,16 13,16 L20,16 L26,10 Q28,8 31,8 L42,8 Q45,8 47,10 L54,16 L62,16 Q64,16 65,18 L66,22 L66,28 Q66,30 64,30 L8,30 Q6,30 6,28 Z" fill="#e63946" />
+                          <path d="M26,10 L22,16 L50,16 L46,10 Z" fill="#c0102020" />
+                          <path d="M26,10 Q28,8 31,8 L42,8 Q45,8 47,10 L50,16 L22,16 Z" fill="#cc2233" />
+                          <rect x="23" y="10" width="10" height="6" rx="1" fill="#1a2a3a" opacity="0.7" />
+                          <rect x="35" y="10" width="13" height="6" rx="1" fill="#1a2a3a" opacity="0.7" />
+                          <path d="M10,20 L14,16 L22,16 L20,20 Z" fill="#1a2a3a" opacity="0.6" />
+                          <path d="M62,20 L60,16 L52,16 L54,20 Z" fill="#1a2a3a" opacity="0.6" />
+                          <rect x="6" y="24" width="60" height="4" rx="1" fill="#cc2233" />
+                          <rect x="64" y="20" width="3" height="3" rx="1" fill="#ffdd88" opacity="0.9" />
+                          <rect x="5" y="20" width="3" height="3" rx="1" fill="#ff4444" opacity="0.7" />
+                          <path d="M8,28 L64,28" stroke="#aa1122" stroke-width="0.5" />
                         </svg>
                       </div>
                       <div style={styles.vehicleInfo}>
@@ -440,11 +451,24 @@ function StudentDashboard() {
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <img
-                          src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_637/v1682350114/assets/c2/296eac-574a-4a81-a787-8a0387970755/original/UberX.png"
-                          alt="Sedan"
-                          style={{ width: '80px', height: '45px', objectFit: 'contain' }}
-                        />
+                        <svg width="80" height="44" viewBox="0 0 80 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="18" cy="36" r="6" fill="#222" stroke="#555" stroke-width="1.5" />
+                          <circle cx="18" cy="36" r="3" fill="#444" />
+                          <circle cx="62" cy="36" r="6" fill="#222" stroke="#555" stroke-width="1.5" />
+                          <circle cx="62" cy="36" r="3" fill="#444" />
+                          <path d="M6,30 L6,22 Q6,18 10,16 L18,14 L22,8 Q24,6 27,6 L53,6 Q56,6 58,8 L62,14 L70,16 Q74,18 74,22 L74,30 Q74,32 72,32 L8,32 Q6,32 6,30 Z" fill="#e63946" />
+                          <path d="M22,8 L18,14 L62,14 L58,8 Z" fill="#cc2233" />
+                          <rect x="20" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
+                          <rect x="34" y="8" width="12" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
+                          <rect x="49" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
+                          <path d="M8,20 L12,14 L20,14 L16,20 Z" fill="#1a2a3a" opacity="0.6" />
+                          <path d="M72,20 L68,14 L60,14 L64,20 Z" fill="#1a2a3a" opacity="0.6" />
+                          <rect x="6" y="26" width="68" height="5" rx="1" fill="#cc2233" />
+                          <rect x="72" y="18" width="4" height="4" rx="1" fill="#ffdd88" opacity="0.9" />
+                          <rect x="4" y="18" width="4" height="4" rx="1" fill="#ff4444" opacity="0.7" />
+                          <path d="M6,30 L74,30" stroke="#aa1122" stroke-width="0.5" />
+                          <rect x="30" y="28" width="20" height="2" rx="1" fill="#aa1122" opacity="0.5" />
+                        </svg>
                       </div>
                       <div style={styles.vehicleIcon}>
                         <img
