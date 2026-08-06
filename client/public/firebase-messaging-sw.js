@@ -13,12 +13,20 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-    console.log('Background message:', payload);
+    console.log('Background message received');
     const { title, body } = payload.notification;
-    self.registration.showNotification(title, {
-        body,
-        icon: '/logo192.png',
-        badge: '/logo192.png',
-        vibrate: [200, 100, 200]
-    });
+
+    // Only show if app is not in foreground
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+        .then(clients => {
+            const appIsOpen = clients.some(client => client.visibilityState === 'visible');
+            if (!appIsOpen) {
+                self.registration.showNotification(title, {
+                    body,
+                    icon: '/logo192.png',
+                    badge: '/logo192.png',
+                    vibrate: [200, 100, 200]
+                });
+            }
+        });
 });
