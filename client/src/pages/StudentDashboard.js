@@ -440,19 +440,18 @@ function StudentDashboard() {
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <svg width="52" height="30" viewBox="0 0 52 30" fill="none">
-                          <path d="M6,20 L6,24 Q6,26 8,26 L11,26 Q13,26 13,24 L13,22 L39,22 L39,24 Q39,26 41,26 L44,26 Q46,26 46,24 L46,20 L47,18 L47,8 Q47,6 45,6 L10,6 Q8,6 7,7 L5,10 L4,12 L4,18 Z" fill="#e63946" />
-                          <path d="M10,6 L7,10 L45,10 L45,6 Z" fill="#ff6070" />
-                          <rect x="8" y="11" width="10" height="7" rx="1" fill="#0a0a0a" opacity="0.5" />
-                          <rect x="21" y="11" width="10" height="7" rx="1" fill="#0a0a0a" opacity="0.5" />
-                          <rect x="34" y="11" width="9" height="7" rx="1" fill="#0a0a0a" opacity="0.5" />
-                          <circle cx="13" cy="23" r="3.5" fill="#1a1a1a" stroke="#666" stroke-width="1" />
-                          <circle cx="39" cy="23" r="3.5" fill="#1a1a1a" stroke="#666" stroke-width="1" />
-                        </svg>
+                        <img
+                          src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_637/v1682350114/assets/c2/296eac-574a-4a81-a787-8a0387970755/original/UberX.png"
+                          alt="Sedan"
+                          style={{ width: '80px', height: '45px', objectFit: 'contain' }}
+                        />
                       </div>
-                      <div style={styles.vehicleInfo}>
-                        <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
-                        <p style={styles.vehicleSeats}>Up to 6 passengers</p>
+                      <div style={styles.vehicleIcon}>
+                        <img
+                          src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_956,h_637/v1684926413/assets/eb/8abb07-c33e-4a10-8d7e-e5cfba4a46df/original/UberXL.png"
+                          alt="SUV"
+                          style={{ width: '80px', height: '45px', objectFit: 'contain' }}
+                        />
                       </div>
                       <div style={styles.vehicleFare}>
                         {selectedRoute.disc6 ? (
