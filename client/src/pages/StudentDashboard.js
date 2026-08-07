@@ -133,6 +133,18 @@ function StudentDashboard() {
     });
     return () => socket.disconnect();
   }, []);
+  useEffect(() => {
+    if (selectedRoute?.destination === 'Waknaghat' && selectedVehicle) {
+      const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+      const hour = checkTime.getHours();
+      const isNight = hour >= 21 || hour < 7;
+      if (selectedVehicle === '4+1') {
+        setFare(isNight ? 300 : 200);
+      } else {
+        setFare(isNight ? 450 : 300);
+      }
+    }
+  }, [scheduledTime, isScheduled, selectedRoute, selectedVehicle]);
   const bookRide = async (e) => {
     e.preventDefault();
     if (!selectedRoute || !selectedVehicle) {
