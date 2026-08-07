@@ -276,6 +276,13 @@ function StudentDashboard() {
     completed: 'Ride Completed ✓',
     cancelled: 'Cancelled'
   };
+  const getWaknaFare = (base4, base6, vehicleType) => {
+    const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+    const hour = checkTime.getHours();
+    const isNight = hour >= 21 || hour < 7;
+    if (vehicleType === '4+1') return isNight ? 300 : 200;
+    return isNight ? 450 : 300;
+  };
 
   return (
     <div style={styles.container}>
