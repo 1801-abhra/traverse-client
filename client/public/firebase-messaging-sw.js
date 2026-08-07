@@ -15,7 +15,7 @@ firebase.initializeApp({
     projectId: "traverse-unicab",
     storageBucket: "traverse-unicab.firebasestorage.app",
     messagingSenderId: "224752732964",
-    appId: "1:22475232964:web:89aff5f0aa1a505aa081b1"
+    appId: "1:224752732964:web:89aff5f0aa1a505aa081b1"
 });
 
 const messaging = firebase.messaging();
@@ -23,10 +23,42 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     const title = payload.data?.title || 'Traverse';
     const body = payload.data?.body || 'You have a new update';
+
+    // Set URL based on notification type
+    let url = '/student';
+    if (title.includes('Ride Request') || title.includes('New Ride')) {
+        url = '/driver';
+    }
+
     self.registration.showNotification(title, {
         body,
         icon: '/logo192.png',
         badge: '/logo192.png',
-        vibrate: [200, 100, 200]
+        vibrate: [200, 100, 200],
+        data: { url }
     });
+});
+
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const url = event.notification.data?.url || '/student';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(clientList => {
+                // If app is already open, focus it and navigate
+                for (const client of clientList) {
+                    if (client.url.includes('traverse-unicab') && 'focus' in client) {
+                        client.focus();
+                        client.navigate(url);
+                        return;
+                    }
+                }
+                // If app is closed, open it
+                if (clients.openWindow) {
+                    return clients.openWindow('https://traverse-unicab.vercel.app' + url);
+                }
+            })
+    );
 });
