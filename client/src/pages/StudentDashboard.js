@@ -14,8 +14,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const getNightSurgeFare = (baseFare) => {
-  const hour = new Date().getHours();
+const getNightSurgeFare = (baseFare, scheduledTime = null) => {
+  const checkTime = scheduledTime ? new Date(scheduledTime) : new Date();
+  const hour = checkTime.getHours();
   const isNightTime = hour >= 21 || hour < 7;
   return isNightTime ? Math.round(baseFare * 1.5) : baseFare;
 };
@@ -138,13 +139,27 @@ function StudentDashboard() {
       setMessage('Please select destination and vehicle type');
       return;
     }
+
+    // Calculate surge fare for Waknaghat based on scheduled time
+    let finalFare = fare;
+    if (selectedRoute.destination === 'Waknaghat') {
+      const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+      const hour = checkTime.getHours();
+      const isNight = hour >= 21 || hour < 7;
+      if (selectedVehicle === '4+1') {
+        finalFare = isNight ? 300 : 200;
+      } else {
+        finalFare = isNight ? 450 : 300;
+      }
+    }
+
     try {
       const pickup = 'JUIT Campus, Waknaghat';
       const dropoff = selectedRoute.destination;
       if (rideType === 'shared') {
         const res = await axios.post(
           `${API}/api/rides/book-shared`,
-          { pickup, dropoff, fare, vehicleType: selectedVehicle },
+          { pickup, dropoff, fare: finalFare, vehicleType: selectedVehicle },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (res.data.ride) setActiveRide(res.data.ride);
@@ -153,7 +168,7 @@ function StudentDashboard() {
       } else {
         const res = await axios.post(
           `${API}/api/rides/book`,
-          { pickup, dropoff, fare, vehicleType: selectedVehicle, scheduledTime: isScheduled ? new Date(scheduledTime).toISOString() : null },
+          { pickup, dropoff, fare: finalFare, vehicleType: selectedVehicle, scheduledTime: isScheduled ? new Date(scheduledTime).toISOString() : null },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setActiveRide(res.data);
@@ -163,7 +178,6 @@ function StudentDashboard() {
       setMessage(err.response?.data?.message || 'Booking failed');
     }
   };
-
   const cancelRide = async () => {
     try {
       await axios.put(`${API}/api/rides/cancel/${activeRide._id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
