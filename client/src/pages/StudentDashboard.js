@@ -223,9 +223,12 @@ function StudentDashboard() {
         setFare(res.data.fare);
         setRated(false);
         setRating(0);
+      } else {
+        setActiveRide(null);
       }
     } catch (err) {
       console.log('No active ride');
+      setActiveRide(null);
     } finally {
       setPageLoading(false);
     }
