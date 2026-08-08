@@ -432,7 +432,7 @@ function StudentDashboard() {
               </div>
             )}
 
-            {activeRide.status !== 'searching' && (
+            {activeRide.status === 'ontheway' && (
               <div style={{ marginTop: '16px' }}>
                 <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
                   🚗 Driver Live Location {!driverLocation && <span style={{ color: '#f59e0b' }}>— Waiting for GPS...</span>}
