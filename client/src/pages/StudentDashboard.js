@@ -90,7 +90,6 @@ function StudentDashboard() {
 
   useEffect(() => {
     fetchActiveRide();
-    showToast('Welcome back! 👋', 'info'); // TEST - remove later
     const handleVisibilityChange = () => {
       if (!document.hidden) fetchActiveRide();
     };
