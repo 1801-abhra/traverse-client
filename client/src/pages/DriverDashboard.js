@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { requestNotificationPermission } from '../firebase';
+import Spinner from '../components/Spinner';
 let socket;
 
 const API = 'https://traverse-app.onrender.com';
@@ -16,6 +17,7 @@ function DriverDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   const [accepting, setAccepting] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     fetchAvailableRides();
@@ -94,7 +96,11 @@ function DriverDashboard() {
     try {
       const res = await axios.get(`${API}/api/rides/available`, { headers: { Authorization: `Bearer ${token}` } });
       setRides(res.data);
-    } catch (err) { setMessage('Failed to fetch rides'); }
+    } catch (err) {
+      setMessage('Failed to fetch rides');
+    } finally {
+      setPageLoading(false);
+    }
   };
 
   const fetchMyRating = async () => {
@@ -157,6 +163,20 @@ function DriverDashboard() {
     completed: 'Completed ✓',
     cancelled: 'Cancelled'
   };
+
+  if (pageLoading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.navbar}>
+          <div style={styles.navBrand}>
+            <span style={styles.navLogo}>🚖</span>
+            <span style={styles.navTitle}>TRAVERSE</span>
+          </div>
+        </div>
+        <Spinner text='Loading driver dashboard...' />
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>

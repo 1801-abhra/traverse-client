@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../components/Spinner';
 
 const API = 'https://traverse-app.onrender.com';
 
@@ -23,12 +24,12 @@ function RideHistory() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setRides(res.data);
-      setLoading(false);
     } catch (err) {
+      console.log('Error fetching history');
+    } finally {
       setLoading(false);
     }
   };
-
   const statusColor = {
     searching: '#f59e0b',
     accepted: '#e63946',
@@ -93,11 +94,7 @@ function RideHistory() {
           ))}
         </div>
 
-        {loading && (
-          <div style={styles.loadingBox}>
-            <p>Loading rides...</p>
-          </div>
-        )}
+        {loading && <Spinner text='Loading ride history...' />}
 
         {!loading && filteredRides.length === 0 && (
           <div style={styles.empty}>
