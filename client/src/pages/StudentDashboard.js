@@ -123,11 +123,15 @@ function StudentDashboard() {
       setDriverLocation(null);
     });
     socket.on('ride:updated', (ride) => {
-      setActiveRide(prev => ({ ...prev, ...ride }));
+      if (ride.status === 'cancelled') {
+        setActiveRide(null);
+        setMessage('Ride cancelled.');
+        return;
+      }
+      setActiveRide(ride);
       setMessage(`Status: ${ride.status.toUpperCase()}`);
       if (ride.status === 'completed' || ride.status === 'cancelled') {
         setDriverLocation(null);
-        fetchActiveRide();
       }
     });
     socket.on('ride:matched', ({ message, ride }) => {
