@@ -9,6 +9,7 @@ let socket;
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
+  const isAvailableRef = React.useRef(true);
   const [isAvailable, setIsAvailable] = useState(true);
   const [myRating, setMyRating] = useState({ average: 0, total: 0 });
   const [rides, setRides] = useState([]);
@@ -53,11 +54,13 @@ function DriverDashboard() {
       }
     });
     socket.on('new:ride', (ride) => {
-      setRides(prev => {
-        const exists = prev.some(r => r._id === ride._id);
-        if (exists) return prev;
-        return [ride, ...prev];
-      });
+      if (isAvailableRef.current) {
+        setRides(prev => {
+          const exists = prev.some(r => r._id === ride._id);
+          if (exists) return prev;
+          return [ride, ...prev];
+        });
+      }
     });
     socket.on('ride:cancelled', ({ rideId }) => {
       setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
@@ -131,12 +134,18 @@ function DriverDashboard() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setIsAvailable(res.data.isAvailable);
-      setMessage(res.data.isAvailable ? 'You are now Online ✅' : 'You are now Offline 🔴');
+      isAvailableRef.current = res.data.isAvailable;
+      if (!res.data.isAvailable) {
+        setRides([]);
+        setMessage('You are now Offline 🔴');
+      } else {
+        fetchAvailableRides();
+        setMessage('You are now Online ✅');
+      }
     } catch (err) {
       setMessage('Failed to update availability');
     }
   };
-
   const rejectRide = async (rideId) => {
     try {
       await axios.put(`${API}/api/rides/reject/${rideId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
