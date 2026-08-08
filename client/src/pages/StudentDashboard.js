@@ -8,6 +8,7 @@ import L from 'leaflet';
 import { requestNotificationPermission } from '../firebase';
 import Spinner from '../components/Spinner';
 import AboutModal from '../components/AboutModal';
+import Toast from '../components/Toast';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -58,6 +59,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [toast, setToast] = useState(null);
   const [showAbout, setShowAbout] = useState(false);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [driversAvailable, setDriversAvailable] = useState(true);
@@ -81,8 +83,10 @@ function StudentDashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
-
   const API = 'https://traverse-app.onrender.com';
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
+  };
 
   useEffect(() => {
     fetchActiveRide();
@@ -121,6 +125,7 @@ function StudentDashboard() {
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
       setDriverLocation(null);
+      showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
     });
     socket.on('ride:updated', (ride) => {
       if (ride.status === 'cancelled') {
@@ -130,7 +135,11 @@ function StudentDashboard() {
       }
       setActiveRide(ride);
       setMessage(`Status: ${ride.status.toUpperCase()}`);
-      if (ride.status === 'completed' || ride.status === 'cancelled') {
+      if (ride.status === 'ontheway') {
+        showToast('🚗 Driver is on the way!', 'info');
+      }
+      if (ride.status === 'completed') {
+        showToast('✅ Ride completed! Please rate your experience.', 'success');
         setDriverLocation(null);
       }
     });
@@ -363,6 +372,14 @@ function StudentDashboard() {
           <button onClick={logout} style={styles.navBtnRed}>Logout</button>
         </div>
       </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
       <div style={styles.content}>
