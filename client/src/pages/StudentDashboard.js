@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { requestNotificationPermission } from '../firebase';
+import Spinner from '../components/Spinner';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -56,6 +57,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [pageLoading, setPageLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState(JUIT_COORDS);
   const [destCoords, setDestCoords] = useState(null);
   const [distance, setDistance] = useState(null);
@@ -224,6 +226,8 @@ function StudentDashboard() {
       }
     } catch (err) {
       console.log('No active ride');
+    } finally {
+      setPageLoading(false);
     }
   };
   const joinSharedRide = async (rideId) => {
@@ -283,6 +287,20 @@ function StudentDashboard() {
     if (vehicleType === '4+1') return isNight ? 300 : 200;
     return isNight ? 450 : 300;
   };
+
+  if (pageLoading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.navbar}>
+          <div style={styles.navBrand}>
+            <span style={styles.navLogo}>🚖</span>
+            <span style={styles.navTitle}>TRAVERSE</span>
+          </div>
+        </div>
+        <Spinner text='Loading your dashboard...' />
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
