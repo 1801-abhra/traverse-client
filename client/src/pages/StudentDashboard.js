@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { requestNotificationPermission } from '../firebase';
 import Spinner from '../components/Spinner';
+import AboutModal from '../components/AboutModal';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -57,6 +58,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [showAbout, setShowAbout] = useState(false);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [driversAvailable, setDriversAvailable] = useState(true);
   const [pageLoading, setPageLoading] = useState(true);
@@ -349,9 +351,11 @@ function StudentDashboard() {
           <span style={styles.navUser}>👤 {user.name}</span>
           <button onClick={fetchActiveRide} style={styles.navBtn}>🔄</button>
           <button onClick={() => navigate('/history')} style={styles.navBtn}>History</button>
+          <button onClick={() => setShowAbout(true)} style={styles.navBtn}>About</button>
           <button onClick={logout} style={styles.navBtnRed}>Logout</button>
         </div>
       </div>
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
       <div style={styles.content}>
         {message && (

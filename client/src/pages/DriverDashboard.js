@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { requestNotificationPermission } from '../firebase';
 import Spinner from '../components/Spinner';
+import AboutModal from '../components/AboutModal';
 let socket;
 
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
+  const [showAbout, setShowAbout] = useState(false);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const isAvailableRef = React.useRef(true);
   const [isAvailable, setIsAvailable] = useState(true);
@@ -246,6 +248,7 @@ function DriverDashboard() {
         <div style={styles.navRight}>
           <span style={styles.navUser}>🚗 {user.name}</span>
           <button onClick={() => navigate('/history')} style={styles.navBtn}>History</button>
+          <button onClick={() => setShowAbout(true)} style={styles.navBtn}>About</button>
           <button onClick={toggleAvailability} style={{
             ...styles.navBtn,
             background: isAvailable ? '#10b981' : '#ef4444',
@@ -257,6 +260,7 @@ function DriverDashboard() {
           <button onClick={logout} style={styles.navBtnRed}>Logout</button>
         </div>
       </div>
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
       <div style={styles.content}>
 
