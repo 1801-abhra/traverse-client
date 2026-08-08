@@ -9,6 +9,7 @@ let socket;
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
   const isAvailableRef = React.useRef(true);
   const [isAvailable, setIsAvailable] = useState(true);
   const [myRating, setMyRating] = useState({ average: 0, total: 0 });
@@ -185,6 +186,26 @@ function DriverDashboard() {
     } catch (err) { setMessage(err.response?.data?.message || 'Failed to update status'); }
   };
 
+  const cancelAcceptedRide = async () => {
+    try {
+      const res = await axios.put(
+        `${API}/api/rides/cancel-accepted/${activeRide._id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActiveRide(null);
+      setShowCancelPopup(false);
+      fetchAvailableRides();
+      setMessage('Ride cancelled.');
+      if (res.data.warning) {
+        setMessage(res.data.warning);
+      }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Cannot cancel');
+      setShowCancelPopup(false);
+    }
+  };
+
   const logout = () => { localStorage.clear(); navigate('/login'); };
 
   const statusColor = {
@@ -313,8 +334,36 @@ function DriverDashboard() {
                   ✅ Complete Ride
                 </button>
               )}
+              {activeRide.status === 'accepted' && (
+                <button onClick={() => setShowCancelPopup(true)}
+                  style={{ padding: '12px 20px', background: 'transparent', color: '#e63946', border: '1px solid #e63946', borderRadius: '10px', cursor: 'pointer', fontSize: '15px' }}>
+                  Cancel
+                </button>
+              )}
             </div>
+
+            {showCancelPopup && (
+              <div style={styles.popup}>
+                <div style={styles.popupCard}>
+                  <h3 style={{ color: 'white', marginBottom: '8px' }}>⚠️ Cancel Ride?</h3>
+                  <p style={{ color: '#999', fontSize: '14px', marginBottom: '20px' }}>
+                    Cancelling after accepting may result in blacklisting after 5 times. Are you sure?
+                  </p>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={cancelAcceptedRide}
+                      style={{ flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                      Yes, Cancel
+                    </button>
+                    <button onClick={() => setShowCancelPopup(false)}
+                      style={{ flex: 1, padding: '12px', background: '#1a1a1a', color: '#999', border: '1px solid #2a2a2a', borderRadius: '8px', cursor: 'pointer' }}>
+                      Keep Ride
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+
         )}
 
         {/* Available Rides */}
@@ -387,7 +436,7 @@ function DriverDashboard() {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 
@@ -481,6 +530,8 @@ const styles = {
   actionBtns: { display: 'flex', gap: '8px', marginTop: '16px' },
   acceptBtn: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '15px', fontWeight: '600' },
   rejectBtn: { padding: '12px 20px', background: 'transparent', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '15px' },
+  popup: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
+  popupCard: { background: '#111', border: '1px solid #2a2a2a', padding: '24px', borderRadius: '16px', maxWidth: '320px', width: '90%' },
 };
 
 export default DriverDashboard;
