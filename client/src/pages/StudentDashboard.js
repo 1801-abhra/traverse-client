@@ -57,6 +57,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
   const [driversAvailable, setDriversAvailable] = useState(true);
   const [pageLoading, setPageLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState(JUIT_COORDS);
@@ -271,6 +272,25 @@ function StudentDashboard() {
     return Math.round(R * c);
   };
 
+  const cancelAcceptedRide = async () => {
+    try {
+      const res = await axios.put(
+        `${API}/api/rides/cancel-accepted/${activeRide._id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActiveRide(null);
+      setShowCancelPopup(false);
+      setMessage('Ride cancelled. Searching for new driver...');
+      if (res.data.warning) {
+        setMessage(res.data.warning);
+      }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Cannot cancel');
+      setShowCancelPopup(false);
+    }
+  };
+
   const rateRide = async (stars) => {
     try {
       await axios.put(`${API}/api/rides/rate/${activeRide._id}`, { rating: stars }, { headers: { Authorization: `Bearer ${token}` } });
@@ -407,7 +427,31 @@ function StudentDashboard() {
             {activeRide.status === 'searching' && (
               <button onClick={cancelRide} style={styles.cancelBtn}>Cancel Ride</button>
             )}
+            {activeRide.status === 'accepted' && (
+              <button onClick={() => setShowCancelPopup(true)} style={styles.cancelBtn}>
+                Cancel Ride
+              </button>
+            )}
 
+            {showCancelPopup && (
+              <div style={styles.popup}>
+                <div style={styles.popupCard}>
+                  <h3 style={{ color: 'white', marginBottom: '8px' }}>⚠️ Cancel Ride?</h3>
+                  <p style={{ color: '#999', fontSize: '14px', marginBottom: '20px' }}>
+                    Cancelling after driver acceptance may result in blacklisting after 5 times. Are you sure?
+                  </p>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={cancelAcceptedRide} style={{ ...styles.cancelBtn, flex: 1 }}>
+                      Yes, Cancel
+                    </button>
+                    <button onClick={() => setShowCancelPopup(false)}
+                      style={{ flex: 1, padding: '10px', background: '#1a1a1a', color: '#999', border: '1px solid #2a2a2a', borderRadius: '8px', cursor: 'pointer' }}>
+                      No, Keep Ride
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {activeRide.status === 'completed' && !rated && (
               <div style={styles.ratingBox}>
                 <p style={{ color: '#999', marginBottom: '8px' }}>Rate your experience</p>
@@ -771,6 +815,8 @@ const styles = {
   dateInput: { width: '100%', padding: '12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px', color: 'white', fontSize: '14px', marginBottom: '12px', boxSizing: 'border-box' },
   bookBtn: { width: '100%', padding: '14px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', letterSpacing: '0.5px' },
   bookBtnDisabled: { width: '100%', padding: '14px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', fontSize: '16px', cursor: 'not-allowed' },
+  popup: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
+  popupCard: { background: '#111', border: '1px solid #2a2a2a', padding: '24px', borderRadius: '16px', maxWidth: '320px', width: '90%' },
 };
 
 export default StudentDashboard;
