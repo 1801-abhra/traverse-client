@@ -538,7 +538,15 @@ function StudentDashboard() {
                         <p style={styles.vehicleSeats}>Up to 4 passengers</p>
                       </div>
                       <div style={styles.vehicleFare}>
-                        {selectedRoute.disc4 ? (
+                        {selectedRoute.destination === 'Waknaghat' ? (
+                          <span style={styles.discountedFare}>
+                            ₹{(() => {
+                              const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+                              const hour = checkTime.getHours();
+                              return (hour >= 21 || hour < 7) ? 300 : 200;
+                            })()}
+                          </span>
+                        ) : selectedRoute.disc4 ? (
                           <>
                             <span style={styles.originalFare}>₹{selectedRoute.fare4}</span>
                             <span style={styles.discountedFare}>₹{selectedRoute.disc4}</span>
@@ -551,7 +559,16 @@ function StudentDashboard() {
                     </div>
 
                     <div
-                      onClick={() => { setSelectedVehicle('6+1'); setFare(selectedRoute.disc6 || selectedRoute.fare6); }}
+                      onClick={() => {
+                        setSelectedVehicle('6+1');
+                        if (selectedRoute.destination === 'Waknaghat') {
+                          const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+                          const hour = checkTime.getHours();
+                          setFare((hour >= 21 || hour < 7) ? 450 : 300);
+                        } else {
+                          setFare(selectedRoute.disc6 || selectedRoute.fare6);
+                        }
+                      }}
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
                       <div style={styles.vehicleIcon}>🚐</div>
@@ -560,7 +577,15 @@ function StudentDashboard() {
                         <p style={styles.vehicleSeats}>Up to 6 passengers</p>
                       </div>
                       <div style={styles.vehicleFare}>
-                        {selectedRoute.disc6 ? (
+                        {selectedRoute.destination === 'Waknaghat' ? (
+                          <span style={styles.discountedFare}>
+                            ₹{(() => {
+                              const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+                              const hour = checkTime.getHours();
+                              return (hour >= 21 || hour < 7) ? 450 : 300;
+                            })()}
+                          </span>
+                        ) : selectedRoute.disc6 ? (
                           <>
                             <span style={styles.originalFare}>₹{selectedRoute.fare6}</span>
                             <span style={styles.discountedFare}>₹{selectedRoute.disc6}</span>
