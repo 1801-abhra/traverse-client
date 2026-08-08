@@ -65,6 +65,12 @@ function DriverDashboard() {
         });
       }
     });
+    socket.on('ride:cancelled-by-party', ({ message }) => {
+      setActiveRide(null);
+      setMessage(message);
+      setShowCancelPopup(false);
+      fetchAvailableRides();
+    });
     socket.on('ride:cancelled', ({ rideId }) => {
       setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
     });
@@ -207,7 +213,6 @@ function DriverDashboard() {
       setShowCancelPopup(false);
     }
   };
-
   const logout = () => { localStorage.clear(); navigate('/login'); };
 
   const statusColor = {

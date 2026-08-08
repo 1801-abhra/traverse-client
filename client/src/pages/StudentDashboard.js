@@ -137,6 +137,11 @@ function StudentDashboard() {
     socket.on('driver:location', ({ lat, lng }) => {
       setDriverLocation([lat, lng]);
     });
+    socket.on('ride:cancelled-by-party', ({ message }) => {
+      setActiveRide(null);
+      setMessage(message);
+      setShowCancelPopup(false);
+    });
     return () => socket.disconnect();
   }, []);
   useEffect(() => {
@@ -283,7 +288,7 @@ function StudentDashboard() {
       );
       setActiveRide(null);
       setShowCancelPopup(false);
-      setMessage('Ride cancelled. Searching for new driver...');
+      setMessage('Ride cancelled successfully.');
       if (res.data.warning) {
         setMessage(res.data.warning);
       }
@@ -292,7 +297,6 @@ function StudentDashboard() {
       setShowCancelPopup(false);
     }
   };
-
   const rateRide = async (stars) => {
     try {
       await axios.put(`${API}/api/rides/rate/${activeRide._id}`, { rating: stars }, { headers: { Authorization: `Bearer ${token}` } });
