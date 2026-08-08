@@ -9,6 +9,7 @@ let socket;
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
+  const [isAvailable, setIsAvailable] = useState(true);
   const [myRating, setMyRating] = useState({ average: 0, total: 0 });
   const [rides, setRides] = useState([]);
   const [activeRide, setActiveRide] = useState(null);
@@ -22,6 +23,18 @@ function DriverDashboard() {
   useEffect(() => {
     fetchAvailableRides();
     fetchMyRating();
+    const fetchAvailability = async () => {
+      try {
+        const res = await axios.get(
+          `${API}/api/auth/me`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setIsAvailable(res.data.isAvailable);
+      } catch (err) {
+        console.log('Failed to fetch availability');
+      }
+    };
+    fetchAvailability();
     socket = io(API, {
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -110,6 +123,20 @@ function DriverDashboard() {
     } catch (err) { console.log('Rating fetch failed'); }
   };
 
+  const toggleAvailability = async () => {
+    try {
+      const res = await axios.put(
+        `${API}/api/rides/toggle-availability`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setIsAvailable(res.data.isAvailable);
+      setMessage(res.data.isAvailable ? 'You are now Online ✅' : 'You are now Offline 🔴');
+    } catch (err) {
+      setMessage('Failed to update availability');
+    }
+  };
+
   const rejectRide = async (rideId) => {
     try {
       await axios.put(`${API}/api/rides/reject/${rideId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
@@ -189,6 +216,14 @@ function DriverDashboard() {
         <div style={styles.navRight}>
           <span style={styles.navUser}>🚗 {user.name}</span>
           <button onClick={() => navigate('/history')} style={styles.navBtn}>History</button>
+          <button onClick={toggleAvailability} style={{
+            ...styles.navBtn,
+            background: isAvailable ? '#10b981' : '#ef4444',
+            color: 'white',
+            border: 'none'
+          }}>
+            {isAvailable ? '🟢 Online' : '🔴 Offline'}
+          </button>
           <button onClick={logout} style={styles.navBtnRed}>Logout</button>
         </div>
       </div>
