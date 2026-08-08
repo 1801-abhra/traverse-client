@@ -57,6 +57,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [driversAvailable, setDriversAvailable] = useState(true);
   const [pageLoading, setPageLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState(JUIT_COORDS);
   const [destCoords, setDestCoords] = useState(null);
@@ -209,6 +210,18 @@ function StudentDashboard() {
       setSharedRides(res.data);
     } catch (err) {
       console.log('Failed to fetch shared rides');
+    }
+  };
+
+  const checkDriversAvailable = async (vehicleType) => {
+    try {
+      const res = await axios.get(
+        `${API}/api/rides/drivers-available?vehicleType=${vehicleType}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setDriversAvailable(res.data.available);
+    } catch (err) {
+      console.log('Failed to check drivers');
     }
   };
 
@@ -530,7 +543,17 @@ function StudentDashboard() {
                   <label style={styles.label}>Select Vehicle Type</label>
                   <div style={styles.vehicleCards}>
                     <div
-                      onClick={() => { setSelectedVehicle('4+1'); setFare(selectedRoute.disc4 || selectedRoute.fare4); }}
+                      onClick={() => {
+                        setSelectedVehicle('4+1');
+                        checkDriversAvailable('4+1');
+                        if (selectedRoute.destination === 'Waknaghat') {
+                          const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
+                          const hour = checkTime.getHours();
+                          setFare((hour >= 21 || hour < 7) ? 300 : 200);
+                        } else {
+                          setFare(selectedRoute.disc4 || selectedRoute.fare4);
+                        }
+                      }}
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '4+1' ? styles.vehicleCardActive : {}) }}
                     >
                       <div style={styles.vehicleIcon}>
@@ -582,6 +605,7 @@ function StudentDashboard() {
                     <div
                       onClick={() => {
                         setSelectedVehicle('6+1');
+                        checkDriversAvailable('6+1');
                         if (selectedRoute.destination === 'Waknaghat') {
                           const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
                           const hour = checkTime.getHours();
