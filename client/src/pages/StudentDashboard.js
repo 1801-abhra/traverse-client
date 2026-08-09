@@ -610,7 +610,14 @@ function StudentDashboard() {
                   required
                 >
                   <option value=''>Choose destination...</option>
-                  {ROUTES.filter(r => r.destination !== selectedPickup).map(route => (
+                  {ROUTES.filter(r => {
+                    // If pickup is JUIT, show all destinations except JUIT
+                    if (selectedPickup === 'JUIT Campus, Waknaghat') {
+                      return r.destination !== 'JUIT Campus, Waknaghat';
+                    }
+                    // If pickup is anything else, only show JUIT as destination
+                    return r.destination === 'JUIT Campus, Waknaghat';
+                  }).map(route => (
                     <option key={route.destination} value={route.destination}>
                       {route.destination}
                     </option>
