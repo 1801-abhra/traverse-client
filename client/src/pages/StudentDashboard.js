@@ -60,6 +60,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [selectedPickup, setSelectedPickup] = useState('JUIT Campus, Waknaghat');
   const [toast, setToast] = useState(null);
   const [showAbout, setShowAbout] = useState(false);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
