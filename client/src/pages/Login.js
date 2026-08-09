@@ -75,7 +75,22 @@ function Login() {
           <h2 style={styles.formTitle}>Welcome back</h2>
           <p style={styles.formSubtitle}>Sign in to continue</p>
 
-          {error && <div style={styles.errorBox}>⚠️ {error}</div>}
+          {error && (
+            <div style={{
+              ...styles.errorBox,
+              background: error.includes('blocked') ? '#1a0000' : '#1a0000',
+              borderColor: error.includes('blocked') ? '#e63946' : '#e63946'
+            }}>
+              {error.includes('blocked') ? '🚫' : '⚠️'} {error}
+              {error.includes('blocked') && (
+                <div style={{ marginTop: '8px' }}>
+                  <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', fontSize: '13px' }}>
+                    📧 traverseuni@gmail.com
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
 
           <form onSubmit={handleLogin}>
             <div style={styles.inputGroup}>
