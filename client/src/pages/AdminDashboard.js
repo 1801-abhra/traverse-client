@@ -15,13 +15,14 @@ function AdminDashboard() {
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const tokenRef = React.useRef('');
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const res = await axios.post(`${API}/api/auth/admin/login`, { email, password });
       setToken(res.data.token);
+      tokenRef.current = res.data.token;
       setIsLoggedIn(true);
       fetchData(res.data.token);
     } catch (err) {
@@ -108,7 +109,7 @@ function AdminDashboard() {
           <span style={styles.navTitle}>TRAVERSE ADMIN</span>
         </div>
         <div style={styles.navRight}>
-          <button onClick={() => fetchData(token)} style={styles.refreshBtn}>🔄 Refresh</button>
+          <button onClick={() => fetchData(tokenRef.current)} style={styles.refreshBtn}>🔄 Refresh</button>
           <button onClick={() => setIsLoggedIn(false)} style={styles.navBtnRed}>Logout</button>
         </div>
       </div>
