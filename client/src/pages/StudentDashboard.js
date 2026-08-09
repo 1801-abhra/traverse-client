@@ -44,6 +44,7 @@ const ROUTES = [
   { destination: 'Mashobra', fare4: 2000, fare6: 2500, disc4: 1800, disc6: 2250, coords: [31.1333, 77.2167] },
   { destination: 'Tatapani', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050, coords: [31.2833, 77.2000] },
   { destination: 'Narkanda', fare4: 3500, fare6: 4500, disc4: 3150, disc6: 4050, coords: [31.4167, 77.4500] },
+  { destination: 'JUIT Campus, Waknaghat', fare4: getNightSurgeFare(200), fare6: getNightSurgeFare(300), disc4: null, disc6: null, coords: [30.8826, 77.1490] },
 ];
 
 const JUIT_COORDS = [30.8826, 77.1490];
@@ -190,7 +191,7 @@ function StudentDashboard() {
     }
 
     try {
-      const pickup = 'JUIT Campus, Waknaghat';
+      const pickup = selectedPickup;
       const dropoff = selectedRoute.destination;
       if (rideType === 'shared') {
         const res = await axios.post(
@@ -557,7 +558,33 @@ function StudentDashboard() {
             <form onSubmit={bookRide}>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Pickup Location</label>
-                <div style={styles.fixedLocation}>📍 JUIT Campus, Waknaghat</div>
+                <select
+                  style={styles.select}
+                  value={selectedPickup}
+                  onChange={e => {
+                    setSelectedPickup(e.target.value);
+                    setSelectedRoute(null);
+                    setSelectedVehicle(null);
+                    setFare(null);
+                    setDestCoords(null);
+                    setDistance(null);
+                  }}
+                  required
+                >
+                  <option value='JUIT Campus, Waknaghat'>📍 JUIT Campus, Waknaghat</option>
+                  <option value='Waknaghat'>Waknaghat</option>
+                  <option value='Shoghi'>Shoghi</option>
+                  <option value='Shimla'>Shimla</option>
+                  <option value='Kandaghat'>Kandaghat</option>
+                  <option value='Solan'>Solan</option>
+                  <option value='Heritage Park Solan'>Heritage Park Solan</option>
+                  <option value='Chail'>Chail</option>
+                  <option value='Sadhupul'>Sadhupul</option>
+                  <option value='Kufri'>Kufri</option>
+                  <option value='Mashobra'>Mashobra</option>
+                  <option value='Tatapani'>Tatapani</option>
+                  <option value='Narkanda'>Narkanda</option>
+                </select>
               </div>
 
               <div style={styles.inputGroup}>
@@ -582,7 +609,7 @@ function StudentDashboard() {
                   required
                 >
                   <option value=''>Choose destination...</option>
-                  {ROUTES.map(route => (
+                  {ROUTES.filter(r => r.destination !== selectedPickup).map(route => (
                     <option key={route.destination} value={route.destination}>
                       {route.destination}
                     </option>
