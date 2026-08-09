@@ -187,7 +187,7 @@ function AdminDashboard() {
           <div>
             <p style={styles.tabTitle}>All Students — {students.length} registered</p>
             {students.map(u => (
-              <div key={u._id} style={styles.card}>
+              <div key={u._id} style={{ ...styles.card, border: u.isBlocked ? '1px solid #e63946' : '1px solid #1a1a1a' }}>
                 <div style={styles.cardHeader}>
                   <div style={styles.userInfo}>
                     <span style={styles.userAvatar}>🎓</span>
@@ -197,14 +197,25 @@ function AdminDashboard() {
                     </div>
                   </div>
                   <span style={{ ...styles.statusPill, background: u.isBlocked ? '#66000022' : '#00660022', color: u.isBlocked ? '#ef4444' : '#10b981', border: `1px solid ${u.isBlocked ? '#ef4444' : '#10b981'}` }}>
-                    {u.isBlocked ? 'BLOCKED' : 'ACTIVE'}
+                    {u.isBlocked ? '🚫 BLOCKED' : '✅ ACTIVE'}
                   </span>
                 </div>
                 <p style={styles.detailRow}>🆔 {u.studentId || 'N/A'}</p>
                 <p style={styles.detailRow}>📞 {u.phone || 'N/A'}</p>
+                <p style={styles.detailRow}>❌ Cancellations: <b style={{ color: u.cancelCount >= 3 ? '#e63946' : 'white' }}>{u.cancelCount || 0}</b> / 5</p>
+                {u.cancelCount >= 3 && !u.isBlocked && (
+                  <div style={{ background: '#1a0a00', border: '1px solid #f59e0b', color: '#f59e0b', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', marginBottom: '8px' }}>
+                    ⚠️ At risk — {5 - u.cancelCount} cancellations remaining
+                  </div>
+                )}
+                {u.isBlocked && (
+                  <div style={{ background: '#1a0000', border: '1px solid #e63946', color: '#ff6b6b', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', marginBottom: '8px' }}>
+                    🚫 Must email traverseuni@gmail.com to appeal
+                  </div>
+                )}
                 <button onClick={() => blockUser(u._id)}
                   style={{ ...styles.cancelBtn, background: u.isBlocked ? '#10b981' : '#e63946' }}>
-                  {u.isBlocked ? 'Unblock User' : 'Block User'}
+                  {u.isBlocked ? '✅ Unblock User' : '🚫 Block User'}
                 </button>
               </div>
             ))}
@@ -216,7 +227,7 @@ function AdminDashboard() {
           <div>
             <p style={styles.tabTitle}>All Drivers — {drivers.length} registered</p>
             {drivers.map(u => (
-              <div key={u._id} style={styles.card}>
+              <div key={u._id} style={{ ...styles.card, border: u.isBlocked ? '1px solid #e63946' : '1px solid #1a1a1a' }}>
                 <div style={styles.cardHeader}>
                   <div style={styles.userInfo}>
                     <span style={styles.userAvatar}>🚗</span>
@@ -226,14 +237,27 @@ function AdminDashboard() {
                     </div>
                   </div>
                   <span style={{ ...styles.statusPill, background: u.isBlocked ? '#66000022' : '#00660022', color: u.isBlocked ? '#ef4444' : '#10b981', border: `1px solid ${u.isBlocked ? '#ef4444' : '#10b981'}` }}>
-                    {u.isBlocked ? 'BLOCKED' : 'ACTIVE'}
+                    {u.isBlocked ? '🚫 BLOCKED' : '✅ ACTIVE'}
                   </span>
                 </div>
                 <p style={styles.detailRow}>🚘 {u.vehicleNumber || 'N/A'} {u.carName && `• ${u.carName} ${u.carModel}`}</p>
                 <p style={styles.detailRow}>📞 {u.phone || 'N/A'}</p>
+                <p style={styles.detailRow}>🚗 Vehicle Type: <b>{u.vehicleType || 'N/A'}</b></p>
+                <p style={styles.detailRow}>⭐ Online: <b style={{ color: u.isAvailable ? '#10b981' : '#666' }}>{u.isAvailable ? 'Yes' : 'No'}</b></p>
+                <p style={styles.detailRow}>❌ Cancellations: <b style={{ color: u.cancelCount >= 3 ? '#e63946' : 'white' }}>{u.cancelCount || 0}</b> / 5</p>
+                {u.cancelCount >= 3 && !u.isBlocked && (
+                  <div style={{ background: '#1a0a00', border: '1px solid #f59e0b', color: '#f59e0b', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', marginBottom: '8px' }}>
+                    ⚠️ At risk — {5 - u.cancelCount} cancellations remaining
+                  </div>
+                )}
+                {u.isBlocked && (
+                  <div style={{ background: '#1a0000', border: '1px solid #e63946', color: '#ff6b6b', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', marginBottom: '8px' }}>
+                    🚫 Must email traverseuni@gmail.com to appeal
+                  </div>
+                )}
                 <button onClick={() => blockUser(u._id)}
                   style={{ ...styles.cancelBtn, background: u.isBlocked ? '#10b981' : '#e63946' }}>
-                  {u.isBlocked ? 'Unblock User' : 'Block User'}
+                  {u.isBlocked ? '✅ Unblock Driver' : '🚫 Block Driver'}
                 </button>
               </div>
             ))}
