@@ -129,6 +129,11 @@ function StudentDashboard() {
       setDriverLocation(null);
       showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
     });
+    socket.on('ride:shared-cancelled', ({ message }) => {
+      fetchActiveRide();
+      showToast(message, 'warning');
+      setMessage(message);
+    });
     socket.on('ride:updated', (ride) => {
       if (ride.status === 'cancelled') {
         setActiveRide(null);
