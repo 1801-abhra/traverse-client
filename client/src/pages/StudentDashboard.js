@@ -197,7 +197,7 @@ function StudentDashboard() {
       if (rideType === 'shared') {
         const res = await axios.post(
           `${API}/api/rides/book-shared`,
-          { pickup, dropoff, fare: finalFare, vehicleType: selectedVehicle },
+          { pickup, dropoff, fare: finalFare, vehicleType: selectedVehicle, scheduledTime: isScheduled ? new Date(scheduledTime).toISOString() : null },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (res.data.ride) setActiveRide(res.data.ride);
