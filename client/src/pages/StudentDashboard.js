@@ -538,7 +538,6 @@ function StudentDashboard() {
                       <div>
                         <p style={{ margin: '0 0 4px 0' }}>👤 <b>{ride.student?.name}</b> → <b>{ride.dropoff}</b></p>
                         <p style={{ color: '#999', fontSize: '13px', margin: 0 }}>🚗 {ride.vehicleType} • ₹{Math.ceil(ride.fare / 2)} each</p>
-                        <p style={{ color: '#999', fontSize: '13px', margin: 0 }}>🚗 {ride.vehicleType} • ₹{Math.ceil(ride.fare / 2)} each</p>
                         {ride.isScheduled && ride.scheduledTime && (
                           <p style={{ color: '#f59e0b', fontSize: '13px', margin: '4px 0 0' }}>
                             🕐 Scheduled: {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
