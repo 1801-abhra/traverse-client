@@ -148,6 +148,7 @@ function StudentDashboard() {
     socket.on('ride:matched', ({ message, ride }) => {
       setMatchMessage(message);
       setActiveRide(ride);
+      showToast(message, 'success');
     });
     socket.on('driver:location', ({ lat, lng }) => {
       setDriverLocation([lat, lng]);
@@ -276,8 +277,9 @@ function StudentDashboard() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMatchMessage(res.data.message);
       setActiveRide(res.data.ride);
+      setMatchMessage(res.data.message);
+      showToast(res.data.message, 'success');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Failed to join ride');
     }
@@ -383,7 +385,6 @@ function StudentDashboard() {
       )}
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
-
       <div style={styles.content}>
         {message && (
           <div style={styles.messagebox}>
@@ -391,121 +392,51 @@ function StudentDashboard() {
           </div>
         )}
 
-        {activeRide && (
-          <div style={styles.rideCard}>
-            <div style={styles.rideCardHeader}>
-              <h3 style={styles.rideCardTitle}>Active Ride</h3>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button onClick={fetchActiveRide} style={{ background: 'transparent', border: 'none', color: '#999', cursor: 'pointer', fontSize: '18px' }}>🔄</button>
-                <span style={{ ...styles.statusBadge, background: statusColor[activeRide.status] + '22', color: statusColor[activeRide.status], border: `1px solid ${statusColor[activeRide.status]}` }}>
-                  {statusLabel[activeRide.status]}
-                </span>
-              </div>
-            </div>
 
-            <div style={styles.routeInfo}>
-              <div style={styles.routePoint}>
-                <span>🟢</span>
-                <span>{activeRide.pickup}</span>
-              </div>
-              <div style={styles.routeLine}>|</div>
-              <div style={styles.routePoint}>
-                <span>🔴</span>
-                <span>{activeRide.dropoff}</span>
-              </div>
-            </div>
 
-            {activeRide.driver && (
-              <div style={styles.driverCard}>
-                <div style={styles.driverInfo}>
-                  <div style={styles.driverAvatar}>🧑</div>
-                  <div>
-                    <p style={styles.driverName}>{activeRide.driver?.name}</p>
-                    <p style={styles.driverDetails}>
-                      {activeRide.driver?.vehicleNumber}
-                      {activeRide.driver?.carName && ` • ${activeRide.driver.carName} ${activeRide.driver.carModel}`}
-                      {activeRide.vehicleType && ` • ${activeRide.vehicleType}`}
-                    </p>
-                  </div>
-                </div>
-                {activeRide.driver?.phone && (
-                  <a href={`tel:${activeRide.driver.phone}`} style={styles.callBtn}>📞 Call Driver</a>
-                )}
-              </div>
-            )}
 
-            {activeRide.status === 'ontheway' && (
-              <div style={{ marginTop: '16px' }}>
-                <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
-                  🚗 Driver Live Location {!driverLocation && <span style={{ color: '#f59e0b' }}>— Waiting for GPS...</span>}
-                </p>
-                {driverLocation && (
-                  <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
-                    <FlyTo coords={driverLocation} />
-                  </MapContainer>
-                )}
-              </div>
-            )}
+        <div style={styles.routeInfo}>
+          <div style={styles.routePoint}>
+            <span>🟢</span>
+            <span>{activeRide.pickup}</span>
+          </div>
+          <div style={styles.routeLine}>|</div>
+          <div style={styles.routePoint}>
+            <span>🔴</span>
+            <span>{activeRide.dropoff}</span>
+          </div>
+        </div>
 
-            {activeRide.fare > 0 && (
-              <div style={styles.fareInfo}>
-                <span>💰 Fare: <b>₹{activeRide.fare}</b></span>
-              </div>
-            )}
-
-            {activeRide.status === 'searching' && (
-              <button onClick={cancelRide} style={styles.cancelBtn}>Cancel Ride</button>
-            )}
-            {activeRide.status === 'accepted' && (
-              <button onClick={() => setShowCancelPopup(true)} style={styles.cancelBtn}>
-                Cancel Ride
-              </button>
-            )}
-
-            {showCancelPopup && (
-              <div style={styles.popup}>
-                <div style={styles.popupCard}>
-                  <h3 style={{ color: 'white', marginBottom: '8px' }}>⚠️ Cancel Ride?</h3>
-                  <p style={{ color: '#999', fontSize: '14px', marginBottom: '20px' }}>
-                    Cancelling after driver acceptance may result in blacklisting after 5 times. Are you sure?
-                  </p>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={cancelAcceptedRide} style={{ ...styles.cancelBtn, flex: 1 }}>
-                      Yes, Cancel
-                    </button>
-                    <button onClick={() => setShowCancelPopup(false)}
-                      style={{ flex: 1, padding: '10px', background: '#1a1a1a', color: '#999', border: '1px solid #2a2a2a', borderRadius: '8px', cursor: 'pointer' }}>
-                      No, Keep Ride
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            {activeRide.status === 'completed' && !rated && (
-              <div style={styles.ratingBox}>
-                <p style={{ color: '#999', marginBottom: '8px' }}>Rate your experience</p>
-                <div>
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <span key={star} onClick={() => rateRide(star)}
-                      style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333' }}>★</span>
-                  ))}
-                </div>
-                <button onClick={() => setActiveRide(null)}
-                  style={{ ...styles.cancelBtn, marginTop: '12px', color: '#666', borderColor: '#333', fontSize: '13px' }}>
-                  Skip Rating
-                </button>
-              </div>
-            )}
-            {rated && (
+        {activeRide.driver && (
+          <div style={styles.driverCard}>
+            <div style={styles.driverInfo}>
+              <div style={styles.driverAvatar}>🧑</div>
               <div>
-                <p style={{ color: '#10b981', marginTop: '8px' }}>✅ Rated {rating} stars!</p>
-                <button onClick={() => setActiveRide(null)}
-                  style={{ ...styles.cancelBtn, marginTop: '12px', color: '#10b981', borderColor: '#10b981' }}>
-                  Done ✓
-                </button>
+                <p style={styles.driverName}>{activeRide.driver?.name}</p>
+                <p style={styles.driverDetails}>
+                  {activeRide.driver?.vehicleNumber}
+                  {activeRide.driver?.carName && ` • ${activeRide.driver.carName} ${activeRide.driver.carModel}`}
+                  {activeRide.vehicleType && ` • ${activeRide.vehicleType}`}
+                </p>
               </div>
+            </div>
+            {activeRide.driver?.phone && (
+              <a href={`tel:${activeRide.driver.phone}`} style={styles.callBtn}>📞 Call Driver</a>
+            )}
+          </div>
+        )}
+
+        {activeRide.status === 'ontheway' && (
+          <div style={{ marginTop: '16px' }}>
+            <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
+              🚗 Driver Live Location {!driverLocation && <span style={{ color: '#f59e0b' }}>— Waiting for GPS...</span>}
+            </p>
+            {driverLocation && (
+              <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
+                <FlyTo coords={driverLocation} />
+              </MapContainer>
             )}
           </div>
         )}
