@@ -112,14 +112,25 @@ function Register() {
                 onChange={handleChange} required />
             </div>
 
-            {form.role === 'student' && (
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>STUDENT ID</label>
-                <input style={styles.input} name='studentId'
-                  placeholder='Your enrollment number'
-                  value={form.studentId} onChange={handleChange} required />
-              </div>
-            )}
+            {
+              form.role === 'student' && (
+                <>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>STUDENT ID</label>
+                    <input style={styles.input} name='studentId'
+                      placeholder='Your enrollment number'
+                      value={form.studentId} onChange={handleChange} required />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>PHONE NUMBER</label>
+                    <input style={styles.input} name='phone'
+                      placeholder='+91 Phone Number'
+                      value={form.phone || ''} onChange={handleChange} required />
+                  </div>
+                </>
+              )
+            }
+        
 
             {form.role === 'driver' && (
               <>
@@ -181,7 +192,7 @@ function Register() {
           <Link to='/login' style={styles.loginBtn}>Sign In</Link>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

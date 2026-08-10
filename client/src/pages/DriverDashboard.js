@@ -308,10 +308,15 @@ function DriverDashboard() {
 
             <div style={styles.studentCard}>
               <div style={styles.studentAvatar}>👤</div>
-              <div>
+              <div style={{ flex: 1 }}>
                 <p style={styles.studentName}>{activeRide.student?.name}</p>
                 <p style={styles.studentId}>Student</p>
               </div>
+              {activeRide.student?.phone && (
+                <a href={`tel:${activeRide.student.phone}`} style={styles.callBtn}>
+                  📞 Call Student
+                </a>
+              )}
             </div>
 
             <div style={styles.routeInfo}>
