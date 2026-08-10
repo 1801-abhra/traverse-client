@@ -15,6 +15,7 @@ function Toast({ message, type = 'info', onClose }) {
     const config = {
         accepted: { color: '#e63946', bg: '#1a0000', icon: '🚗', border: '#e63946' },
         success: { color: '#10b981', bg: '#001a0a', icon: '✅', border: '#10b981' },
+        match: { color: '#10b981', bg: '#001a0a', icon: '👥', border: '#10b981' },
         info: { color: '#3b82f6', bg: '#00081a', icon: '📍', border: '#3b82f6' },
         warning: { color: '#f59e0b', bg: '#1a0f00', icon: '⚠️', border: '#f59e0b' },
     };
@@ -57,8 +58,9 @@ function Toast({ message, type = 'info', onClose }) {
             <div>
                 <p style={{ margin: 0, fontSize: '14px', fontWeight: '600', color: 'white' }}>
                     {type === 'accepted' ? 'Ride Accepted!' :
-                        type === 'success' ? 'Ride Completed!' :
-                            type === 'warning' ? 'Warning' : 'Update'}
+                        type === 'match' ? 'Ride Matched! 👥' :
+                            type === 'success' ? 'Ride Completed!' :
+                                type === 'warning' ? 'Warning' : 'Update'}
                 </p>
                 <p style={{ margin: '2px 0 0', fontSize: '13px', color: '#999' }}>
                     {message}

@@ -148,7 +148,7 @@ function StudentDashboard() {
     socket.on('ride:matched', ({ message, ride }) => {
       setMatchMessage(message);
       setActiveRide(ride);
-      showToast(message, 'success');
+      showToast(message, 'match');
     });
     socket.on('driver:location', ({ lat, lng }) => {
       setDriverLocation([lat, lng]);
@@ -279,7 +279,7 @@ function StudentDashboard() {
       );
       setActiveRide(res.data.ride);
       setMatchMessage(res.data.message);
-      showToast(res.data.message, 'success');
+      showToast(res.data.message, 'match');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Failed to join ride');
     }
