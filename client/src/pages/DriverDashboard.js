@@ -343,11 +343,11 @@ function DriverDashboard() {
               onClick={() => { setActiveTab('scheduled'); fetchScheduledRides(); }}
               style={activeTab === 'scheduled' ? styles.tabActive : styles.tabInactive}>
               🕐 Scheduled
-              {myScheduledRides.length > 0 && <span style={styles.tabBadge}>{myScheduledRides.length}</span>}
+              {(scheduledRides.length + myScheduledRides.length) > 0 &&
+                <span style={styles.tabBadge}>{scheduledRides.length + myScheduledRides.length}</span>}
             </button>
           </div>
         )}
-
         {/* Active Ride */}
         {activeRide && (
           <div style={styles.rideCard}>
