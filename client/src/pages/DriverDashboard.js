@@ -10,6 +10,10 @@ let socket;
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
+  const [activeTab, setActiveTab] = useState('instant');
+  const [scheduledRides, setScheduledRides] = useState([]);
+  const [myScheduledRides, setMyScheduledRides] = useState([]);
+  const [scheduledLoading, setScheduledLoading] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showCancelPopup, setShowCancelPopup] = useState(false);
   const isAvailableRef = React.useRef(true);
@@ -27,6 +31,7 @@ function DriverDashboard() {
   useEffect(() => {
     fetchAvailableRides();
     fetchMyRating();
+    fetchScheduledRides();
     const fetchAvailability = async () => {
       try {
         const res = await axios.get(
@@ -133,6 +138,35 @@ function DriverDashboard() {
       const res = await axios.get(`${API}/api/rides/my-rating`, { headers: { Authorization: `Bearer ${token}` } });
       setMyRating(res.data);
     } catch (err) { console.log('Rating fetch failed'); }
+  };
+
+  const fetchScheduledRides = async () => {
+    setScheduledLoading(true);
+    try {
+      const [available, mine] = await Promise.all([
+        axios.get(`${API}/api/rides/scheduled`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/api/rides/my-scheduled`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      setScheduledRides(available.data);
+      setMyScheduledRides(mine.data);
+    } catch (err) {
+      console.log('Failed to fetch scheduled rides');
+    }
+    setScheduledLoading(false);
+  };
+
+  const preAcceptRide = async (rideId) => {
+    try {
+      await axios.put(
+        `${API}/api/rides/pre-accept/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchScheduledRides();
+      setMessage('Scheduled ride confirmed! ✅');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Cannot pre-accept ride');
+    }
   };
 
   const toggleAvailability = async () => {
@@ -296,6 +330,24 @@ function DriverDashboard() {
           </div>
         )}
 
+        {/* Tabs */}
+        {!activeRide && (
+          <div style={styles.tabRow}>
+            <button
+              onClick={() => setActiveTab('instant')}
+              style={activeTab === 'instant' ? styles.tabActive : styles.tabInactive}>
+              ⚡ Instant Rides
+              {rides.length > 0 && <span style={styles.tabBadge}>{rides.length}</span>}
+            </button>
+            <button
+              onClick={() => { setActiveTab('scheduled'); fetchScheduledRides(); }}
+              style={activeTab === 'scheduled' ? styles.tabActive : styles.tabInactive}>
+              🕐 Scheduled
+              {myScheduledRides.length > 0 && <span style={styles.tabBadge}>{myScheduledRides.length}</span>}
+            </button>
+          </div>
+        )}
+
         {/* Active Ride */}
         {activeRide && (
           <div style={styles.rideCard}>
@@ -381,79 +433,169 @@ function DriverDashboard() {
         )}
 
         {/* Available Rides */}
+        {/* Available Rides */}
         {!activeRide && (
           <div>
-            <div style={styles.header}>
+            {activeTab === 'instant' && (
               <div>
-                <h3 style={styles.sectionTitle}>Available Rides</h3>
-                <p style={styles.sectionSubtitle}>{rides.length} ride{rides.length !== 1 ? 's' : ''} waiting</p>
-              </div>
-              <button onClick={fetchAvailableRides} style={styles.refreshBtn}>🔄 Refresh</button>
-            </div>
+                <div style={styles.header}>
+                  <div>
+                    <h3 style={styles.sectionTitle}>Available Rides</h3>
+                    <p style={styles.sectionSubtitle}>{rides.length} ride{rides.length !== 1 ? 's' : ''} waiting</p>
+                  </div>
+                  <button onClick={fetchAvailableRides} style={styles.refreshBtn}>🔄 Refresh</button>
+                </div>
 
-            {rides.length === 0 && (
-              <div style={styles.empty}>
-                <p style={styles.emptyIcon}>🚖</p>
-                <p style={styles.emptyTitle}>No rides available</p>
-                <p style={styles.emptySubtitle}>Waiting for ride requests...</p>
+                {rides.length === 0 && (
+                  <div style={styles.empty}>
+                    <p style={styles.emptyIcon}>🚖</p>
+                    <p style={styles.emptyTitle}>No rides available</p>
+                    <p style={styles.emptySubtitle}>Waiting for ride requests...</p>
+                  </div>
+                )}
+
+                {rides.map(ride => (
+                  <div key={ride._id} style={styles.rideCard}>
+                    <div style={styles.rideCardHeader}>
+                      <div style={styles.studentInfo}>
+                        <span style={styles.studentAvatar2}>👤</span>
+                        <div>
+                          <p style={styles.studentName}>{ride.student?.name}</p>
+                          {ride.rideType === 'shared' && (
+                            <span style={styles.sharedBadge}>
+                              👥 {ride.sharedWith ? `Shared with ${ride.sharedWith.name}` : 'Looking for match'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {ride.isScheduled && (
+                        <span style={styles.scheduledTag}>📅 Scheduled</span>
+                      )}
+                    </div>
+
+                    <div style={styles.routeInfo}>
+                      <div style={styles.routePoint}>
+                        <span>🟢</span><span>{ride.pickup}</span>
+                      </div>
+                      <div style={styles.routeLine}>↓</div>
+                      <div style={styles.routePoint}>
+                        <span>🔴</span><span>{ride.dropoff}</span>
+                      </div>
+                    </div>
+
+                    {ride.isScheduled && ride.scheduledTime && (
+                      <div style={styles.scheduledBadge}>
+                        🕐 Scheduled: <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+                      </div>
+                    )}
+                    {!ride.isScheduled && (
+                      <p style={styles.requestTime}>⏰ Requested at {new Date(ride.createdAt).toLocaleTimeString()}</p>
+                    )}
+
+                    <div style={styles.actionBtns}>
+                      <button onClick={() => acceptRide(ride._id)} style={styles.acceptBtn} disabled={accepting}>
+                        {accepting ? 'Accepting...' : '✓ Accept'}
+                      </button>
+                      <button onClick={() => rejectRide(ride._id)} style={styles.rejectBtn}>
+                        ✕ Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
-            {rides.map(ride => (
-              <div key={ride._id} style={styles.rideCard}>
-                <div style={styles.rideCardHeader}>
-                  <div style={styles.studentInfo}>
-                    <span style={styles.studentAvatar2}>👤</span>
-                    <div>
-                      <p style={styles.studentName}>{ride.student?.name}</p>
-                      {ride.rideType === 'shared' && (
-                        <span style={styles.sharedBadge}>
-                          👥 {ride.sharedWith ? `Shared with ${ride.sharedWith.name}` : 'Looking for match'}
-                        </span>
-                      )}
+            {activeTab === 'scheduled' && (
+              <div>
+                {myScheduledRides.length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 style={{ ...styles.sectionTitle, color: '#10b981' }}>
+                      ✅ My Confirmed Rides ({myScheduledRides.length})
+                    </h3>
+                    {myScheduledRides.map(ride => (
+                      <div key={ride._id} style={{ ...styles.rideCard, border: '1px solid #10b981' }}>
+                        <div style={styles.rideCardHeader}>
+                          <div style={styles.studentInfo}>
+                            <span style={styles.studentAvatar2}>👤</span>
+                            <div>
+                              <p style={styles.studentName}>{ride.student?.name}</p>
+                              {ride.student?.phone && (
+                                <a href={`tel:${ride.student.phone}`} style={{ color: '#e63946', fontSize: '13px' }}>
+                                  📞 {ride.student.phone}
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                          <span style={{ color: '#10b981', fontSize: '12px', fontWeight: '600' }}>CONFIRMED</span>
+                        </div>
+                        <div style={styles.routeInfo}>
+                          <div style={styles.routePoint}><span>🟢</span><span>{ride.pickup}</span></div>
+                          <div style={styles.routeLine}>↓</div>
+                          <div style={styles.routePoint}><span>🔴</span><span>{ride.dropoff}</span></div>
+                        </div>
+                        <div style={styles.scheduledBadge}>
+                          🕐 {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div style={styles.header}>
+                  <h3 style={styles.sectionTitle}>🕐 Available Scheduled Rides</h3>
+                  <button onClick={fetchScheduledRides} style={styles.refreshBtn}>🔄 Refresh</button>
+                </div>
+
+                {scheduledLoading && <Spinner text='Loading...' />}
+
+                {!scheduledLoading && scheduledRides.length === 0 && (
+                  <div style={styles.empty}>
+                    <p style={styles.emptyIcon}>🕐</p>
+                    <p style={styles.emptyTitle}>No scheduled rides</p>
+                    <p style={styles.emptySubtitle}>Scheduled rides will appear here</p>
+                  </div>
+                )}
+
+                {scheduledRides.map(ride => (
+                  <div key={ride._id} style={styles.rideCard}>
+                    <div style={styles.rideCardHeader}>
+                      <div style={styles.studentInfo}>
+                        <span style={styles.studentAvatar2}>👤</span>
+                        <div>
+                          <p style={styles.studentName}>{ride.student?.name}</p>
+                          {ride.student?.phone && (
+                            <a href={`tel:${ride.student.phone}`} style={{ color: '#e63946', fontSize: '13px' }}>
+                              📞 {ride.student.phone}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                      {ride.driver && <span style={{ color: '#f59e0b', fontSize: '12px' }}>Already taken</span>}
                     </div>
+                    <div style={styles.routeInfo}>
+                      <div style={styles.routePoint}><span>🟢</span><span>{ride.pickup}</span></div>
+                      <div style={styles.routeLine}>↓</div>
+                      <div style={styles.routePoint}><span>🔴</span><span>{ride.dropoff}</span></div>
+                    </div>
+                    <div style={styles.scheduledBadge}>
+                      🕐 {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+                    </div>
+                    <p style={styles.requestTime}>🚗 {ride.vehicleType}</p>
+                    {!ride.driver && (
+                      <button onClick={() => preAcceptRide(ride._id)} style={styles.acceptBtn}>
+                        ✓ Confirm Ride
+                      </button>
+                    )}
                   </div>
-                  {ride.isScheduled && (
-                    <span style={styles.scheduledTag}>📅 Scheduled</span>
-                  )}
-                </div>
-
-                <div style={styles.routeInfo}>
-                  <div style={styles.routePoint}>
-                    <span>🟢</span><span>{ride.pickup}</span>
-                  </div>
-                  <div style={styles.routeLine}>↓</div>
-                  <div style={styles.routePoint}>
-                    <span>🔴</span><span>{ride.dropoff}</span>
-                  </div>
-                </div>
-
-                {ride.isScheduled && ride.scheduledTime && (
-                  <div style={styles.scheduledBadge}>
-                    🕐 Scheduled: <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
-                  </div>
-                )}
-                {!ride.isScheduled && (
-                  <p style={styles.requestTime}>⏰ Requested at {new Date(ride.createdAt).toLocaleTimeString()}</p>
-                )}
-
-                <div style={styles.actionBtns}>
-                  <button onClick={() => acceptRide(ride._id)} style={styles.acceptBtn} disabled={accepting}>
-                    {accepting ? 'Accepting...' : '✓ Accept'}
-                  </button>
-                  <button onClick={() => rejectRide(ride._id)} style={styles.rejectBtn}>
-                    ✕ Reject
-                  </button>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 }
-
 const styles = {
   container: { minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, sans-serif' },
   navbar: {
@@ -513,6 +655,10 @@ const styles = {
     borderRadius: '16px',
     marginBottom: '16px'
   },
+  tabRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
+  tabActive: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', position: 'relative' },
+  tabInactive: { flex: 1, padding: '12px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', position: 'relative' },
+  tabBadge: { position: 'absolute', top: '-6px', right: '-6px', background: '#f59e0b', color: 'black', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginLeft: '6px' },
 
   rideCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   rideCardTitle: { fontSize: '18px', fontWeight: '700', margin: 0 },
