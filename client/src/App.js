@@ -11,7 +11,11 @@ const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   if (!user || !token) return <Navigate to='/login' />;
-  if (role && user.role !== role) return <Navigate to='/login' />;
+  if (role && user.role !== role) {
+    // Redirect to correct dashboard instead of login
+    if (user.role === 'student') return <Navigate to='/student' />;
+    if (user.role === 'driver') return <Navigate to='/driver' />;
+  }
   return children;
 };
 
