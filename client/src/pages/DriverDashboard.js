@@ -28,10 +28,60 @@ function DriverDashboard() {
   const [accepting, setAccepting] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
 
+  const fetchAvailableRides = async () => {
+    try {
+      const res = await axios.get(`${API}/api/rides/available`, { headers: { Authorization: `Bearer ${token}` } });
+      setRides(res.data);
+    } catch (err) {
+      setMessage('Failed to fetch rides');
+    } finally {
+      setPageLoading(false);
+    }
+  };
+
+  const fetchMyRating = async () => {
+    try {
+      const res = await axios.get(`${API}/api/rides/my-rating`, { headers: { Authorization: `Bearer ${token}` } });
+      setMyRating(res.data);
+    } catch (err) { console.log('Rating fetch failed'); }
+  };
+
+  const fetchDriverActiveRide = async () => {
+    try {
+      const res = await axios.get(
+        `${API}/api/rides/driver-active`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data) {
+        setActiveRide(res.data);
+      }
+    } catch (err) {
+      console.log('No active ride for driver');
+    } finally {
+      setPageLoading(false);
+    }
+  };
+
+  const fetchScheduledRides = async () => {
+    setScheduledLoading(true);
+    try {
+      const [available, mine] = await Promise.all([
+        axios.get(`${API}/api/rides/scheduled`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/api/rides/my-scheduled`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      setScheduledRides(available.data);
+      setMyScheduledRides(mine.data);
+    } catch (err) {
+      console.log('Failed to fetch scheduled rides');
+    }
+    setScheduledLoading(false);
+  };
+
   useEffect(() => {
     fetchAvailableRides();
     fetchMyRating();
     fetchScheduledRides();
+    fetchDriverActiveRide();
     const fetchAvailability = async () => {
       try {
         const res = await axios.get(
@@ -122,39 +172,7 @@ function DriverDashboard() {
       }, null, { enableHighAccuracy: true, maximumAge: 0 });
     }
   }, [activeRide]);
-  const fetchAvailableRides = async () => {
-    try {
-      const res = await axios.get(`${API}/api/rides/available`, { headers: { Authorization: `Bearer ${token}` } });
-      setRides(res.data);
-    } catch (err) {
-      setMessage('Failed to fetch rides');
-    } finally {
-      setPageLoading(false);
-    }
-  };
-
-  const fetchMyRating = async () => {
-    try {
-      const res = await axios.get(`${API}/api/rides/my-rating`, { headers: { Authorization: `Bearer ${token}` } });
-      setMyRating(res.data);
-    } catch (err) { console.log('Rating fetch failed'); }
-  };
-
-  const fetchScheduledRides = async () => {
-    setScheduledLoading(true);
-    try {
-      const [available, mine] = await Promise.all([
-        axios.get(`${API}/api/rides/scheduled`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/api/rides/my-scheduled`, { headers: { Authorization: `Bearer ${token}` } })
-      ]);
-      setScheduledRides(available.data);
-      setMyScheduledRides(mine.data);
-    } catch (err) {
-      console.log('Failed to fetch scheduled rides');
-    }
-    setScheduledLoading(false);
-  };
-
+  
   const preAcceptRide = async (rideId) => {
     try {
       await axios.put(
