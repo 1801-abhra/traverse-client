@@ -48,22 +48,15 @@ function DriverDashboard() {
 
   const fetchDriverActiveRide = async () => {
     try {
-      const currentToken = localStorage.getItem('token');
-      console.log('Token exists:', !!currentToken);
-      if (!currentToken) {
-        setPageLoading(false);
-        return;
-      }
       const res = await axios.get(
-        `${API}/api/rides/driver-active?t=${Date.now()}`,
-        { headers: { Authorization: `Bearer ${currentToken}`, 'Cache-Control': 'no-cache' } }
+        `${API}/api/rides/driver-active`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log('Active ride response:', res.data);
       if (res.data) {
         setActiveRide(res.data);
       }
     } catch (err) {
-      console.log('Driver active ride error:', err.message);
+      console.log('No active ride');
     } finally {
       setPageLoading(false);
     }
