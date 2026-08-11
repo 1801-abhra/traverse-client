@@ -49,8 +49,8 @@ function DriverDashboard() {
   const fetchDriverActiveRide = async () => {
     try {
       const res = await axios.get(
-        `${API}/api/rides/driver-active`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${API}/api/rides/driver-active?t=${Date.now()}`,
+        { headers: { Authorization: `Bearer ${token}`, 'Cache-Control': 'no-cache' } }
       );
       if (res.data) {
         setActiveRide(res.data);
@@ -172,7 +172,7 @@ function DriverDashboard() {
       }, null, { enableHighAccuracy: true, maximumAge: 0 });
     }
   }, [activeRide]);
-  
+
   const preAcceptRide = async (rideId) => {
     try {
       await axios.put(
