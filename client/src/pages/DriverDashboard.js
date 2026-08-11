@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { unlockAudio, playRideSound } from '../utils/sound';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
@@ -118,6 +119,7 @@ function DriverDashboard() {
           if (exists) return prev;
           return [ride, ...prev];
         });
+        playRideSound();
       }
     });
     socket.on('ride:cancelled-by-party', ({ message }) => {
@@ -282,7 +284,7 @@ function DriverDashboard() {
 
   if (pageLoading) {
     return (
-      <div style={styles.container}>
+      <div style={styles.container} onClick={unlockAudio}>
         <div style={styles.navbar}>
           <div style={styles.navBrand}>
             <span style={styles.navLogo}>🚖</span>
