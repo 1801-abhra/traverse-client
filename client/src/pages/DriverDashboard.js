@@ -13,6 +13,8 @@ let socket;
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
+  const rideSound = new Audio('/notification.mp3');
+  rideSound.preload = 'auto';
   const [activeTab, setActiveTab] = useState('instant');
   const [scheduledRides, setScheduledRides] = useState([]);
   const [myScheduledRides, setMyScheduledRides] = useState([]);
