@@ -284,7 +284,7 @@ function DriverDashboard() {
 
   if (pageLoading) {
     return (
-      <div style={styles.container} onClick={unlockAudio}>
+      <div style={styles.container} onClick={unlockAudio} onTouchStart={unlockAudio}>
         <div style={styles.navbar}>
           <div style={styles.navBrand}>
             <span style={styles.navLogo}>🚖</span>
@@ -297,7 +297,7 @@ function DriverDashboard() {
   }
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} onClick={unlockAudio} onTouchStart={unlockAudio}>
       {/* Navbar */}
       <div style={styles.navbar}>
         <div style={styles.navBrand}>
