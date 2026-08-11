@@ -6,6 +6,8 @@ import io from 'socket.io-client';
 import { requestNotificationPermission } from '../firebase';
 import Spinner from '../components/Spinner';
 import AboutModal from '../components/AboutModal';
+const rideSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09a.mp3');
+rideSound.preload = 'auto';
 let socket;
 
 const API = 'https://traverse-app.onrender.com';
@@ -119,7 +121,7 @@ function DriverDashboard() {
           if (exists) return prev;
           return [ride, ...prev];
         });
-        playRideSound();
+        rideSound.play().catch(e => console.log('Sound error:', e));
       }
     });
     socket.on('ride:cancelled-by-party', ({ message }) => {
