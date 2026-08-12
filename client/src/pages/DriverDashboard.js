@@ -8,6 +8,14 @@ import Spinner from '../components/Spinner';
 import AboutModal from '../components/AboutModal';
 const rideSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09a.mp3');
 rideSound.preload = 'auto';
+const pendingSoundRef = React.useRef(false);
+
+const tryPlaySound = () => {
+  if (pendingSoundRef.current) {
+    rideSound.play().catch(e => console.log(e));
+    pendingSoundRef.current = false;
+  }
+};
 let socket;
 
 const API = 'https://traverse-app.onrender.com';
@@ -123,7 +131,10 @@ function DriverDashboard() {
           if (exists) return prev;
           return [ride, ...prev];
         });
-        rideSound.play().catch(e => console.log('Sound error:', e));
+        // Try to play immediately, if blocked store for next touch
+        rideSound.play().catch(() => {
+          pendingSoundRef.current = true;
+        });
       }
     });
     socket.on('ride:cancelled-by-party', ({ message }) => {
@@ -288,7 +299,7 @@ function DriverDashboard() {
 
   if (pageLoading) {
     return (
-      <div style={styles.container} onClick={unlockAudio} onTouchStart={unlockAudio}>
+      <div style={styles.container} onClick={tryPlaySound} onTouchStart={tryPlaySound}>
         <div style={styles.navbar}>
           <div style={styles.navBrand}>
             <span style={styles.navLogo}>🚖</span>
@@ -301,7 +312,7 @@ function DriverDashboard() {
   }
 
   return (
-    <div style={styles.container} onClick={unlockAudio} onTouchStart={unlockAudio}>
+    <div style={styles.container} onClick={tryPlaySound} onTouchStart={tryPlaySound}>
       {/* Navbar */}
       <div style={styles.navbar}>
         <div style={styles.navBrand}>
