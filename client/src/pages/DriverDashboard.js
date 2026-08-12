@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { unlockAudio, playRideSound } from '../utils/sound';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { requestNotificationPermission } from '../firebase';
 import Spinner from '../components/Spinner';
 import AboutModal from '../components/AboutModal';
-const rideSound = new Audio('https://www.soundjay.com/buttons/sounds/button-09a.mp3');
-rideSound.preload = 'auto';
-const pendingSoundRef = React.useRef(false);
 
-const tryPlaySound = () => {
-  if (pendingSoundRef.current) {
-    rideSound.play().catch(e => console.log(e));
-    pendingSoundRef.current = false;
-  }
-};
 let socket;
-
 const API = 'https://traverse-app.onrender.com';
 
 function DriverDashboard() {
-  const rideSound = new Audio('/notification.mp3');
-  rideSound.preload = 'auto';
+  const rideSound = React.useRef(new Audio('/notification.wav'));
+  const pendingSoundRef = React.useRef(false);
+
+  const tryPlaySound = () => {
+    if (pendingSoundRef.current) {
+      rideSound.current.play().catch(e => console.log(e));
+      pendingSoundRef.current = false;
+    }
+  };
+
   const [activeTab, setActiveTab] = useState('instant');
   const [scheduledRides, setScheduledRides] = useState([]);
   const [myScheduledRides, setMyScheduledRides] = useState([]);
@@ -131,8 +128,7 @@ function DriverDashboard() {
           if (exists) return prev;
           return [ride, ...prev];
         });
-        // Try to play immediately, if blocked store for next touch
-        rideSound.play().catch(() => {
+        rideSound.current.play().catch(() => {
           pendingSoundRef.current = true;
         });
       }
