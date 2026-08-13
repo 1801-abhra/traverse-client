@@ -86,12 +86,16 @@ function Register() {
                 🎓 Student
               </button>
               <button type='button'
+                onClick={() => setForm({ ...form, role: 'faculty' })}
+                style={form.role === 'faculty' ? styles.roleActive : styles.roleInactive}>
+                👨‍🏫 Faculty
+              </button>
+              <button type='button'
                 onClick={() => setForm({ ...form, role: 'driver' })}
                 style={form.role === 'driver' ? styles.roleActive : styles.roleInactive}>
                 🚗 Driver
               </button>
             </div>
-
             <div style={styles.inputGroup}>
               <label style={styles.label}>FULL NAME</label>
               <input style={styles.input} name='name' placeholder='Enter your full name'
@@ -130,7 +134,15 @@ function Register() {
                 </>
               )
             }
-        
+
+            {form.role === 'faculty' && (
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>PHONE NUMBER</label>
+                <input style={styles.input} name='phone'
+                  placeholder='+91 Phone Number'
+                  value={form.phone || ''} onChange={handleChange} required />
+              </div>
+            )}
 
             {form.role === 'driver' && (
               <>
