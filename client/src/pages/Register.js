@@ -11,6 +11,7 @@ function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [verificationSent, setVerificationSent] = useState(false);
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,20 +22,43 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Clear any existing session first
+      localStorage.clear();
+
       const { data } = await axios.post(
         'https://traverse-app.onrender.com/api/auth/register',
         form,
         { withCredentials: false }
       );
-      localStorage.setItem('user', JSON.stringify(data));
-      localStorage.setItem('token', data.token);
-      if (data.role === 'student') navigate('/student');
-      else navigate('/driver');
+      setError('');
+      setVerificationSent(true);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
     setLoading(false);
   };
+
+  if (verificationSent) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div style={{ background: '#111', border: '1px solid #10b981', padding: '40px', borderRadius: '16px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📧</div>
+          <h2 style={{ color: 'white', marginBottom: '8px' }}>Check Your Email!</h2>
+          <p style={{ color: '#999', marginBottom: '24px', lineHeight: '1.6' }}>
+            We sent a verification link to <b style={{ color: '#e63946' }}>{form.email}</b>.
+            Click the link to activate your account.
+          </p>
+          <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+            Link expires in 24 hours. Check spam folder if not found.
+          </p>
+          <a href="/login" style={{ display: 'block', padding: '12px', background: '#e63946', color: 'white', borderRadius: '8px', textDecoration: 'none', fontWeight: '600' }}>
+            Go to Login
+          </a>
+        </div>
+      </div>
+    );
+  }
+
 
   const isMobile = window.innerWidth <= 768;
 
