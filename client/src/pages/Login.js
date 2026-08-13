@@ -29,6 +29,19 @@ function Login() {
     setLoading(false);
   };
 
+  const resendVerification = async () => {
+    try {
+      await axios.post(
+        'https://traverse-app.onrender.com/api/auth/resend-verification',
+        { email },
+        { withCredentials: false }
+      );
+      setError('Verification email sent! Check your inbox.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to resend');
+    }
+  };
+
   const isMobile = window.innerWidth <= 768;
 
   return (
@@ -74,13 +87,8 @@ function Login() {
         <div style={styles.formInner}>
           <h2 style={styles.formTitle}>Welcome back</h2>
           <p style={styles.formSubtitle}>Sign in to continue</p>
-
           {error && (
-            <div style={{
-              ...styles.errorBox,
-              background: error.includes('blocked') ? '#1a0000' : '#1a0000',
-              borderColor: error.includes('blocked') ? '#e63946' : '#e63946'
-            }}>
+            <div style={styles.errorBox}>
               {error.includes('blocked') ? '🚫' : '⚠️'} {error}
               {error.includes('blocked') && (
                 <div style={{ marginTop: '8px' }}>
@@ -88,6 +96,13 @@ function Login() {
                     📧 traverseuni@gmail.com
                   </a>
                 </div>
+              )}
+              {error.includes('verify') && (
+                <button
+                  onClick={resendVerification}
+                  style={{ display: 'block', marginTop: '10px', background: '#e63946', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', width: '100%' }}>
+                  Resend Verification Email
+                </button>
               )}
             </div>
           )}
