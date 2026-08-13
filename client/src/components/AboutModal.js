@@ -26,6 +26,12 @@ function AboutModal({ onClose }) {
                             {tab === 'about' ? 'About' : tab === 'how' ? 'How it Works' : 'Terms & Conditions'}
                         </button>
                     ))}
+                    {['about', 'how', 'terms', 'help'].map(tab => (
+                        <button key={tab} onClick={() => setActiveTab(tab)}
+                            style={activeTab === tab ? styles.tabActive : styles.tabInactive}>
+                            {tab === 'about' ? 'About' : tab === 'how' ? 'How it Works' : tab === 'help' ? 'Help' : 'Terms & Conditions'}
+                        </button>
+                    ))}
                 </div>
 
                 {/* Content */}
@@ -211,6 +217,48 @@ function AboutModal({ onClose }) {
                                 <p style={styles.contactTitle}>📧 Contact Us</p>
                                 <a href="mailto:traverseuni@gmail.com" style={styles.contactEmail}>traverseuni@gmail.com</a>
                                 <p style={styles.contactDesc}>For support, appeals or complaints</p>
+                            </div>
+                        </div>
+                    )}
+                    {activeTab === 'help' && (
+                        <div>
+                            <div style={styles.warningCard}>
+                                📧 Verification emails may land in <b>Spam/Junk</b> folder — please check there first!
+                            </div>
+
+                            <h3 style={styles.sectionTitle}>📧 Email Issues</h3>
+                            <p style={styles.text}>• Verification email not received? Check your <b>Spam/Junk</b> folder</p>
+                            <p style={styles.text}>• Mark our email as <b>"Not Spam"</b> to receive future emails</p>
+                            <p style={styles.text}>• Verification link expires in <b>24 hours</b> — request a new one from login page</p>
+                            <p style={styles.text}>• Make sure you registered with correct email address</p>
+
+                            <h3 style={styles.sectionTitle}>🔑 Login Issues</h3>
+                            <p style={styles.text}>• Students must use <b>@juitsolan.in</b> email only</p>
+                            <p style={styles.text}>• Faculty must use <b>@juitsolan.in</b> email only</p>
+                            <p style={styles.text}>• Drivers must use <b>personal email</b> — not JUIT email</p>
+                            <p style={styles.text}>• Forgot password? Email us at <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946' }}>traverseuni@gmail.com</a></p>
+
+                            <h3 style={styles.sectionTitle}>🚗 Booking Issues</h3>
+                            <p style={styles.text}>• No drivers showing? All drivers may be offline — try again later</p>
+                            <p style={styles.text}>• Ride stuck on searching? Pull down to refresh or tap 🔄</p>
+                            <p style={styles.text}>• Can't cancel? Cancellation only available before driver accepts</p>
+                            <p style={styles.text}>• App showing old status? Tap 🔄 refresh button on dashboard</p>
+
+                            <h3 style={styles.sectionTitle}>🔔 Notification Issues</h3>
+                            <p style={styles.text}>• Allow notifications when prompted for best experience</p>
+                            <p style={styles.text}>• Add app to home screen for better notification support</p>
+                            <p style={styles.text}>• iPhone users — use Safari browser for notifications</p>
+
+                            <h3 style={styles.sectionTitle}>📱 How to Install App</h3>
+                            <p style={styles.text}><b>iPhone (Safari):</b></p>
+                            <p style={styles.text}>• Open site in Safari → tap Share button → "Add to Home Screen"</p>
+                            <p style={styles.text}><b>Android (Chrome):</b></p>
+                            <p style={styles.text}>• Open site in Chrome → tap three dots → "Add to Home Screen"</p>
+
+                            <div style={styles.contactCard}>
+                                <p style={styles.contactTitle}>Still need help? 🆘</p>
+                                <a href="mailto:traverseuni@gmail.com" style={styles.contactEmail}>traverseuni@gmail.com</a>
+                                <p style={styles.contactDesc}>We'll respond within 24 hours</p>
                             </div>
                         </div>
                     )}
