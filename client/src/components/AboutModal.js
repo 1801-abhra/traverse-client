@@ -20,12 +20,6 @@ function AboutModal({ onClose }) {
 
                 {/* Tabs */}
                 <div style={styles.tabs}>
-                    {['about', 'how', 'terms'].map(tab => (
-                        <button key={tab} onClick={() => setActiveTab(tab)}
-                            style={activeTab === tab ? styles.tabActive : styles.tabInactive}>
-                            {tab === 'about' ? 'About' : tab === 'how' ? 'How it Works' : 'Terms & Conditions'}
-                        </button>
-                    ))}
                     {['about', 'how', 'terms', 'help'].map(tab => (
                         <button key={tab} onClick={() => setActiveTab(tab)}
                             style={activeTab === tab ? styles.tabActive : styles.tabInactive}>
