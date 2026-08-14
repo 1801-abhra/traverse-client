@@ -479,7 +479,7 @@ function StudentDashboard() {
                 )}
               </div>
             )}
-            {activeRide.status === 'ontheway' && (
+            {(activeRide.status === 'ontheway' || activeRide.status === 'accepted') && (
               <div style={{ marginTop: '16px' }}>
                 <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
                   🚗 Live Tracking
