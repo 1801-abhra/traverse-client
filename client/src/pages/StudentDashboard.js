@@ -9,6 +9,7 @@ import { requestNotificationPermission } from '../firebase';
 import Spinner from '../components/Spinner';
 import AboutModal from '../components/AboutModal';
 import Toast from '../components/Toast';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -60,6 +61,9 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [studentLocation, setStudentLocation] = useState(null);
+  const [routeCoords, setRouteCoords] = useState([]);
+  const [driverDistance, setDriverDistance] = useState(null);
   const [selectedPickup, setSelectedPickup] = useState('JUIT Campus, Waknaghat');
   const [toast, setToast] = useState(null);
   const [showAbout, setShowAbout] = useState(false);
@@ -100,9 +104,10 @@ function StudentDashboard() {
   }, []);
 
   useEffect(() => {
-    if (activeRide?.status !== 'completed') {
-      setRated(false);
-      setRating(0);
+    if (activeRide && activeRide.status === 'ontheway') {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        setStudentLocation([pos.coords.latitude, pos.coords.longitude]);
+      });
     }
   }, [activeRide]);
 
@@ -157,6 +162,9 @@ function StudentDashboard() {
     });
     socket.on('driver:location', ({ lat, lng }) => {
       setDriverLocation([lat, lng]);
+      if (studentLocation) {
+        getRoute([lat, lng], studentLocation);
+      }
     });
     socket.on('ride:cancelled-by-party', ({ message }) => {
       setActiveRide(null);
@@ -239,6 +247,23 @@ function StudentDashboard() {
       setSharedRides(res.data);
     } catch (err) {
       console.log('Failed to fetch shared rides');
+    }
+  };
+
+  const getRoute = async (from, to) => {
+    try {
+      const res = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson`
+      );
+      const data = await res.json();
+      if (data.routes && data.routes.length > 0) {
+        const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+        setRouteCoords(coords);
+        const distanceKm = (data.routes[0].distance / 1000).toFixed(1);
+        setDriverDistance(distanceKm);
+      }
+    } catch (err) {
+      console.log('Route fetch error:', err);
     }
   };
 
@@ -455,18 +480,60 @@ function StudentDashboard() {
                 )}
               </div>
             )}
-
             {activeRide.status === 'ontheway' && (
               <div style={{ marginTop: '16px' }}>
                 <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
-                  🚗 Driver Live Location {!driverLocation && <span style={{ color: '#f59e0b' }}>— Waiting for GPS...</span>}
+                  🚗 Live Tracking
+                  {driverDistance && <span style={{ color: '#e63946', marginLeft: '8px' }}>~{driverDistance} km away</span>}
                 </p>
-                {driverLocation && (
-                  <MapContainer center={driverLocation} zoom={15} style={{ height: '220px', borderRadius: '12px' }}>
+                {driverLocation ? (
+                  <MapContainer
+                    center={studentLocation || driverLocation}
+                    zoom={14}
+                    style={{ height: '280px', borderRadius: '12px' }}
+                  >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <Marker position={driverLocation}><Popup>Your Driver 🚗</Popup></Marker>
+
+                    {/* Driver marker */}
+                    <Marker position={driverLocation}
+                      icon={L.divIcon({
+                        html: '🚗',
+                        className: '',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                      })}>
+                      <Popup>Your Driver</Popup>
+                    </Marker>
+
+                    {/* Student location marker */}
+                    {studentLocation && (
+                      <Marker position={studentLocation}
+                        icon={L.divIcon({
+                          html: '📍',
+                          className: '',
+                          iconSize: [30, 30],
+                          iconAnchor: [15, 30]
+                        })}>
+                        <Popup>Your Location</Popup>
+                      </Marker>
+                    )}
+
+                    {/* Route line */}
+                    {routeCoords.length > 0 && (
+                      <Polyline
+                        positions={routeCoords}
+                        color='#e63946'
+                        weight={4}
+                        opacity={0.8}
+                      />
+                    )}
+
                     <FlyTo coords={driverLocation} />
                   </MapContainer>
+                ) : (
+                  <div style={{ background: '#1a1a1a', height: '280px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <p style={{ color: '#666' }}>⏳ Waiting for driver location...</p>
+                  </div>
                 )}
               </div>
             )}
