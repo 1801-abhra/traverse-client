@@ -56,6 +56,15 @@ function AdminDashboard() {
     } catch (err) { console.log('Block error:', err); }
   };
 
+  const verifyDriver = async (userId) => {
+    try {
+      await axios.put(`${API}/api/auth/admin/verify/${userId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      fetchData(token);
+    } catch (err) {
+      console.log('Verify error:', err);
+    }
+  };
+
   const students = users.filter(u => u.role === 'student');
   const faculty = users.filter(u => u.role === 'faculty');
   const drivers = users.filter(u => u.role === 'driver');
@@ -272,9 +281,16 @@ function AdminDashboard() {
                       <p style={styles.userEmail}>{u.email}</p>
                     </div>
                   </div>
-                  <span style={{ ...styles.statusPill, background: u.isBlocked ? '#66000022' : '#00660022', color: u.isBlocked ? '#ef4444' : '#10b981', border: `1px solid ${u.isBlocked ? '#ef4444' : '#10b981'}` }}>
-                    {u.isBlocked ? '🚫 BLOCKED' : '✅ ACTIVE'}
-                  </span>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    {!u.isVerified && (
+                      <span style={{ background: '#1a0a00', color: '#f59e0b', padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' }}>
+                        ⏳ PENDING
+                      </span>
+                    )}
+                    <span style={{ ...styles.statusPill, background: u.isBlocked ? '#66000022' : '#00660022', color: u.isBlocked ? '#ef4444' : '#10b981', border: `1px solid ${u.isBlocked ? '#ef4444' : '#10b981'}` }}>
+                      {u.isBlocked ? '🚫 BLOCKED' : '✅ ACTIVE'}
+                    </span>
+                  </div>
                 </div>
                 <p style={styles.detailRow}>🚘 {u.vehicleNumber || 'N/A'} {u.carName && `• ${u.carName} ${u.carModel}`}</p>
                 <p style={styles.detailRow}>📞 {u.phone || 'N/A'}</p>
@@ -295,6 +311,12 @@ function AdminDashboard() {
                   style={{ ...styles.cancelBtn, background: u.isBlocked ? '#10b981' : '#e63946' }}>
                   {u.isBlocked ? '✅ Unblock Driver' : '🚫 Block Driver'}
                 </button>
+                {!u.isVerified && (
+                  <button onClick={() => verifyDriver(u._id)}
+                    style={{ ...styles.cancelBtn, background: '#3b82f6', marginLeft: '8px' }}>
+                    ✅ Verify Driver
+                  </button>
+                )}
               </div>
             ))}
           </div>
