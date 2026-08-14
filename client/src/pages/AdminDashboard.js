@@ -57,6 +57,7 @@ function AdminDashboard() {
   };
 
   const students = users.filter(u => u.role === 'student');
+  const faculty = users.filter(u => u.role === 'faculty');
   const drivers = users.filter(u => u.role === 'driver');
   const activeRides = rides.filter(r => r.status === 'accepted' || r.status === 'ontheway');
   const completedRides = rides.filter(r => r.status === 'completed');
@@ -146,10 +147,10 @@ function AdminDashboard() {
 
         {/* Tabs */}
         <div style={styles.tabs}>
-          {['rides', 'students', 'drivers'].map(t => (
+          {['rides', 'students', 'faculty', 'drivers'].map(t => (
             <button key={t} onClick={() => setTab(t)}
               style={tab === t ? styles.tabActive : styles.tabInactive}>
-              {t === 'rides' ? '🚖' : t === 'students' ? '🎓' : '🚗'} {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'rides' ? '🚖' : t === 'students' ? '🎓' : t === 'faculty' ? '👨‍🏫' : '🚗'} {t.charAt(0).toUpperCase() + t.slice(1)}
             </button>
           ))}
         </div>
@@ -220,6 +221,40 @@ function AdminDashboard() {
                 </button>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Faculty Tab */}
+        {tab === 'faculty' && (
+          <div>
+            <p style={styles.tabTitle}>All Faculty — {faculty.length} registered</p>
+            {faculty.map(u => (
+              <div key={u._id} style={{ ...styles.card, border: u.isBlocked ? '1px solid #e63946' : '1px solid #1a1a1a' }}>
+                <div style={styles.cardHeader}>
+                  <div style={styles.userInfo}>
+                    <span style={styles.userAvatar}>👨‍🏫</span>
+                    <div>
+                      <p style={styles.userName}>{u.name}</p>
+                      <p style={styles.userEmail}>{u.email}</p>
+                    </div>
+                  </div>
+                  <span style={{ ...styles.statusPill, background: u.isBlocked ? '#66000022' : '#00660022', color: u.isBlocked ? '#ef4444' : '#10b981', border: `1px solid ${u.isBlocked ? '#ef4444' : '#10b981'}` }}>
+                    {u.isBlocked ? '🚫 BLOCKED' : '✅ ACTIVE'}
+                  </span>
+                </div>
+                <p style={styles.detailRow}>📞 {u.phone || 'N/A'}</p>
+                <p style={styles.detailRow}>❌ Cancellations: <b style={{ color: u.cancelCount >= 3 ? '#e63946' : 'white' }}>{u.cancelCount || 0}</b> / 5</p>
+                <button onClick={() => blockUser(u._id)}
+                  style={{ ...styles.cancelBtn, background: u.isBlocked ? '#10b981' : '#e63946' }}>
+                  {u.isBlocked ? '✅ Unblock' : '🚫 Block'}
+                </button>
+              </div>
+            ))}
+            {faculty.length === 0 && (
+              <div style={styles.empty}>
+                <p style={styles.emptyTitle}>No faculty registered yet</p>
+              </div>
+            )}
           </div>
         )}
 
