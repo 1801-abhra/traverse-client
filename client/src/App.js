@@ -6,6 +6,8 @@ import StudentDashboard from './pages/StudentDashboard';
 import DriverDashboard from './pages/DriverDashboard';
 import RideHistory from './pages/RideHistory';
 import AdminDashboard from './pages/AdminDashboard';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -51,6 +53,8 @@ function App() {
           </PrivateRoute>
         } />
         <Route path='/admin' element={<AdminDashboard />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/reset-password/:token' element={<ResetPassword />} />
       </Routes>
     </Router>
   );

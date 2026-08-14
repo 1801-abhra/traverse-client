@@ -139,6 +139,11 @@ function Login() {
             >
               {loading ? 'Signing in...' : 'Sign In →'}
             </button>
+            <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+              <Link to='/forgot-password' style={{ color: '#e63946', fontSize: '13px' }}>
+                Forgot Password?
+              </Link>
+            </div>
           </form>
 
           <div style={styles.divider}>
