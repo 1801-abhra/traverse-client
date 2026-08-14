@@ -817,7 +817,25 @@ function StudentDashboard() {
                       }}
                       style={{ ...styles.vehicleCard, ...(selectedVehicle === '6+1' ? styles.vehicleCardActive : {}) }}
                     >
-                      <div style={styles.vehicleIcon}>🚐</div>
+                      <div style={styles.vehicleIcon}>
+                        <svg width="80" height="44" viewBox="0 0 80 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4,30 L4,22 Q4,18 8,16 L16,14 L20,8 Q22,6 25,6 L55,6 Q58,6 60,8 L64,14 L72,16 Q76,18 76,22 L76,30 Q76,32 74,32 L6,32 Q4,32 4,30 Z" fill="#e63946" />
+                          <path d="M20,8 L16,14 L64,14 L60,8 Z" fill="#cc2233" />
+                          <rect x="18" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
+                          <rect x="32" y="8" width="12" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
+                          <rect x="47" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
+                          <path d="M6,20 L10,14 L18,14 L14,20 Z" fill="#1a2a3a" opacity="0.6" />
+                          <path d="M74,20 L70,14 L62,14 L66,20 Z" fill="#1a2a3a" opacity="0.6" />
+                          <rect x="4" y="26" width="72" height="5" rx="1" fill="#cc2233" />
+                          <rect x="74" y="18" width="4" height="4" rx="1" fill="#ffdd88" opacity="0.9" />
+                          <rect x="2" y="18" width="4" height="4" rx="1" fill="#ff4444" opacity="0.7" />
+                          <circle cx="16" cy="36" r="5.5" fill="#222" stroke="#555" strokeWidth="1.5" />
+                          <circle cx="16" cy="36" r="2.5" fill="#444" />
+                          <circle cx="64" cy="36" r="5.5" fill="#222" stroke="#555" strokeWidth="1.5" />
+                          <circle cx="64" cy="36" r="2.5" fill="#444" />
+                          <rect x="28" y="28" width="24" height="2" rx="1" fill="#aa1122" opacity="0.5" />
+                        </svg>
+                      </div>
                       <div style={styles.vehicleInfo}>
                         <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
                         <p style={styles.vehicleSeats}>Up to 6 passengers</p>
