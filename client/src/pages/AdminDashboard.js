@@ -58,8 +58,8 @@ function AdminDashboard() {
 
   const verifyDriver = async (userId) => {
     try {
-      await axios.put(`${API}/api/auth/admin/verify/${userId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
-      fetchData(token);
+      await axios.put(`${API}/api/auth/admin/verify/${userId}`, {}, { headers: { Authorization: `Bearer ${tokenRef.current}` } });
+      fetchData(tokenRef.current);
     } catch (err) {
       console.log('Verify error:', err);
     }
