@@ -22,9 +22,7 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Clear any existing session first
       localStorage.clear();
-
       const { data } = await axios.post(
         'https://traverse-app.onrender.com/api/auth/register',
         form,
@@ -37,20 +35,33 @@ function Register() {
     }
     setLoading(false);
   };
-
   if (verificationSent) {
     return (
       <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-        <div style={{ background: '#111', border: '1px solid #10b981', padding: '40px', borderRadius: '16px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📧</div>
-          <h2 style={{ color: 'white', marginBottom: '8px' }}>Check Your Email!</h2>
+        <div style={{ background: '#111', border: `1px solid ${form.role === 'driver' ? '#f59e0b' : '#10b981'}`, padding: '40px', borderRadius: '16px', maxWidth: '400px', width: '100%', textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>
+            {form.role === 'driver' ? '⏳' : '📧'}
+          </div>
+          <h2 style={{ color: 'white', marginBottom: '8px' }}>
+            {form.role === 'driver' ? 'Registration Submitted!' : 'Check Your Email!'}
+          </h2>
           <p style={{ color: '#999', marginBottom: '24px', lineHeight: '1.6' }}>
-            We sent a verification link to <b style={{ color: '#e63946' }}>{form.email}</b>.
-            Click the link to activate your account.
+            {form.role === 'driver'
+              ? 'Your driver account is pending admin verification. You will be notified once approved. This may take up to 24 hours.'
+              : `We sent a verification link to `}
+            {form.role !== 'driver' && <b style={{ color: '#e63946' }}>{form.email}</b>}
+            {form.role !== 'driver' && '. Click the link to activate your account.'}
           </p>
-          <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
-            Link expires in 24 hours. Check spam folder if not found.
-          </p>
+          {form.role === 'driver' && (
+            <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+              For queries email: <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946' }}>traverseuni@gmail.com</a>
+            </p>
+          )}
+          {form.role !== 'driver' && (
+            <p style={{ color: '#666', fontSize: '13px', marginBottom: '20px' }}>
+              Link expires in 24 hours. Check spam folder if not found.
+            </p>
+          )}
           <a href="/login" style={{ display: 'block', padding: '12px', background: '#e63946', color: 'white', borderRadius: '8px', textDecoration: 'none', fontWeight: '600' }}>
             Go to Login
           </a>
@@ -58,7 +69,6 @@ function Register() {
       </div>
     );
   }
-
 
   const isMobile = window.innerWidth <= 768;
 
