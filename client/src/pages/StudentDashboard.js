@@ -60,6 +60,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [fullRouteCoords, setFullRouteCoords] = useState([]);
   const [studentLocation, setStudentLocation] = useState(null);
   const [routeCoords, setRouteCoords] = useState([]);
   const [driverDistance, setDriverDistance] = useState(null);
@@ -132,6 +133,8 @@ function StudentDashboard() {
       setActiveRide(ride);
       setDriverLocation(null);
       showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
+      // Get full route from pickup to destination
+      getFullRoute(ride.pickup, ride.dropoff);
     });
     socket.on('ride:shared-cancelled', ({ message }) => {
       fetchActiveRide();
@@ -266,6 +269,27 @@ function StudentDashboard() {
     }
   };
 
+  const getFullRoute = async (pickup, destination) => {
+    try {
+      // Get coordinates for pickup and destination
+      const pickupRoute = ROUTES.find(r => r.destination === destination);
+      if (!pickupRoute) return;
+
+      const destCoords = pickupRoute.coords;
+      const pickupCoords = JUIT_COORDS;
+
+      const res = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${pickupCoords[1]},${pickupCoords[0]};${destCoords[1]},${destCoords[0]}?overview=full&geometries=geojson`
+      );
+      const data = await res.json();
+      if (data.routes && data.routes.length > 0) {
+        const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+        setRouteCoords(coords);
+      }
+    } catch (err) {
+      console.log('Full route error:', err);
+    }
+  };
   const checkDriversAvailable = async (vehicleType) => {
     try {
       const res = await axios.get(
@@ -482,55 +506,80 @@ function StudentDashboard() {
             {(activeRide.status === 'ontheway' || activeRide.status === 'accepted') && (
               <div style={{ marginTop: '16px' }}>
                 <p style={{ color: '#999', fontSize: '14px', marginBottom: '8px' }}>
-                  🚗 Live Tracking
+                  🗺️ Live Tracking
                   {driverDistance && <span style={{ color: '#e63946', marginLeft: '8px' }}>~{driverDistance} km away</span>}
                 </p>
                 {driverLocation ? (
                   <MapContainer
-                    center={studentLocation || driverLocation}
-                    zoom={14}
-                    style={{ height: '280px', borderRadius: '12px' }}
+                    center={driverLocation}
+                    zoom={13}
+                    style={{ height: '300px', borderRadius: '12px' }}
                   >
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+                    {/* Full route dashed line */}
+                    {routeCoords.length > 0 && (
+                      <Polyline
+                        positions={routeCoords}
+                        color='#e63946'
+                        weight={4}
+                        opacity={0.6}
+                        dashArray='8 4'
+                      />
+                    )}
+
+                    {/* Driver to student solid line */}
+                    {studentLocation && driverLocation && (
+                      <Polyline
+                        positions={[driverLocation, studentLocation]}
+                        color='#e63946'
+                        weight={4}
+                        opacity={0.9}
+                      />
+                    )}
 
                     {/* Driver marker */}
                     <Marker position={driverLocation}
                       icon={L.divIcon({
                         html: '🚗',
                         className: '',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 15]
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
                       })}>
                       <Popup>Your Driver</Popup>
                     </Marker>
 
-                    {/* Student location marker */}
+                    {/* Student location */}
                     {studentLocation && (
                       <Marker position={studentLocation}
                         icon={L.divIcon({
                           html: '📍',
                           className: '',
-                          iconSize: [30, 30],
-                          iconAnchor: [15, 30]
+                          iconSize: [32, 32],
+                          iconAnchor: [16, 32]
                         })}>
                         <Popup>Your Location</Popup>
                       </Marker>
                     )}
 
-                    {/* Route line */}
-                    {routeCoords.length > 0 && (
-                      <Polyline
-                        positions={routeCoords}
-                        color='#e63946'
-                        weight={4}
-                        opacity={0.8}
-                      />
+                    {/* Destination marker */}
+                    {activeRide.dropoff && ROUTES.find(r => r.destination === activeRide.dropoff) && (
+                      <Marker
+                        position={ROUTES.find(r => r.destination === activeRide.dropoff).coords}
+                        icon={L.divIcon({
+                          html: '🏁',
+                          className: '',
+                          iconSize: [32, 32],
+                          iconAnchor: [16, 32]
+                        })}>
+                        <Popup>Destination: {activeRide.dropoff}</Popup>
+                      </Marker>
                     )}
 
                     <FlyTo coords={driverLocation} />
                   </MapContainer>
                 ) : (
-                  <div style={{ background: '#1a1a1a', height: '280px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ background: '#1a1a1a', height: '300px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <p style={{ color: '#666' }}>⏳ Waiting for driver location...</p>
                   </div>
                 )}
