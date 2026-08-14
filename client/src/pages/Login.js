@@ -101,7 +101,7 @@ function Login() {
                 <button
                   onClick={resendVerification}
                   style={{ display: 'block', marginTop: '10px', background: '#e63946', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', width: '100%' }}>
-                  Resend Verification Email
+                  📧 Click here to get Verification Link
                 </button>
               )}
             </div>
