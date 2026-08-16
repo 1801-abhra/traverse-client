@@ -24,18 +24,17 @@ messaging.onBackgroundMessage((payload) => {
     const title = payload.data?.title || 'Traverse';
     const body = payload.data?.body || 'You have a new update';
 
-    // Set URL based on notification type
-    let url = '/student';
-    if (title.includes('Ride Request') || title.includes('New Ride')) {
-        url = '/driver';
-    }
-
     self.registration.showNotification(title, {
         body,
         icon: '/logo192.png',
         badge: '/logo192.png',
-        vibrate: [200, 100, 200],
-        data: { url }
+        vibrate: [200, 100, 200, 100, 200], // Strong vibration pattern
+        sound: '/notification.wav', // Custom sound
+        tag: 'ride-request', // Prevents duplicate notifications
+        requireInteraction: title.includes('New Ride'), // Keeps notification visible for ride requests
+        actions: [
+            { action: 'open', title: '🚗 View Ride' }
+        ]
     });
 });
 
