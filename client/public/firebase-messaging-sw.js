@@ -28,13 +28,8 @@ messaging.onBackgroundMessage((payload) => {
         body,
         icon: '/logo192.png',
         badge: '/logo192.png',
-        vibrate: [200, 100, 200, 100, 200], // Strong vibration pattern
-        sound: '/notification.wav', // Custom sound
-        tag: 'ride-request', // Prevents duplicate notifications
-        requireInteraction: title.includes('New Ride'), // Keeps notification visible for ride requests
-        actions: [
-            { action: 'open', title: '🚗 View Ride' }
-        ]
+        vibrate: [200, 100, 200],
+        tag: 'traverse-notification'
     });
 });
 
