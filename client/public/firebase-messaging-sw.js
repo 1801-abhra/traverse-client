@@ -23,25 +23,20 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     const title = payload.data?.title || 'Traverse';
     const body = payload.data?.body || 'You have a new update';
-
     self.registration.showNotification(title, {
         body,
         icon: '/logo192.png',
         badge: '/logo192.png',
-        vibrate: [200, 100, 200],
-        tag: 'traverse-notification'
+        vibrate: [200, 100, 200]
     });
 });
 
-// Handle notification click
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
     const url = event.notification.data?.url || '/student';
-
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(clientList => {
-                // If app is already open, focus it and navigate
                 for (const client of clientList) {
                     if (client.url.includes('traverse-unicab') && 'focus' in client) {
                         client.focus();
@@ -49,7 +44,6 @@ self.addEventListener('notificationclick', (event) => {
                         return;
                     }
                 }
-                // If app is closed, open it
                 if (clients.openWindow) {
                     return clients.openWindow('https://traverse-unicab.vercel.app' + url);
                 }
