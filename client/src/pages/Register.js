@@ -319,9 +319,17 @@ const styles = {
   },
   roleRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
   roleActive: {
-    flex: 1, padding: '11px', background: '#e63946', color: 'white',
-    border: 'none', borderRadius: '10px', fontSize: '14px',
-    fontWeight: '600', cursor: 'pointer'
+    flex: 1,
+    padding: '11px',
+    background: '#e63946',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    fontSize: '14px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    boxShadow: '0 4px 15px rgba(230, 57, 70, 0.4)',
+    transition: 'all 0.2s ease'
   },
   roleInactive: {
     flex: 1, padding: '11px', background: '#1a1a1a', color: '#666',
@@ -339,9 +347,18 @@ const styles = {
     fontSize: '15px', boxSizing: 'border-box', outline: 'none'
   },
   btn: {
-    width: '100%', padding: '15px', background: '#e63946', color: 'white',
-    border: 'none', borderRadius: '10px', fontSize: '16px',
-    fontWeight: '600', cursor: 'pointer', marginTop: '4px'
+    width: '100%',
+    padding: '15px',
+    background: '#e63946',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    marginTop: '8px',
+    boxShadow: '0 4px 15px rgba(230, 57, 70, 0.4)',
+    transition: 'all 0.2s ease'
   },
   btnLoading: {
     width: '100%', padding: '15px', background: '#6a1520', color: '#999',
@@ -352,11 +369,20 @@ const styles = {
   dividerLine: { flex: 1, height: '1px', background: '#222' },
   dividerText: { color: '#555', fontSize: '13px', whiteSpace: 'nowrap' },
   loginBtn: {
-    display: 'block', width: '100%', padding: '14px', background: 'transparent',
-    color: '#e63946', border: '1px solid #e63946', borderRadius: '10px',
-    fontSize: '15px', fontWeight: '600', textAlign: 'center',
-    textDecoration: 'none', boxSizing: 'border-box'
-  }
+    display: 'block',
+    width: '100%',
+    padding: '14px',
+    background: 'transparent',
+    color: '#e63946',
+    border: '1px solid #e63946',
+    borderRadius: '10px',
+    fontSize: '15px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    textAlign: 'center',
+    textDecoration: 'none',
+    boxSizing: 'border-box',
+    transition: 'all 0.2s ease'
+  },
 };
-
-export default Register;
+  export default Register;

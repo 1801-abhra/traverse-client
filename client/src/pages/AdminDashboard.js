@@ -332,14 +332,35 @@ const styles = {
   loginBrand: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px' },
   loginLogo: { fontSize: '32px' },
   loginTitle: { fontSize: '24px', fontWeight: '800', letterSpacing: '4px', color: '#e63946' },
-  loginCard: { background: '#111', border: '1px solid #1a1a1a', padding: '40px', borderRadius: '16px', width: '100%', maxWidth: '400px' },
+  loginCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: '40px',
+    borderRadius: '16px',
+    width: '100%',
+    maxWidth: '400px',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
+  },
   loginHeading: { fontSize: '28px', fontWeight: '700', margin: '0 0 8px 0' },
   loginSubtitle: { color: '#666', marginBottom: '28px', fontSize: '15px' },
   errorBox: { background: '#2a0000', border: '1px solid #e63946', color: '#ff6b6b', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '14px' },
   inputGroup: { marginBottom: '16px' },
   label: { display: 'block', color: '#999', fontSize: '12px', fontWeight: '500', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1px' },
   input: { width: '100%', padding: '14px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '8px', color: 'white', fontSize: '15px', boxSizing: 'border-box', outline: 'none' },
-  btn: { width: '100%', padding: '14px', background: '#e63946', color: 'white', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer', marginTop: '8px' },
+  btn: {
+    width: '100%',
+    padding: '14px',
+    background: '#e63946',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '16px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    marginTop: '8px',
+    boxShadow: '0 4px 15px rgba(230, 57, 70, 0.4)',
+    transition: 'all 0.2s ease'
+  },
   btnLoading: { width: '100%', padding: '14px', background: '#7a1a1a', color: '#999', border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'not-allowed', marginTop: '8px' },
   backBtn: { width: '100%', padding: '12px', background: 'transparent', color: '#666', border: '1px solid #2a2a2a', borderRadius: '8px', fontSize: '14px', cursor: 'pointer', marginTop: '12px' },
   navbar: {
@@ -349,6 +370,7 @@ const styles = {
     padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
     background: '#111',
     borderBottom: '1px solid #1a1a1a',
+    boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
     flexWrap: 'wrap',
     gap: '8px'
   },
@@ -373,7 +395,15 @@ const styles = {
     gap: '12px',
     marginBottom: '28px'
   },
-  statCard: { background: '#111', border: '1px solid #1a1a1a', padding: '20px', borderRadius: '12px', textAlign: 'center' },
+  statCard: {
+    background: '#111',
+    border: '1px solid #1a1a1a',
+    padding: '20px',
+    borderRadius: '12px',
+    textAlign: 'center',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
+  },
   statLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 8px 0' },
   statValue: { fontSize: '32px', fontWeight: '800', color: 'white', margin: 0 },
   tabs: {
@@ -390,7 +420,9 @@ const styles = {
     border: '1px solid #1a1a1a',
     padding: window.innerWidth <= 768 ? '16px' : '20px',
     borderRadius: '14px',
-    marginBottom: '12px'
+    marginBottom: '12px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
   },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
   statusBadge: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' },

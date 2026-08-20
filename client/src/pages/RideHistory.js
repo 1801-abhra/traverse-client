@@ -185,13 +185,23 @@ const styles = {
     padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
     background: '#111',
     borderBottom: '1px solid #1a1a1a',
+    boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
     flexWrap: 'wrap',
     gap: '8px'
   },
   navBrand: { display: 'flex', alignItems: 'center', gap: '10px' },
   navLogo: { fontSize: '24px' },
   navTitle: { fontSize: '20px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
-  backBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
+  backBtn: {
+    background: 'transparent',
+    color: '#999',
+    border: '1px solid #2a2a2a',
+    padding: '8px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    transition: 'all 0.2s ease'
+  },
   content: {
     maxWidth: '720px',
     margin: '24px auto',
@@ -212,7 +222,9 @@ const styles = {
     border: '1px solid #1a1a1a',
     padding: '16px',
     borderRadius: '12px',
-    textAlign: 'center'
+    textAlign: 'center',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
   },
   statValue: { fontSize: '28px', fontWeight: '800', color: '#e63946', margin: '0 0 4px 0' },
   statLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 },
@@ -234,7 +246,9 @@ const styles = {
     border: '1px solid #1a1a1a',
     padding: window.innerWidth <= 768 ? '16px' : '20px',
     borderRadius: '16px',
-    marginBottom: '12px'
+    marginBottom: '12px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
   },
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
   statusBadge: { padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: '600' },

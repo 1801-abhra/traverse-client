@@ -953,6 +953,7 @@ const styles = {
     padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
     background: '#111',
     borderBottom: '1px solid #1a1a1a',
+    boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
     flexWrap: 'wrap',
     gap: '8px'
   },
@@ -970,8 +971,26 @@ const styles = {
     fontSize: '13px',
     display: window.innerWidth <= 768 ? 'none' : 'block'
   },
-  navBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  navBtnRed: { background: 'transparent', color: '#e63946', border: '1px solid #e63946', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
+  navBtn: {
+    background: 'transparent',
+    color: '#999',
+    border: '1px solid #2a2a2a',
+    padding: '8px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    transition: 'all 0.2s ease'
+  },
+  navBtnRed: {
+    background: 'transparent',
+    color: '#e63946',
+    border: '1px solid #e63946',
+    padding: '8px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    transition: 'all 0.2s ease'
+  },
   content: {
     maxWidth: '720px',
     margin: '24px auto',
@@ -984,7 +1003,9 @@ const styles = {
     border: '1px solid #1a1a1a',
     padding: window.innerWidth <= 768 ? '16px' : '24px',
     borderRadius: '16px',
-    marginBottom: '24px'
+    marginBottom: '24px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
   },
   rideCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   rideCardTitle: { fontSize: '18px', fontWeight: '700', margin: 0 },
@@ -1005,7 +1026,9 @@ const styles = {
     background: '#111',
     border: '1px solid #1a1a1a',
     padding: window.innerWidth <= 768 ? '16px' : '24px',
-    borderRadius: '16px'
+    borderRadius: '16px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
   },
   bookTitle: { fontSize: '20px', fontWeight: '700', marginBottom: '20px', marginTop: 0 },
   rideTypeRow: { display: 'flex', gap: '8px', marginBottom: '20px' },

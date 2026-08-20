@@ -636,6 +636,7 @@ const styles = {
     padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
     background: '#111',
     borderBottom: '1px solid #1a1a1a',
+    boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
     flexWrap: 'wrap',
     gap: '8px'
   },
@@ -652,8 +653,26 @@ const styles = {
     fontSize: '13px',
     display: window.innerWidth <= 768 ? 'none' : 'block'
   },
-  navBtn: { background: 'transparent', color: '#999', border: '1px solid #2a2a2a', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
-  navBtnRed: { background: 'transparent', color: '#e63946', border: '1px solid #e63946', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' },
+  navBtn: {
+    background: 'transparent',
+    color: '#999',
+    border: '1px solid #2a2a2a',
+    padding: '8px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    transition: 'all 0.2s ease'
+  },
+  navBtnRed: {
+    background: 'transparent',
+    color: '#e63946',
+    border: '1px solid #e63946',
+    padding: '8px 16px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    transition: 'all 0.2s ease'
+  },
   content: {
     maxWidth: '720px',
     margin: '24px auto',
@@ -669,7 +688,8 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: '12px'
+    gap: '12px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
   },
   ratingLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 4px 0' },
   ratingValue: { fontSize: '36px', fontWeight: '800', color: '#e63946', margin: 0 },
@@ -684,7 +704,9 @@ const styles = {
     border: '1px solid #1a1a1a',
     padding: window.innerWidth <= 768 ? '16px' : '24px',
     borderRadius: '16px',
-    marginBottom: '16px'
+    marginBottom: '16px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    transition: 'all 0.2s ease'
   },
   tabRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
   tabActive: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', position: 'relative' },
@@ -719,7 +741,19 @@ const styles = {
   scheduledTag: { background: '#1a0a00', color: '#f59e0b', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' },
   requestTime: { color: '#666', fontSize: '13px', margin: '0 0 12px 0' },
   actionBtns: { display: 'flex', gap: '8px', marginTop: '16px' },
-  acceptBtn: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '15px', fontWeight: '600' },
+  acceptBtn: {
+    flex: 1,
+    padding: '12px',
+    background: '#e63946',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '15px',
+    fontWeight: '600',
+    boxShadow: '0 4px 15px rgba(230, 57, 70, 0.4)',
+    transition: 'all 0.2s ease'
+  },
   rejectBtn: { padding: '12px 20px', background: 'transparent', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '15px' },
   popup: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
   popupCard: { background: '#111', border: '1px solid #2a2a2a', padding: '24px', borderRadius: '16px', maxWidth: '320px', width: '90%' },

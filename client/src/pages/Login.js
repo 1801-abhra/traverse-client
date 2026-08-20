@@ -264,7 +264,8 @@ const styles = {
   formInner: {
     width: '100%',
     maxWidth: '360px',
-    margin: '0 auto'
+    margin: '0 auto',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
   },
   formTitle: {
     fontSize: '28px',
@@ -317,7 +318,9 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     marginTop: '4px',
-    letterSpacing: '0.3px'
+    letterSpacing: '0.3px',
+    boxShadow: '0 4px 15px rgba(230, 57, 70, 0.4)',
+    transition: 'all 0.2s ease'
   },
   btnLoading: {
     width: '100%',
@@ -356,9 +359,11 @@ const styles = {
     borderRadius: '10px',
     fontSize: '15px',
     fontWeight: '600',
+    cursor: 'pointer',
     textAlign: 'center',
     textDecoration: 'none',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    transition: 'all 0.2s ease'
   },
   adminLink: {
     textAlign: 'center',
