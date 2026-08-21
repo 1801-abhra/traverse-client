@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken } from 'firebase/messaging';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCPWTTudaVUIa8ZYJA6BE8SiWALq3RzAwQ",
@@ -12,6 +12,19 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
+
+// Handle foreground messages
+onMessage(messaging, (payload) => {
+    console.log('Foreground message:', payload);
+    const title = payload.data?.title || 'Traverse';
+    const body = payload.data?.body || 'You have a new update';
+    if (Notification.permission === 'granted') {
+        new Notification(title, {
+            body,
+            icon: '/logo192.png'
+        });
+    }
+});
 
 export const requestNotificationPermission = async () => {
     try {
