@@ -25,15 +25,13 @@ messaging.onBackgroundMessage((payload) => {
     const body = payload.data?.body || 'You have a new update';
     self.registration.showNotification(title, {
         body,
-        icon: '/logo192.png',
-        badge: '/logo192.png',
-        vibrate: [200, 100, 200]
+        icon: '/logo192.png'
     });
 });
 
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    const url = event.notification.data?.url || '/student';
+    const url = event.notification.data?.url || '/driver';
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true })
             .then(clientList => {
