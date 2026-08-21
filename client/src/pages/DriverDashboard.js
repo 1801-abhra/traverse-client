@@ -113,6 +113,7 @@ function DriverDashboard() {
     socket.emit('join', { userId: user._id, role: 'driver' });
     // Request notification permission
     requestNotificationPermission().then(fcmToken => {
+      console.log('Driver FCM token:', fcmToken ? 'received' : 'null');
       if (fcmToken) {
         axios.post(
           `https://traverse-app.onrender.com/api/auth/save-token`,
