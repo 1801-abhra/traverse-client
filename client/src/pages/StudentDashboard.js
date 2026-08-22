@@ -515,10 +515,7 @@ function StudentDashboard() {
                     zoom={13}
                     style={{ height: '300px', borderRadius: '12px' }}
                   >
-                    <TileLayer
-                      url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-                      attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
-                    />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
                     {/* Full route dashed line */}
                     {routeCoords.length > 0 && (
@@ -780,10 +777,7 @@ function StudentDashboard() {
                     zoom={11}
                     style={{ height: '220px', borderRadius: '12px' }}
                   >
-                    <TileLayer
-                      url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
-                      attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
-                    />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <Marker position={JUIT_COORDS}>
                       <Popup>📍 JUIT Campus (Pickup)</Popup>
                     </Marker>
