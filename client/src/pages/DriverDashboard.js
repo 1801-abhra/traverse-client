@@ -134,6 +134,15 @@ function DriverDashboard() {
         });
       }
     });
+    socket.on('ride:passenger-joined', ({ message, ride }) => {
+      setActiveRide(ride);
+      setMessage(message);
+    });
+
+    socket.on('ride:passenger-left', ({ message, ride }) => {
+      setActiveRide(ride);
+      setMessage(message);
+    });
     socket.on('ride:cancelled-by-party', ({ message }) => {
       setActiveRide(null);
       setMessage(message);
@@ -390,19 +399,43 @@ function DriverDashboard() {
               </span>
             </div>
 
-            <div style={styles.studentCard}>
-              <div style={styles.studentAvatar}>👤</div>
-              <div style={{ flex: 1 }}>
-                <p style={styles.studentName}>{activeRide.student?.name}</p>
-                <p style={styles.studentId}>Student</p>
+            {/* Show passengers for shared ride or single student for private */}
+            {activeRide.rideType === 'shared' && activeRide.passengers?.length > 0 ? (
+              <div style={{ background: '#0a0a0a', padding: '12px 16px', borderRadius: '10px', marginBottom: '16px' }}>
+                <p style={{ color: '#f59e0b', fontSize: '13px', margin: '0 0 8px 0' }}>
+                  👥 {activeRide.passengers.length}/{activeRide.maxPassengers || 4} Passengers
+                </p>
+                {activeRide.passengers.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', background: '#1a1a1a', padding: '8px 12px', borderRadius: '8px' }}>
+                    <div>
+                      <p style={{ color: 'white', fontSize: '14px', margin: '0 0 2px 0', fontWeight: '600' }}>{p.name}</p>
+                      <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>Passenger {i + 1}</p>
+                    </div>
+                    {p.phone && (
+                      <a href={`tel:${p.phone}`} style={{ background: '#e63946', color: 'white', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', fontSize: '13px' }}>
+                        📞 Call
+                      </a>
+                    )}
+                  </div>
+                ))}
+                <p style={{ color: '#e63946', fontSize: '13px', margin: '8px 0 0', fontWeight: '600' }}>
+                  💰 ₹{activeRide.fare} each × {activeRide.passengers.length} = ₹{activeRide.fare * activeRide.passengers.length} total
+                </p>
               </div>
-              {activeRide.student?.phone && (
-                <a href={`tel:${activeRide.student.phone}`} style={styles.callBtn}>
-                  📞 Call Student
-                </a>
-              )}
-            </div>
-
+            ) : (
+              <div style={styles.studentCard}>
+                <div style={styles.studentAvatar}>👤</div>
+                <div style={{ flex: 1 }}>
+                  <p style={styles.studentName}>{activeRide.student?.name}</p>
+                  <p style={styles.studentId}>Student</p>
+                </div>
+                {activeRide.student?.phone && (
+                  <a href={`tel:${activeRide.student.phone}`} style={styles.callBtn}>
+                    📞 Call Student
+                  </a>
+                )}
+              </div>
+            )}
             <div style={styles.routeInfo}>
               <div style={styles.routePoint}>
                 <span>🟢</span>
