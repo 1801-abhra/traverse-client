@@ -60,6 +60,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [sharedPassengers, setSharedPassengers] = useState([]);
   const [fullRouteCoords, setFullRouteCoords] = useState([]);
   const [studentLocation, setStudentLocation] = useState(null);
   const [routeCoords, setRouteCoords] = useState([]);
@@ -167,6 +168,17 @@ function StudentDashboard() {
       if (studentLocation) {
         getRoute([lat, lng], studentLocation);
       }
+    });
+    socket.on('ride:passenger-joined', ({ message, ride }) => {
+      setActiveRide(ride);
+      setMessage(message);
+      showToast(message, 'match');
+    });
+
+    socket.on('ride:passenger-left', ({ message, ride }) => {
+      setActiveRide(ride);
+      setMessage(message);
+      showToast(message, 'warning');
     });
     socket.on('ride:cancelled-by-party', ({ message }) => {
       setActiveRide(null);
@@ -338,6 +350,20 @@ function StudentDashboard() {
     }
   };
 
+  const leaveSharedRide = async () => {
+    try {
+      const res = await axios.put(
+        `${API}/api/rides/leave-shared/${activeRide._id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActiveRide(null);
+      setMessage('Left shared ride successfully');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Failed to leave ride');
+    }
+  };
+
   const calculateDistance = (coord1, coord2) => {
     const R = 6371;
     const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
@@ -459,16 +485,38 @@ function StudentDashboard() {
             </div>
             {activeRide.rideType === 'shared' && (
               <div style={{ background: '#0a0a0a', padding: '12px 16px', borderRadius: '10px', marginBottom: '16px' }}>
-                <p style={{ color: '#f59e0b', fontSize: '13px', margin: '0 0 4px 0' }}>👥 Shared Ride</p>
-                {activeRide.isMatched ? (
-                  <p style={{ color: '#10b981', fontSize: '14px', margin: 0 }}>✅ Matched! Sharing with another passenger</p>
-                ) : (
-                  <p style={{ color: '#999', fontSize: '14px', margin: 0 }}>⏳ Waiting for match...</p>
+                <p style={{ color: '#f59e0b', fontSize: '13px', margin: '0 0 8px 0' }}>
+                  👥 Shared Ride — {activeRide.passengers?.length || 1}/{activeRide.maxPassengers || 4} passengers
+                </p>
+
+                {/* Passenger list */}
+                {activeRide.passengers && activeRide.passengers.map((p, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <span style={{ color: '#999', fontSize: '13px' }}>👤 {p.name}</span>
+                    {p.phone && (
+                      <a href={`tel:${p.phone}`} style={{ color: '#e63946', fontSize: '12px' }}>📞</a>
+                    )}
+                  </div>
+                ))}
+
+                {activeRide.isFull && (
+                  <span style={{ background: '#e63946', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: '700' }}>
+                    FULL
+                  </span>
                 )}
+
                 {activeRide.isScheduled && activeRide.scheduledTime && (
-                  <p style={{ color: '#f59e0b', fontSize: '13px', margin: '4px 0 0' }}>
-                    🕐 Scheduled: {new Date(activeRide.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+                  <p style={{ color: '#f59e0b', fontSize: '13px', margin: '8px 0 0' }}>
+                    🕐 {new Date(activeRide.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                   </p>
+                )}
+
+                {/* Leave ride button - only for non-original students */}
+                {activeRide.student?._id !== user._id && activeRide.status === 'searching' && (
+                  <button onClick={leaveSharedRide}
+                    style={{ marginTop: '8px', padding: '6px 12px', background: 'transparent', color: '#e63946', border: '1px solid #e63946', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
+                    Leave Ride
+                  </button>
                 )}
               </div>
             )}
@@ -674,20 +722,31 @@ function StudentDashboard() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
                         <p style={{ margin: '0 0 4px 0' }}>👤 <b>{ride.student?.name}</b> → <b>{ride.dropoff}</b></p>
-                        <p style={{ color: '#999', fontSize: '13px', margin: 0 }}>🚗 {ride.vehicleType} • ₹{Math.ceil(ride.fare / 2)} each</p>
+                        <p style={{ color: '#999', fontSize: '13px', margin: 0 }}>
+                          🚗 {ride.vehicleType} • ₹{Math.ceil(ride.originalFare / ((ride.passengers?.length || 1) + 1))} each
+                        </p>
+                        <p style={{ color: '#666', fontSize: '12px', margin: '4px 0 0' }}>
+                          👥 {ride.passengers?.length || 1}/{ride.maxPassengers || 4} passengers
+                        </p>
                         {ride.isScheduled && ride.scheduledTime && (
                           <p style={{ color: '#f59e0b', fontSize: '13px', margin: '4px 0 0' }}>
-                            🕐 Scheduled: {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+                            🕐 {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                           </p>
                         )}
                       </div>
-                      <button
-                        type='button'
-                        onClick={() => joinSharedRide(ride._id)}
-                        style={styles.joinBtn}
-                      >
-                        Join
-                      </button>
+                      {ride.isFull ? (
+                        <span style={{ background: '#e63946', color: 'white', padding: '6px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '700' }}>
+                          FULL
+                        </span>
+                      ) : (
+                        <button
+                          type='button'
+                          onClick={() => joinSharedRide(ride._id)}
+                          style={styles.joinBtn}
+                        >
+                          Join
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
