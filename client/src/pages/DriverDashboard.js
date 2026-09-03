@@ -40,7 +40,10 @@ function DriverDashboard() {
 
   const fetchAvailableRides = async () => {
     try {
-      const res = await axios.get(`${API}/api/rides/available`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(
+        `${API}/api/rides/available?t=${Date.now()}`,
+        { headers: { Authorization: `Bearer ${token}`, 'Cache-Control': 'no-cache' } }
+      );
       setRides(res.data);
     } catch (err) {
       setMessage('Failed to fetch rides');
@@ -92,6 +95,15 @@ function DriverDashboard() {
     fetchMyRating();
     fetchScheduledRides();
     fetchDriverActiveRide();
+
+    // Re-fetch when driver comes back to app
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchAvailableRides();
+        fetchDriverActiveRide();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     const fetchAvailability = async () => {
       try {
         const res = await axios.get(
@@ -168,11 +180,15 @@ function DriverDashboard() {
         });
       });
       return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
         navigator.geolocation.clearWatch(watchId);
         socket.disconnect();
       };
     }
-    return () => socket.disconnect();
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
