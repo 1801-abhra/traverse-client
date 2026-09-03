@@ -149,6 +149,11 @@ function DriverDashboard() {
       setShowCancelPopup(false);
       fetchAvailableRides();
     });
+    socket.on('ride:passenger-updated', ({ rideId, passengers, isFull, fare }) => {
+      setRides(prev => prev.map(r =>
+        r._id === rideId ? { ...r, passengers, isFull, fare } : r
+      ));
+    });
     socket.on('ride:cancelled', ({ rideId }) => {
       setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
     });
@@ -518,7 +523,6 @@ function DriverDashboard() {
                     <p style={styles.emptySubtitle}>Waiting for ride requests...</p>
                   </div>
                 )}
-
                 {rides.map(ride => (
                   <div key={ride._id} style={styles.rideCard}>
                     <div style={styles.rideCardHeader}>
@@ -527,9 +531,16 @@ function DriverDashboard() {
                         <div>
                           <p style={styles.studentName}>{ride.student?.name}</p>
                           {ride.rideType === 'shared' && (
-                            <span style={styles.sharedBadge}>
-                              👥 {ride.sharedWith ? `Shared with ${ride.sharedWith.name}` : 'Looking for match'}
-                            </span>
+                            <div>
+                              <span style={styles.sharedBadge}>
+                                👥 {ride.passengers?.length || 1}/{ride.maxPassengers || 4} passengers
+                              </span>
+                              {ride.isFull && (
+                                <span style={{ ...styles.sharedBadge, background: '#e6394622', color: '#e63946', marginLeft: '4px' }}>
+                                  FULL
+                                </span>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>
