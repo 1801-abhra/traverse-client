@@ -387,7 +387,8 @@ const styles = {
         background: 'linear-gradient(180deg, #181415 0%, #101010 100%)',
         width: '100%',
         maxWidth: '580px',
-        maxHeight: '88vh',
+        height: '85vh',
+        maxHeight: '85vh',
         borderRadius: '24px 24px 0 0',
         border: '1px solid rgba(255, 255, 255, 0.1)',
         borderBottom: 'none',
@@ -401,7 +402,7 @@ const styles = {
         padding: '12px 0 4px',
         display: 'flex',
         justifyContent: 'center',
-        cursor: 'grab'
+        flexShrink: 0
     },
     handle: {
         width: '42px',
@@ -414,7 +415,8 @@ const styles = {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '12px 20px 14px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        flexShrink: 0
     },
     logoRow: {
         display: 'flex',
@@ -469,7 +471,8 @@ const styles = {
         padding: '10px 16px',
         background: 'rgba(0, 0, 0, 0.3)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-        overflowX: 'auto'
+        overflowX: 'auto',
+        flexShrink: 0
     },
     tabActive: {
         padding: '8px 14px',
@@ -482,7 +485,8 @@ const styles = {
         fontWeight: '700',
         whiteSpace: 'nowrap',
         boxShadow: '0 2px 10px rgba(230, 57, 70, 0.4)',
-        transition: 'all 0.2s ease'
+        transition: 'all 0.2s ease',
+        flexShrink: 0
     },
     tabInactive: {
         padding: '8px 14px',
@@ -494,12 +498,15 @@ const styles = {
         fontSize: '12px',
         fontWeight: '600',
         whiteSpace: 'nowrap',
-        transition: 'all 0.2s ease'
+        transition: 'all 0.2s ease',
+        flexShrink: 0
     },
     content: {
         overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
         padding: '18px 20px 30px',
-        flex: 1
+        flex: 1,
+        minHeight: 0
     },
     missionCard: {
         background: 'linear-gradient(135deg, #20080a 0%, #151112 100%)',
