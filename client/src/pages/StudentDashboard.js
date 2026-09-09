@@ -247,10 +247,15 @@ function StudentDashboard() {
   };
   const cancelRide = async () => {
     try {
-      await axios.put(`${API}/api/rides/cancel/${activeRide._id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.put(
+        `${API}/api/rides/cancel/${activeRide._id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setActiveRide(null);
-      setMessage('Ride cancelled');
       setFare(null);
+      setMessage(res.data.message || 'Ride cancelled');
+      showToast(res.data.message || 'Ride cancelled', 'warning');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Cannot cancel');
     }
