@@ -484,38 +484,40 @@ function StudentDashboard() {
           border-color: #444 !important;
         }
         @media (max-width: 480px) {
-          .nav-text-desktop { display: none !important; }
-          .nav-text-mobile { display: inline !important; }
           .nav-user-desktop { display: none !important; }
-          .nav-btn-mobile { padding: 6px 9px !important; font-size: 11px !important; }
-          .nav-btn-red-mobile { padding: 6px 10px !important; font-size: 11px !important; }
+          .nav-brand-title { font-size: 14px !important; letter-spacing: 1.5px !important; }
+          .nav-brand-box { width: 28px !important; height: 28px !important; }
+          .nav-btn-mobile { padding: 5px 6px !important; font-size: 11px !important; gap: 3px !important; }
+          .nav-btn-red-mobile { padding: 5px 7px !important; font-size: 11px !important; gap: 3px !important; }
         }
         @media (min-width: 481px) {
-          .nav-text-desktop { display: inline !important; }
-          .nav-text-mobile { display: none !important; }
           .nav-user-desktop { display: block !important; }
+          .nav-brand-title { font-size: 16px !important; letter-spacing: 2.5px !important; }
+          .nav-brand-box { width: 32px !important; height: 32px !important; }
         }
       `}</style>
 
-      {/* Sleek Dark Navbar - guaranteed single line on 375px mobile */}
+      {/* Sleek Dark Navbar - guaranteed single line with text labels on 375px mobile */}
       <nav style={styles.navbar}>
         <div style={styles.navBrand}>
-          <div style={styles.navLogoBox}>
+          <div className="nav-brand-box" style={styles.navLogoBox}>
             <span style={styles.navLogo}>🚖</span>
           </div>
-          <span style={styles.navTitle}>TRAVERSE</span>
+          <span className="nav-brand-title" style={styles.navTitle}>TRAVERSE</span>
         </div>
         <div style={styles.navRight}>
           <span className="nav-user-desktop" style={styles.navUser}>👤 {user.name}</span>
-          <button onClick={fetchActiveRide} className="nav-btn-hover nav-btn-mobile" style={styles.navIconBtn} title="Refresh Ride">🔄</button>
-          <button onClick={() => navigate('/history')} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn}>
-            <span>📋</span><span className="nav-text-desktop"> History</span>
+          <button onClick={fetchActiveRide} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="Refresh Ride">
+            <span>🔄</span><span>Refresh</span>
           </button>
-          <button onClick={() => setShowAbout(true)} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn}>
-            <span>ℹ️</span><span className="nav-text-desktop"> About</span>
+          <button onClick={() => navigate('/history')} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="Trip History">
+            <span>📋</span><span>History</span>
           </button>
-          <button onClick={logout} className="nav-btn-red-mobile" style={styles.navBtnRed}>
-            <span>🚪</span><span className="nav-text-desktop"> Logout</span><span className="nav-text-mobile"> Exit</span>
+          <button onClick={() => setShowAbout(true)} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="About Traverse">
+            <span>ℹ️</span><span>About</span>
+          </button>
+          <button onClick={logout} className="nav-btn-red-mobile" style={styles.navBtnRed} title="Logout">
+            <span>🚪</span><span>Logout</span>
           </button>
         </div>
       </nav>
