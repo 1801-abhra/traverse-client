@@ -485,19 +485,21 @@ function StudentDashboard() {
         }
         @media (max-width: 480px) {
           .nav-user-desktop { display: none !important; }
-          .nav-brand-title { font-size: 14px !important; letter-spacing: 1.5px !important; }
-          .nav-brand-box { width: 28px !important; height: 28px !important; }
-          .nav-btn-mobile { padding: 5px 6px !important; font-size: 11px !important; gap: 3px !important; }
-          .nav-btn-red-mobile { padding: 5px 7px !important; font-size: 11px !important; gap: 3px !important; }
+          .nav-brand-title { font-size: 13px !important; letter-spacing: 1.2px !important; }
+          .nav-brand-box { width: 26px !important; height: 26px !important; }
+          .nav-btn-mobile { padding: 4px 6px !important; font-size: 10.5px !important; gap: 3px !important; }
+          .nav-btn-red-mobile { padding: 4px 6px !important; font-size: 10.5px !important; gap: 3px !important; }
         }
         @media (min-width: 481px) {
           .nav-user-desktop { display: block !important; }
-          .nav-brand-title { font-size: 16px !important; letter-spacing: 2.5px !important; }
-          .nav-brand-box { width: 32px !important; height: 32px !important; }
+          .nav-brand-title { font-size: 15px !important; letter-spacing: 2px !important; }
+          .nav-brand-box { width: 30px !important; height: 30px !important; }
+          .nav-btn-mobile { padding: 6px 9px !important; font-size: 12px !important; gap: 4px !important; }
+          .nav-btn-red-mobile { padding: 6px 10px !important; font-size: 12px !important; gap: 4px !important; }
         }
       `}</style>
 
-      {/* Sleek Dark Navbar - guaranteed single line with text labels on 375px mobile */}
+      {/* Sleek Dark Navbar - spacious, clean brand separation and single-line buttons */}
       <nav style={styles.navbar}>
         <div style={styles.navBrand}>
           <div className="nav-brand-box" style={styles.navLogoBox}>
@@ -1198,11 +1200,11 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '10px 14px',
-    background: 'rgba(17, 17, 17, 0.88)',
+    padding: '10px 12px',
+    background: 'rgba(15, 15, 15, 0.92)',
     backdropFilter: 'blur(16px)',
     WebkitBackdropFilter: 'blur(16px)',
-    borderBottom: '1px solid rgba(230, 57, 70, 0.2)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6)',
     position: 'sticky',
     top: 0,
@@ -1213,26 +1215,27 @@ const styles = {
   navBrand: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    flexShrink: 0
+    gap: '6px',
+    flexShrink: 0,
+    marginRight: '8px'
   },
   navLogoBox: {
-    width: '32px',
-    height: '32px',
-    borderRadius: '9px',
+    width: '30px',
+    height: '30px',
+    borderRadius: '8px',
     background: 'linear-gradient(145deg, #241315 0%, #12090b 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.35)',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  navLogo: { fontSize: '16px', lineHeight: 1 },
+  navLogo: { fontSize: '15px', lineHeight: 1 },
   navTitle: {
-    fontSize: '16px',
+    fontSize: '15px',
     fontWeight: '900',
-    letterSpacing: '2.5px',
+    letterSpacing: '2px',
     color: '#ffffff',
-    textShadow: '0 0 14px rgba(230, 57, 70, 0.7)'
+    textShadow: '0 0 12px rgba(230, 57, 70, 0.6)'
   },
   navRight: {
     display: 'flex',
@@ -1245,44 +1248,53 @@ const styles = {
     color: '#a0a0a0',
     fontSize: '12px',
     fontWeight: '500',
-    marginRight: '4px'
+    marginRight: '6px'
   },
   navBtn: {
-    background: 'rgba(255, 255, 255, 0.04)',
-    color: '#c0c0c0',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    padding: '6px 10px',
-    borderRadius: '8px',
+    background: 'rgba(255, 255, 255, 0.05)',
+    color: '#d0d0d0',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    padding: '5px 8px',
+    borderRadius: '7px',
     cursor: 'pointer',
-    fontSize: '12px',
+    fontSize: '11px',
     fontWeight: '600',
     transition: 'all 0.2s ease',
     whiteSpace: 'nowrap',
-    flexShrink: 0
+    flexShrink: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '3px'
   },
   navIconBtn: {
-    background: 'rgba(255, 255, 255, 0.04)',
-    color: '#c0c0c0',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    padding: '6px 8px',
-    borderRadius: '8px',
+    background: 'rgba(255, 255, 255, 0.05)',
+    color: '#d0d0d0',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    padding: '5px 8px',
+    borderRadius: '7px',
     cursor: 'pointer',
-    fontSize: '12px',
+    fontSize: '11px',
     transition: 'all 0.2s ease',
-    flexShrink: 0
+    flexShrink: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '3px'
   },
   navBtnRed: {
     background: 'rgba(230, 57, 70, 0.12)',
     color: '#e63946',
-    border: '1px solid rgba(230, 57, 70, 0.45)',
-    padding: '6px 11px',
-    borderRadius: '8px',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    padding: '5px 9px',
+    borderRadius: '7px',
     cursor: 'pointer',
-    fontSize: '12px',
+    fontSize: '11px',
     fontWeight: '700',
     transition: 'all 0.2s ease',
     whiteSpace: 'nowrap',
-    flexShrink: 0
+    flexShrink: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '3px'
   },
   content: {
     width: '100%',
