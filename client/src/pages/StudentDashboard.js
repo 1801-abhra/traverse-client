@@ -91,9 +91,9 @@ function StudentDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   const API = 'https://traverse-app.onrender.com';
-  const showToast = (message, type = 'info') => {
+  const showToast = React.useCallback((message, type = 'info') => {
     setToast({ message, type });
-  };
+  }, []);
 
   useEffect(() => {
     fetchActiveRide();
