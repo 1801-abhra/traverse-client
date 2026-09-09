@@ -263,7 +263,17 @@ function StudentDashboard() {
 
   const fetchSharedRides = async () => {
     try {
-      const res = await axios.get(`${API}/api/rides/shared/available`, { headers: { Authorization: `Bearer ${token}` } });
+      const pickup = selectedPickup || 'JUIT Campus, Waknaghat';
+      const dropoff = selectedRoute?.destination || '';
+
+      const params = new URLSearchParams();
+      params.append('pickup', pickup);
+      if (dropoff) params.append('dropoff', dropoff);
+
+      const res = await axios.get(
+        `${API}/api/rides/shared/available?${params.toString()}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setSharedRides(res.data);
     } catch (err) {
       console.log('Failed to fetch shared rides');
@@ -977,6 +987,7 @@ function StudentDashboard() {
                         setDestCoords(route.coords);
                         setMapCenter(route.coords);
                         setDistance(calculateDistance(JUIT_COORDS, route.coords));
+                        if (rideType === 'shared') fetchSharedRides();
                       } else {
                         setDestCoords(null);
                         setDistance(null);
