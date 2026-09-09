@@ -340,174 +340,431 @@ function DriverDashboard() {
 
   return (
     <div style={styles.container} onClick={tryPlaySound} onTouchStart={tryPlaySound}>
-      {/* Navbar */}
-      <div style={styles.navbar}>
+      <style>{`
+        @keyframes bgGradientMove {
+          0% { background-position: 0% 0%; }
+          50% { background-position: 100% 100%; }
+          100% { background-position: 0% 0%; }
+        }
+        @keyframes pulseOnline {
+          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+          50% { transform: scale(1.08); opacity: 0.85; box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        }
+        @keyframes pulseOffline {
+          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+          50% { transform: scale(1.08); opacity: 0.85; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+        }
+        @keyframes pulseActiveTrip {
+          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+          50% { transform: scale(1.1); opacity: 0.85; box-shadow: 0 0 0 9px rgba(230, 57, 70, 0); }
+        }
+        @keyframes slideUpIn {
+          0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes shimmerGlow {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        .driver-card-hover {
+          animation: slideUpIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .driver-card-hover:hover {
+          border-color: rgba(230, 57, 70, 0.4) !important;
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(230, 57, 70, 0.12) !important;
+        }
+        .toggle-btn-online:hover {
+          filter: brightness(1.1);
+          box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45) !important;
+        }
+        .toggle-btn-offline:hover {
+          filter: brightness(1.1);
+          box-shadow: 0 4px 18px rgba(239, 68, 68, 0.45) !important;
+        }
+        .nav-btn-hover:hover {
+          background: rgba(255, 255, 255, 0.08) !important;
+          color: #ffffff !important;
+          border-color: #444 !important;
+        }
+        .traverse-btn-accept:hover:not(:disabled) {
+          box-shadow: 0 8px 24px rgba(230, 57, 70, 0.6) !important;
+          filter: brightness(1.08);
+          transform: translateY(-1px);
+        }
+        .traverse-btn-accept:active:not(:disabled) {
+          transform: scale(0.97) translateY(1px) !important;
+        }
+        .traverse-btn-reject:hover {
+          background: rgba(239, 68, 68, 0.1) !important;
+          border-color: #ef4444 !important;
+          color: #ef4444 !important;
+        }
+        .traverse-btn-reject:active {
+          transform: scale(0.97);
+        }
+        @media (max-width: 480px) {
+          .nav-text-desktop { display: none !important; }
+          .nav-text-mobile { display: inline !important; }
+          .nav-user-desktop { display: none !important; }
+          .nav-btn-mobile { padding: 6px 8px !important; font-size: 11px !important; }
+          .nav-toggle-mobile { padding: 5px 8px !important; font-size: 11px !important; min-width: auto !important; }
+          .nav-btn-red-mobile { padding: 6px 9px !important; font-size: 11px !important; }
+          .rating-card-mobile { flex-direction: column !important; align-items: stretch !important; gap: 14px !important; }
+          .rating-stats-mobile { display: flex !important; justify-content: space-between !important; align-items: center !important; }
+        }
+        @media (min-width: 481px) {
+          .nav-text-desktop { display: inline !important; }
+          .nav-text-mobile { display: none !important; }
+          .nav-user-desktop { display: flex !important; }
+        }
+      `}</style>
+
+      {/* Sleek Dark Navbar - guaranteed single line on 375px mobile */}
+      <nav style={styles.navbar}>
         <div style={styles.navBrand}>
-          <span style={styles.navLogo}>🚖</span>
+          <div style={styles.navLogoBox}>
+            <span style={styles.navLogo}>🚖</span>
+          </div>
           <span style={styles.navTitle}>TRAVERSE</span>
         </div>
+
         <div style={styles.navRight}>
-          <span style={styles.navUser}>🚗 {user.name}</span>
-          <button onClick={() => navigate('/history')} style={styles.navBtn}>History</button>
-          <button onClick={() => setShowAbout(true)} style={styles.navBtn}>About</button>
-          <button onClick={toggleAvailability} style={{
-            ...styles.navBtn,
-            background: isAvailable ? '#10b981' : '#ef4444',
-            color: 'white',
-            border: 'none'
-          }}>
-            {isAvailable ? '🟢 Online' : '🔴 Offline'}
+          <span className="nav-user-desktop" style={styles.navUser}>
+            <span style={{ opacity: 0.8 }}>🚗</span>
+            <span style={{ fontWeight: '600', color: '#eee', maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</span>
+          </span>
+
+          <button
+            onClick={toggleAvailability}
+            className={`nav-toggle-mobile ${isAvailable ? 'toggle-btn-online' : 'toggle-btn-offline'}`}
+            style={{
+              ...styles.toggleBtn,
+              background: isAvailable
+                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                : 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
+              boxShadow: isAvailable ? '0 0 14px rgba(16, 185, 129, 0.4)' : '0 0 14px rgba(239, 68, 68, 0.35)',
+              border: isAvailable ? '1px solid rgba(52, 211, 153, 0.5)' : '1px solid rgba(248, 113, 113, 0.4)'
+            }}
+            title={isAvailable ? 'Click to go Offline' : 'Click to go Online'}
+          >
+            <span
+              style={{
+                ...styles.statusPulseDot,
+                background: isAvailable ? '#a7f3d0' : '#fecaca',
+                animation: isAvailable ? 'pulseOnline 1.6s infinite' : 'pulseOffline 2.2s infinite'
+              }}
+            />
+            <span className="nav-text-desktop" style={{ fontWeight: '700', letterSpacing: '0.3px' }}>
+              {isAvailable ? 'Online' : 'Offline'}
+            </span>
+            <span className="nav-text-mobile" style={{ fontWeight: '700' }}>
+              {isAvailable ? 'ON' : 'OFF'}
+            </span>
           </button>
-          <button onClick={logout} style={styles.navBtnRed}>Logout</button>
+
+          <button onClick={() => navigate('/history')} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="Ride History">
+            <span>📋</span><span className="nav-text-desktop"> History</span>
+          </button>
+          <button onClick={() => setShowAbout(true)} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="About Traverse">
+            <span>ℹ️</span><span className="nav-text-desktop"> About</span>
+          </button>
+          <button onClick={logout} className="nav-btn-red-mobile" style={styles.navBtnRed} title="Logout">
+            <span>🚪</span><span className="nav-text-desktop"> Logout</span><span className="nav-text-mobile"> Exit</span>
+          </button>
         </div>
-      </div>
+      </nav>
+
       {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
-      <div style={styles.content}>
-
-        {/* Rating Card */}
-        <div style={styles.ratingCard}>
+      <main style={styles.content}>
+        {/* Driver Rating & Earnings Card (Uber Driver / Captain Style) */}
+        <div className="driver-card-hover rating-card-mobile" style={styles.ratingCard}>
           <div style={styles.ratingLeft}>
-            <p style={styles.ratingLabel}>Your Rating</p>
-            <p style={styles.ratingValue}>
-              {myRating.average > 0 ? `${myRating.average}` : '—'}
-              <span style={styles.ratingMax}>{myRating.average > 0 ? '/5' : ''}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+              <span style={styles.ratingBadgeIcon}>⚡</span>
+              <p style={styles.ratingLabel}>Driver Score</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+              <p style={styles.ratingValue}>
+                {myRating.average > 0 ? Number(myRating.average).toFixed(1) : '5.0'}
+              </p>
+              <span style={styles.ratingMax}>/5.0</span>
+            </div>
+          </div>
+
+          <div style={styles.ratingStarsBox}>
+            <div style={{ display: 'flex', gap: '3px', justifyContent: 'center' }}>
+              {[1, 2, 3, 4, 5].map(s => {
+                const isFilled = s <= Math.round(myRating.average || 5);
+                return (
+                  <span
+                    key={s}
+                    style={{
+                      color: isFilled ? '#f59e0b' : '#333333',
+                      fontSize: '18px',
+                      textShadow: isFilled ? '0 0 8px rgba(245, 158, 11, 0.4)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    ★
+                  </span>
+                );
+              })}
+            </div>
+            <p style={styles.ratingCount}>
+              {myRating.total > 0 ? `${myRating.total} verified ratings` : 'Ready for first rating'}
             </p>
           </div>
-          <div style={styles.ratingStars}>
-            {[1, 2, 3, 4, 5].map(s => (
-              <span key={s} style={{ color: s <= Math.round(myRating.average) ? '#e63946' : '#2a2a2a', fontSize: '20px' }}>★</span>
-            ))}
-            <p style={styles.ratingCount}>{myRating.total} rides rated</p>
-          </div>
+
           <div style={styles.ratingRight}>
-            <p style={styles.ratingStatus}>{myRating.average >= 4.5 ? '🏆 Top Driver' : myRating.average >= 4 ? '⭐ Great Driver' : myRating.average > 0 ? '👍 Good Driver' : '🆕 New Driver'}</p>
+            <div style={{
+              ...styles.statusTag,
+              background: myRating.average >= 4.5 || myRating.total === 0
+                ? 'rgba(16, 185, 129, 0.12)'
+                : 'rgba(230, 57, 70, 0.12)',
+              border: myRating.average >= 4.5 || myRating.total === 0
+                ? '1px solid rgba(16, 185, 129, 0.3)'
+                : '1px solid rgba(230, 57, 70, 0.3)',
+              color: myRating.average >= 4.5 || myRating.total === 0 ? '#10b981' : '#e63946'
+            }}>
+              <span style={{ fontSize: '13px' }}>
+                {myRating.average >= 4.8 ? '👑' : myRating.average >= 4.5 ? '🏆' : myRating.average >= 4 ? '⭐' : myRating.average > 0 ? '👍' : '🚀'}
+              </span>
+              <span style={styles.ratingStatus}>
+                {myRating.average >= 4.8 ? 'Elite Captain' : myRating.average >= 4.5 ? 'Top Rated' : myRating.average >= 4 ? 'Great Driver' : myRating.average > 0 ? 'Active Driver' : 'New Captain'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', justifyContent: 'flex-end' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isAvailable ? '#10b981' : '#666' }} />
+              <span style={{ color: '#888', fontSize: '11px', fontWeight: '500' }}>
+                {isAvailable ? 'Receiving Dispatches' : 'Offline (Paused)'}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Message */}
+        {/* Status Message Notification Bar */}
         {message && (
           <div style={styles.messagebox}>
-            ℹ️ {message}
+            <span style={styles.messageIcon}>🔔</span>
+            <span style={{ flex: 1, lineHeight: '1.4' }}>{message}</span>
           </div>
         )}
 
-        {/* Tabs */}
+        {/* Pill Tab Switchers (Instant vs Scheduled) */}
         {!activeRide && (
-          <div style={styles.tabRow}>
+          <div style={styles.tabContainer}>
             <button
               onClick={() => setActiveTab('instant')}
-              style={activeTab === 'instant' ? styles.tabActive : styles.tabInactive}>
-              ⚡ Instant Rides
-              {rides.length > 0 && <span style={styles.tabBadge}>{rides.length}</span>}
+              style={activeTab === 'instant' ? styles.tabActive : styles.tabInactive}
+            >
+              <span style={{ fontSize: '15px' }}>⚡</span>
+              <span>Instant Rides</span>
+              {rides.length > 0 && (
+                <span style={styles.tabBadge}>{rides.length}</span>
+              )}
             </button>
             <button
               onClick={() => { setActiveTab('scheduled'); fetchScheduledRides(); }}
-              style={activeTab === 'scheduled' ? styles.tabActive : styles.tabInactive}>
-              🕐 Scheduled
-              {(scheduledRides.length + myScheduledRides.length) > 0 &&
-                <span style={styles.tabBadge}>{scheduledRides.length + myScheduledRides.length}</span>}
+              style={activeTab === 'scheduled' ? styles.tabActive : styles.tabInactive}
+            >
+              <span style={{ fontSize: '15px' }}>🕐</span>
+              <span>Scheduled</span>
+              {(scheduledRides.length + myScheduledRides.length) > 0 && (
+                <span style={{ ...styles.tabBadge, background: '#10b981', color: 'white' }}>
+                  {scheduledRides.length + myScheduledRides.length}
+                </span>
+              )}
             </button>
           </div>
         )}
-        {/* Active Ride */}
+
+        {/* ACTIVE RIDE SCREEN (Uber Driver In-Progress Style) */}
         {activeRide && (
-          <div style={styles.rideCard}>
-            <div style={styles.rideCardHeader}>
-              <h3 style={styles.rideCardTitle}>Active Ride</h3>
-              <span style={{ ...styles.statusBadge, background: statusColor[activeRide.status] + '22', color: statusColor[activeRide.status], border: `1px solid ${statusColor[activeRide.status]}` }}>
+          <div className="driver-card-hover" style={styles.activeRideCard}>
+            {/* Header Banner */}
+            <div style={styles.activeCardHeader}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span
+                  style={{
+                    ...styles.statusPulseDot,
+                    width: '12px',
+                    height: '12px',
+                    background: statusColor[activeRide.status] || '#e63946',
+                    animation: 'pulseActiveTrip 1.8s infinite'
+                  }}
+                />
+                <div>
+                  <span style={styles.tripTypeLabel}>CURRENT TRIP</span>
+                  <h3 style={styles.activeRideTitle}>
+                    {activeRide.rideType === 'shared' ? 'Shared Shuttle Trip' : 'Private Ride Trip'}
+                  </h3>
+                </div>
+              </div>
+              <span style={{
+                ...styles.statusBadge,
+                background: `${statusColor[activeRide.status] || '#e63946'}20`,
+                color: statusColor[activeRide.status] || '#e63946',
+                border: `1px solid ${statusColor[activeRide.status] || '#e63946'}66`
+              }}>
                 {statusLabel[activeRide.status]}
               </span>
             </div>
 
-            {/* Show passengers for shared ride or single student for private */}
+            {/* Passenger Information */}
             {activeRide.rideType === 'shared' && activeRide.passengers?.length > 0 ? (
-              <div style={{ background: '#0a0a0a', padding: '12px 16px', borderRadius: '10px', marginBottom: '16px' }}>
-                <p style={{ color: '#f59e0b', fontSize: '13px', margin: '0 0 8px 0' }}>
-                  👥 {activeRide.passengers.length}/{activeRide.maxPassengers || 4} Passengers
-                </p>
-                {activeRide.passengers.map((p, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', background: '#1a1a1a', padding: '8px 12px', borderRadius: '8px' }}>
-                    <div>
-                      <p style={{ color: 'white', fontSize: '14px', margin: '0 0 2px 0', fontWeight: '600' }}>{p.name}</p>
-                      <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>Passenger {i + 1}</p>
-                    </div>
-                    {p.phone && (
-                      <a href={`tel:${p.phone}`} style={{ background: '#e63946', color: 'white', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', fontSize: '13px' }}>
-                        📞 Call
-                      </a>
-                    )}
+              <div style={styles.passengerGroup}>
+                <div style={styles.passengerGroupHeader}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '16px' }}>👥</span>
+                    <span style={{ color: '#f59e0b', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Pool Manifest ({activeRide.passengers.length}/{activeRide.maxPassengers || 4} Seats)
+                    </span>
                   </div>
-                ))}
-                <p style={{ color: '#e63946', fontSize: '13px', margin: '8px 0 0', fontWeight: '600' }}>
-                  💰 ₹{activeRide.fare} each × {activeRide.passengers.length} = ₹{activeRide.fare * activeRide.passengers.length} total
-                </p>
+                  <span style={styles.poolFareTag}>
+                    ₹{activeRide.fare} / seat
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {activeRide.passengers.map((p, i) => (
+                    <div key={i} style={styles.passengerItem}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={styles.passengerAvatar}>
+                          {i + 1}
+                        </div>
+                        <div>
+                          <p style={styles.passengerName}>{p.name}</p>
+                          <p style={styles.passengerRole}>Passenger {i + 1} • Confirmed Seat</p>
+                        </div>
+                      </div>
+                      {p.phone && (
+                        <a href={`tel:${p.phone}`} style={styles.callSmallBtn}>
+                          <span>📞</span>
+                          <span>Call</span>
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div style={styles.totalFareBanner}>
+                  <span style={{ color: '#999', fontSize: '13px' }}>Gross Fare Collection:</span>
+                  <span style={{ color: '#e63946', fontSize: '16px', fontWeight: '800' }}>
+                    ₹{activeRide.fare * activeRide.passengers.length}
+                  </span>
+                </div>
               </div>
             ) : (
               <div style={styles.studentCard}>
-                <div style={styles.studentAvatar}>👤</div>
+                <div style={styles.studentAvatar}>
+                  <span>👤</span>
+                </div>
                 <div style={{ flex: 1 }}>
-                  <p style={styles.studentName}>{activeRide.student?.name}</p>
-                  <p style={styles.studentId}>Student</p>
+                  <span style={styles.clientLabel}>RIDER DETAILS</span>
+                  <p style={styles.studentName}>{activeRide.student?.name || 'Student Passenger'}</p>
+                  <p style={styles.studentId}>Verified Campus Passenger</p>
                 </div>
                 {activeRide.student?.phone && (
                   <a href={`tel:${activeRide.student.phone}`} style={styles.callBtn}>
-                    📞 Call Student
+                    <span>📞</span>
+                    <span>Call Passenger</span>
                   </a>
                 )}
               </div>
             )}
-            <div style={styles.routeInfo}>
-              <div style={styles.routePoint}>
-                <span>🟢</span>
-                <span>{activeRide.pickup}</span>
+
+            {/* Route Timeline Box */}
+            <div style={styles.routeContainer}>
+              <div style={styles.routeTimeline}>
+                <div style={styles.routeDotPickup} />
+                <div style={styles.routeVerticalLine} />
+                <div style={styles.routeDotDropoff} />
               </div>
-              <div style={styles.routeLine}>↓</div>
-              <div style={styles.routePoint}>
-                <span>🔴</span>
-                <span>{activeRide.dropoff}</span>
+              <div style={styles.routeDetails}>
+                <div style={styles.routeStop}>
+                  <div style={styles.routeStopHeader}>
+                    <span style={styles.routeTagPickup}>PICKUP</span>
+                  </div>
+                  <p style={styles.routeAddress}>{activeRide.pickup}</p>
+                </div>
+                <div style={styles.routeStop}>
+                  <div style={styles.routeStopHeader}>
+                    <span style={styles.routeTagDropoff}>DESTINATION</span>
+                  </div>
+                  <p style={styles.routeAddress}>{activeRide.dropoff}</p>
+                </div>
               </div>
             </div>
 
+            {/* Scheduled Tag */}
             {activeRide.isScheduled && activeRide.scheduledTime && (
-              <div style={styles.scheduledBadge}>
-                🕐 Scheduled for: <b>{new Date(activeRide.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+              <div style={styles.scheduledBanner}>
+                <span style={{ fontSize: '16px' }}>🕐</span>
+                <span style={{ fontSize: '13px', color: '#f59e0b' }}>
+                  Scheduled Departure: <b>{new Date(activeRide.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+                </span>
               </div>
             )}
 
-            <div style={styles.btnRow}>
+            {/* CTA Action Buttons */}
+            <div style={styles.activeBtnRow}>
               {activeRide.status === 'accepted' && (
-                <button onClick={() => updateStatus('ontheway')} style={styles.startBtn}>
-                  🚗 Start Ride
+                <button
+                  onClick={() => updateStatus('ontheway')}
+                  className="traverse-btn-accept"
+                  style={styles.startTripBtn}
+                >
+                  <span style={{ fontSize: '18px' }}>🚗</span>
+                  <span>Start Ride / On The Way</span>
                 </button>
               )}
+
               {activeRide.status === 'ontheway' && (
-                <button onClick={() => updateStatus('completed')} style={styles.completeBtn}>
-                  ✅ Complete Ride
+                <button
+                  onClick={() => updateStatus('completed')}
+                  className="traverse-btn-accept"
+                  style={styles.completeTripBtn}
+                >
+                  <span style={{ fontSize: '18px' }}>✅</span>
+                  <span>Complete Ride & Collect ₹{activeRide.fare}</span>
                 </button>
               )}
+
               {activeRide.status === 'accepted' && (
-                <button onClick={() => setShowCancelPopup(true)}
-                  style={{ padding: '12px 20px', background: 'transparent', color: '#e63946', border: '1px solid #e63946', borderRadius: '10px', cursor: 'pointer', fontSize: '15px' }}>
-                  Cancel
+                <button
+                  onClick={() => setShowCancelPopup(true)}
+                  className="traverse-btn-reject"
+                  style={styles.cancelTripBtn}
+                >
+                  Cancel Ride
                 </button>
               )}
             </div>
 
+            {/* Cancel Confirmation Modal */}
             {showCancelPopup && (
               <div style={styles.popup}>
-                <div style={styles.popupCard}>
-                  <h3 style={{ color: 'white', marginBottom: '8px' }}>⚠️ Cancel Ride?</h3>
-                  <p style={{ color: '#999', fontSize: '14px', marginBottom: '20px' }}>
-                    Cancelling after accepting may result in blacklisting after 5 times. Are you sure?
-                  </p>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={cancelAcceptedRide}
-                      style={{ flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                <div className="driver-card-hover" style={styles.popupCard}>
+                  <div style={{ textAlign: 'center', marginBottom: '14px' }}>
+                    <div style={styles.popupWarningIcon}>⚠️</div>
+                    <h3 style={{ color: 'white', margin: '0 0 6px 0', fontSize: '18px', fontWeight: '700' }}>Cancel Accepted Ride?</h3>
+                    <p style={{ color: '#999', fontSize: '13px', margin: 0, lineHeight: '1.4' }}>
+                      Cancelling after accepting disrupts rider schedules. Repeated cancellations (5+) may result in account penalties.
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button
+                      onClick={cancelAcceptedRide}
+                      style={styles.confirmCancelBtn}
+                    >
                       Yes, Cancel
                     </button>
-                    <button onClick={() => setShowCancelPopup(false)}
-                      style={{ flex: 1, padding: '12px', background: '#1a1a1a', color: '#999', border: '1px solid #2a2a2a', borderRadius: '8px', cursor: 'pointer' }}>
+                    <button
+                      onClick={() => setShowCancelPopup(false)}
+                      style={styles.keepRideBtn}
+                    >
                       Keep Ride
                     </button>
                   </div>
@@ -515,81 +772,141 @@ function DriverDashboard() {
               </div>
             )}
           </div>
-
         )}
 
-        {/* Available Rides */}
-        {/* Available Rides */}
+        {/* AVAILABLE RIDES LIST */}
         {!activeRide && (
           <div>
+            {/* INSTANT RIDES TAB */}
             {activeTab === 'instant' && (
               <div>
                 <div style={styles.header}>
                   <div>
-                    <h3 style={styles.sectionTitle}>Available Rides</h3>
-                    <p style={styles.sectionSubtitle}>{rides.length} ride{rides.length !== 1 ? 's' : ''} waiting</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#e63946' }} />
+                      <h3 style={styles.sectionTitle}>Available Requests</h3>
+                    </div>
+                    <p style={styles.sectionSubtitle}>
+                      {rides.length} ride request{rides.length !== 1 ? 's' : ''} in your queue
+                    </p>
                   </div>
-                  <button onClick={fetchAvailableRides} style={styles.refreshBtn}>🔄 Refresh</button>
+                  <button onClick={fetchAvailableRides} className="nav-btn-hover" style={styles.refreshBtn}>
+                    <span>🔄</span>
+                    <span>Refresh</span>
+                  </button>
                 </div>
 
                 {rides.length === 0 && (
-                  <div style={styles.empty}>
-                    <p style={styles.emptyIcon}>🚖</p>
-                    <p style={styles.emptyTitle}>No rides available</p>
-                    <p style={styles.emptySubtitle}>Waiting for ride requests...</p>
+                  <div className="driver-card-hover" style={styles.empty}>
+                    <div style={styles.emptyIconBox}>
+                      <span style={{ fontSize: '32px' }}>🚖</span>
+                    </div>
+                    <h4 style={styles.emptyTitle}>No Rides in Queue</h4>
+                    <p style={styles.emptySubtitle}>
+                      {isAvailable
+                        ? 'Looking for nearby passenger requests... Keep app open to receive instant alerts.'
+                        : 'You are currently Offline. Turn Online in the navbar to start receiving rides.'}
+                    </p>
+                    {!isAvailable && (
+                      <button
+                        onClick={toggleAvailability}
+                        className="toggle-btn-online"
+                        style={styles.goOnlinePromptBtn}
+                      >
+                        🟢 Go Online Now
+                      </button>
+                    )}
                   </div>
                 )}
+
                 {rides.map(ride => (
-                  <div key={ride._id} style={styles.rideCard}>
-                    <div style={styles.rideCardHeader}>
+                  <div key={ride._id} className="driver-card-hover" style={styles.rideCard}>
+                    {/* Top Row: Rider Info & Fare */}
+                    <div style={styles.requestCardTop}>
                       <div style={styles.studentInfo}>
-                        <span style={styles.studentAvatar2}>👤</span>
+                        <div style={styles.studentAvatarSmall}>👤</div>
                         <div>
-                          <p style={styles.studentName}>{ride.student?.name}</p>
-                          {ride.rideType === 'shared' && (
-                            <div>
+                          <p style={styles.studentName}>{ride.student?.name || 'Campus Rider'}</p>
+                          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '2px' }}>
+                            <span style={styles.vehicleTypeTag}>
+                              🚗 {ride.vehicleType || 'Sedan'}
+                            </span>
+                            {ride.rideType === 'shared' ? (
                               <span style={styles.sharedBadge}>
-                                👥 {ride.passengers?.length || 1}/{ride.maxPassengers || 4} passengers
+                                👥 Pool ({ride.passengers?.length || 1}/{ride.maxPassengers || 4})
                               </span>
-                              {ride.isFull && (
-                                <span style={{ ...styles.sharedBadge, background: '#e6394622', color: '#e63946', marginLeft: '4px' }}>
-                                  FULL
-                                </span>
-                              )}
-                            </div>
-                          )}
+                            ) : (
+                              <span style={styles.privateBadge}>
+                                🔒 Private
+                              </span>
+                            )}
+                            {ride.isFull && (
+                              <span style={styles.fullBadge}>FULL</span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      {ride.isScheduled && (
-                        <span style={styles.scheduledTag}>📅 Scheduled</span>
+
+                      <div style={styles.fareHighlightBox}>
+                        <span style={styles.fareLabel}>EST. FARE</span>
+                        <p style={styles.fareAmount}>₹{ride.fare}</p>
+                      </div>
+                    </div>
+
+                    {/* Middle: Route Info */}
+                    <div style={styles.routeContainer}>
+                      <div style={styles.routeTimeline}>
+                        <div style={styles.routeDotPickup} />
+                        <div style={styles.routeVerticalLine} />
+                        <div style={styles.routeDotDropoff} />
+                      </div>
+                      <div style={styles.routeDetails}>
+                        <div style={styles.routeStop}>
+                          <div style={styles.routeStopHeader}>
+                            <span style={styles.routeTagPickup}>PICKUP</span>
+                          </div>
+                          <p style={styles.routeAddress}>{ride.pickup}</p>
+                        </div>
+                        <div style={styles.routeStop}>
+                          <div style={styles.routeStopHeader}>
+                            <span style={styles.routeTagDropoff}>DROPOFF</span>
+                          </div>
+                          <p style={styles.routeAddress}>{ride.dropoff}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Timing details */}
+                    <div style={styles.requestMetaRow}>
+                      {ride.isScheduled && ride.scheduledTime ? (
+                        <div style={styles.scheduledMetaTag}>
+                          <span>📅 Scheduled:</span>
+                          <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+                        </div>
+                      ) : (
+                        <div style={styles.timestampMetaTag}>
+                          <span>⏰ Requested:</span>
+                          <span>{new Date(ride.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
                       )}
                     </div>
 
-                    <div style={styles.routeInfo}>
-                      <div style={styles.routePoint}>
-                        <span>🟢</span><span>{ride.pickup}</span>
-                      </div>
-                      <div style={styles.routeLine}>↓</div>
-                      <div style={styles.routePoint}>
-                        <span>🔴</span><span>{ride.dropoff}</span>
-                      </div>
-                    </div>
-
-                    {ride.isScheduled && ride.scheduledTime && (
-                      <div style={styles.scheduledBadge}>
-                        🕐 Scheduled: <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
-                      </div>
-                    )}
-                    {!ride.isScheduled && (
-                      <p style={styles.requestTime}>⏰ Requested at {new Date(ride.createdAt).toLocaleTimeString()}</p>
-                    )}
-
+                    {/* Action Buttons (Uber Driver Accept/Reject Style) */}
                     <div style={styles.actionBtns}>
-                      <button onClick={() => acceptRide(ride._id)} style={styles.acceptBtn} disabled={accepting}>
-                        {accepting ? 'Accepting...' : '✓ Accept'}
+                      <button
+                        onClick={() => acceptRide(ride._id)}
+                        className="traverse-btn-accept"
+                        style={styles.acceptBtn}
+                        disabled={accepting}
+                      >
+                        {accepting ? 'Connecting...' : '✓ Accept Ride'}
                       </button>
-                      <button onClick={() => rejectRide(ride._id)} style={styles.rejectBtn}>
-                        ✕ Reject
+                      <button
+                        onClick={() => rejectRide(ride._id)}
+                        className="traverse-btn-reject"
+                        style={styles.rejectBtn}
+                      >
+                        ✕ Decline
                       </button>
                     </div>
                   </div>
@@ -597,227 +914,1050 @@ function DriverDashboard() {
               </div>
             )}
 
+            {/* SCHEDULED RIDES TAB */}
             {activeTab === 'scheduled' && (
               <div>
+                {/* My Confirmed Scheduled Rides */}
                 {myScheduledRides.length > 0 && (
-                  <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ ...styles.sectionTitle, color: '#10b981' }}>
-                      ✅ My Confirmed Rides ({myScheduledRides.length})
-                    </h3>
-                    {myScheduledRides.map(ride => (
-                      <div key={ride._id} style={{ ...styles.rideCard, border: '1px solid #10b981' }}>
-                        <div style={styles.rideCardHeader}>
-                          <div style={styles.studentInfo}>
-                            <span style={styles.studentAvatar2}>👤</span>
-                            <div>
-                              <p style={styles.studentName}>{ride.student?.name}</p>
-                              {ride.student?.phone && (
-                                <a href={`tel:${ride.student.phone}`} style={{ color: '#e63946', fontSize: '13px' }}>
-                                  📞 {ride.student.phone}
-                                </a>
-                              )}
+                  <div style={{ marginBottom: '28px' }}>
+                    <div style={styles.scheduledHeaderConfirmed}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '18px' }}>✅</span>
+                        <h3 style={{ ...styles.sectionTitle, color: '#10b981' }}>
+                          My Confirmed Bookings ({myScheduledRides.length})
+                        </h3>
+                      </div>
+                      <span style={styles.confirmedBadgeCount}>{myScheduledRides.length} Upcoming</span>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      {myScheduledRides.map(ride => (
+                        <div key={ride._id} className="driver-card-hover" style={{ ...styles.rideCard, border: '1px solid rgba(16, 185, 129, 0.45)', background: 'linear-gradient(145deg, #121814 0%, #111111 100%)' }}>
+                          <div style={styles.requestCardTop}>
+                            <div style={styles.studentInfo}>
+                              <div style={{ ...styles.studentAvatarSmall, background: 'rgba(16, 185, 129, 0.2)', color: '#10b981' }}>👤</div>
+                              <div>
+                                <p style={styles.studentName}>{ride.student?.name || 'Rider'}</p>
+                                {ride.student?.phone && (
+                                  <a href={`tel:${ride.student.phone}`} style={styles.phoneLink}>
+                                    <span>📞</span>
+                                    <span>{ride.student.phone}</span>
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                            <span style={styles.confirmedBadge}>
+                              CONFIRMED ✓
+                            </span>
+                          </div>
+
+                          <div style={styles.routeContainer}>
+                            <div style={styles.routeTimeline}>
+                              <div style={styles.routeDotPickup} />
+                              <div style={styles.routeVerticalLine} />
+                              <div style={styles.routeDotDropoff} />
+                            </div>
+                            <div style={styles.routeDetails}>
+                              <div style={styles.routeStop}>
+                                <div style={styles.routeStopHeader}><span style={styles.routeTagPickup}>PICKUP</span></div>
+                                <p style={styles.routeAddress}>{ride.pickup}</p>
+                              </div>
+                              <div style={styles.routeStop}>
+                                <div style={styles.routeStopHeader}><span style={styles.routeTagDropoff}>DROPOFF</span></div>
+                                <p style={styles.routeAddress}>{ride.dropoff}</p>
+                              </div>
                             </div>
                           </div>
-                          <span style={{ color: '#10b981', fontSize: '12px', fontWeight: '600' }}>CONFIRMED</span>
+
+                          <div style={styles.scheduledBannerConfirmed}>
+                            <span>🕐 Scheduled Time:</span>
+                            <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+                          </div>
                         </div>
-                        <div style={styles.routeInfo}>
-                          <div style={styles.routePoint}><span>🟢</span><span>{ride.pickup}</span></div>
-                          <div style={styles.routeLine}>↓</div>
-                          <div style={styles.routePoint}><span>🔴</span><span>{ride.dropoff}</span></div>
-                        </div>
-                        <div style={styles.scheduledBadge}>
-                          🕐 {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
 
+                {/* Available Scheduled Rides */}
                 <div style={styles.header}>
-                  <h3 style={styles.sectionTitle}>🕐 Available Scheduled Rides</h3>
-                  <button onClick={fetchScheduledRides} style={styles.refreshBtn}>🔄 Refresh</button>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '18px' }}>🕐</span>
+                      <h3 style={styles.sectionTitle}>Available Pre-Bookings</h3>
+                    </div>
+                    <p style={styles.sectionSubtitle}>Claim upcoming scheduled rides in advance</p>
+                  </div>
+                  <button onClick={fetchScheduledRides} className="nav-btn-hover" style={styles.refreshBtn}>
+                    <span>🔄</span>
+                    <span>Refresh</span>
+                  </button>
                 </div>
 
-                {scheduledLoading && <Spinner text='Loading...' />}
+                {scheduledLoading && <Spinner text='Fetching scheduled trips...' />}
 
                 {!scheduledLoading && scheduledRides.length === 0 && (
-                  <div style={styles.empty}>
-                    <p style={styles.emptyIcon}>🕐</p>
-                    <p style={styles.emptyTitle}>No scheduled rides</p>
-                    <p style={styles.emptySubtitle}>Scheduled rides will appear here</p>
+                  <div className="driver-card-hover" style={styles.empty}>
+                    <div style={styles.emptyIconBox}>
+                      <span style={{ fontSize: '32px' }}>🕐</span>
+                    </div>
+                    <h4 style={styles.emptyTitle}>No Scheduled Trips</h4>
+                    <p style={styles.emptySubtitle}>All upcoming rides are currently claimed or none posted.</p>
                   </div>
                 )}
 
-                {scheduledRides.map(ride => (
-                  <div key={ride._id} style={styles.rideCard}>
-                    <div style={styles.rideCardHeader}>
-                      <div style={styles.studentInfo}>
-                        <span style={styles.studentAvatar2}>👤</span>
-                        <div>
-                          <p style={styles.studentName}>{ride.student?.name}</p>
-                          {ride.student?.phone && (
-                            <a href={`tel:${ride.student.phone}`} style={{ color: '#e63946', fontSize: '13px' }}>
-                              📞 {ride.student.phone}
-                            </a>
-                          )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {scheduledRides.map(ride => (
+                    <div key={ride._id} className="driver-card-hover" style={styles.rideCard}>
+                      <div style={styles.requestCardTop}>
+                        <div style={styles.studentInfo}>
+                          <div style={styles.studentAvatarSmall}>👤</div>
+                          <div>
+                            <p style={styles.studentName}>{ride.student?.name || 'Campus Passenger'}</p>
+                            {ride.student?.phone && (
+                              <a href={`tel:${ride.student.phone}`} style={styles.phoneLink}>
+                                <span>📞</span>
+                                <span>{ride.student.phone}</span>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                        {ride.driver ? (
+                          <span style={styles.alreadyTakenBadge}>Assigned</span>
+                        ) : (
+                          <span style={styles.openSlotBadge}>Open Booking</span>
+                        )}
+                      </div>
+
+                      <div style={styles.routeContainer}>
+                        <div style={styles.routeTimeline}>
+                          <div style={styles.routeDotPickup} />
+                          <div style={styles.routeVerticalLine} />
+                          <div style={styles.routeDotDropoff} />
+                        </div>
+                        <div style={styles.routeDetails}>
+                          <div style={styles.routeStop}>
+                            <div style={styles.routeStopHeader}><span style={styles.routeTagPickup}>PICKUP</span></div>
+                            <p style={styles.routeAddress}>{ride.pickup}</p>
+                          </div>
+                          <div style={styles.routeStop}>
+                            <div style={styles.routeStopHeader}><span style={styles.routeTagDropoff}>DROPOFF</span></div>
+                            <p style={styles.routeAddress}>{ride.dropoff}</p>
+                          </div>
                         </div>
                       </div>
-                      {ride.driver && <span style={{ color: '#f59e0b', fontSize: '12px' }}>Already taken</span>}
+
+                      <div style={styles.scheduledBanner}>
+                        <span>🕐 Trip Time:</span>
+                        <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+                        <span style={styles.vehicleTypeTag}>🚗 {ride.vehicleType || 'Standard'}</span>
+                        {!ride.driver && (
+                          <button
+                            onClick={() => preAcceptRide(ride._id)}
+                            className="traverse-btn-accept"
+                            style={styles.confirmPreAcceptBtn}
+                          >
+                            ✓ Claim Scheduled Ride
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div style={styles.routeInfo}>
-                      <div style={styles.routePoint}><span>🟢</span><span>{ride.pickup}</span></div>
-                      <div style={styles.routeLine}>↓</div>
-                      <div style={styles.routePoint}><span>🔴</span><span>{ride.dropoff}</span></div>
-                    </div>
-                    <div style={styles.scheduledBadge}>
-                      🕐 {new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
-                    </div>
-                    <p style={styles.requestTime}>🚗 {ride.vehicleType}</p>
-                    {!ride.driver && (
-                      <button onClick={() => preAcceptRide(ride._id)} style={styles.acceptBtn}>
-                        ✓ Confirm Ride
-                      </button>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
+
 const styles = {
-  container: { minHeight: '100vh', background: '#0a0a0a', color: 'white', fontFamily: 'Inter, sans-serif' },
+  container: {
+    minHeight: '100vh',
+    background: '#0a0a0a',
+    color: '#ffffff',
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    backgroundImage: 'radial-gradient(circle at 50% 0%, #20080a 0%, #0a0a0a 65%)',
+    backgroundAttachment: 'fixed',
+    paddingBottom: '40px'
+  },
   navbar: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: window.innerWidth <= 768 ? '12px 16px' : '16px 32px',
-    background: '#111',
-    borderBottom: '1px solid #1a1a1a',
-    boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
-    flexWrap: 'wrap',
-    gap: '8px'
+    padding: '12px 18px',
+    background: 'rgba(17, 17, 17, 0.88)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: '0 4px 24px rgba(0, 0, 0, 0.7)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100
   },
-  navLogo: { fontSize: '24px' },
-  navTitle: { fontSize: '20px', fontWeight: '800', letterSpacing: '3px', color: '#e63946' },
+  navBrand: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  navLogoBox: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '10px',
+    background: 'linear-gradient(135deg, #1c1c1c 0%, #2a1114 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 12px rgba(230, 57, 70, 0.3)'
+  },
+  navLogo: { fontSize: '20px' },
+  navTitle: {
+    fontSize: '18px',
+    fontWeight: '900',
+    letterSpacing: '2.5px',
+    color: '#e63946',
+    textShadow: '0 0 16px rgba(230, 57, 70, 0.5)'
+  },
   navRight: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    flexWrap: 'wrap'
+    gap: '6px'
   },
   navUser: {
-    color: '#666',
+    color: '#a0a0a0',
     fontSize: '13px',
-    display: window.innerWidth <= 768 ? 'none' : 'block'
+    alignItems: 'center',
+    gap: '6px',
+    background: 'rgba(255, 255, 255, 0.05)',
+    padding: '6px 12px',
+    borderRadius: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.06)'
+  },
+  toggleBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '6px 14px',
+    borderRadius: '20px',
+    cursor: 'pointer',
+    fontSize: '12px',
+    color: '#ffffff',
+    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
+  },
+  statusPulseDot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    display: 'inline-block'
   },
   navBtn: {
-    background: 'transparent',
-    color: '#999',
-    border: '1px solid #2a2a2a',
-    padding: '8px 16px',
+    background: 'rgba(255, 255, 255, 0.04)',
+    color: '#a0a0a0',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    padding: '7px 12px',
     borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '14px',
-    transition: 'all 0.2s ease'
+    fontSize: '12px',
+    fontWeight: '500',
+    transition: 'all 0.2s ease',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px'
   },
   navBtnRed: {
-    background: 'transparent',
+    background: 'rgba(230, 57, 70, 0.12)',
     color: '#e63946',
-    border: '1px solid #e63946',
-    padding: '8px 16px',
+    border: '1px solid rgba(230, 57, 70, 0.35)',
+    padding: '7px 12px',
     borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '14px',
-    transition: 'all 0.2s ease'
+    fontSize: '12px',
+    fontWeight: '600',
+    transition: 'all 0.2s ease',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px'
   },
   content: {
-    maxWidth: '720px',
-    margin: '24px auto',
-    padding: '0 16px'
+    maxWidth: '680px',
+    margin: '20px auto 0',
+    padding: '0 14px'
   },
   ratingCard: {
-    background: '#111',
-    border: '1px solid #1a1a1a',
-    padding: '20px 24px',
+    background: 'linear-gradient(145deg, #161616 0%, #111111 100%)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    padding: '18px 20px',
     borderRadius: '16px',
-    marginBottom: '24px',
+    marginBottom: '20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '12px',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
+    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+    position: 'relative',
+    overflow: 'hidden'
   },
-  ratingLabel: { color: '#666', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 4px 0' },
-  ratingValue: { fontSize: '36px', fontWeight: '800', color: '#e63946', margin: 0 },
-  ratingMax: { fontSize: '18px', color: '#666' },
-  ratingStars: { textAlign: 'center' },
-  ratingCount: { color: '#666', fontSize: '12px', margin: '4px 0 0 0' },
-  ratingRight: {},
-  ratingStatus: { fontSize: '14px', fontWeight: '600', margin: 0 },
-  messagebox: { background: '#111', padding: '14px 18px', borderRadius: '10px', marginBottom: '20px', borderLeft: '3px solid #e63946', fontSize: '14px', color: '#ccc' },
-  rideCard: {
-    background: '#111',
-    border: '1px solid #1a1a1a',
-    padding: window.innerWidth <= 768 ? '16px' : '24px',
-    borderRadius: '16px',
-    marginBottom: '16px',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
-    transition: 'all 0.2s ease'
+  ratingLeft: {
+    display: 'flex',
+    flexDirection: 'column'
   },
-  tabRow: { display: 'flex', gap: '8px', marginBottom: '20px' },
-  tabActive: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', position: 'relative' },
-  tabInactive: { flex: 1, padding: '12px', background: '#1a1a1a', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '14px', position: 'relative' },
-  tabBadge: { position: 'absolute', top: '-6px', right: '-6px', background: '#f59e0b', color: 'black', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', fontWeight: '700', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginLeft: '6px' },
-
-  rideCardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' },
-  rideCardTitle: { fontSize: '18px', fontWeight: '700', margin: 0 },
-  statusBadge: { padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' },
-  studentCard: { display: 'flex', alignItems: 'center', gap: '12px', background: '#0a0a0a', padding: '12px 16px', borderRadius: '10px', marginBottom: '16px' },
-  studentAvatar: { width: '40px', height: '40px', background: '#1a1a1a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' },
-  studentName: { fontWeight: '600', margin: '0 0 2px 0', fontSize: '15px' },
-  studentId: { color: '#666', fontSize: '12px', margin: 0 },
-  routeInfo: { background: '#0a0a0a', padding: '14px 16px', borderRadius: '10px', marginBottom: '16px' },
-  routePoint: { display: 'flex', alignItems: 'center', gap: '10px', padding: '4px 0', fontSize: '14px' },
-  routeLine: { color: '#333', paddingLeft: '4px', fontSize: '16px', lineHeight: '1' },
-  scheduledBadge: { background: '#1a0a00', border: '1px solid #f59e0b', color: '#f59e0b', padding: '8px 12px', borderRadius: '8px', fontSize: '13px', marginBottom: '16px' },
-  btnRow: { display: 'flex', gap: '12px' },
-  startBtn: { flex: 1, padding: '12px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '15px', fontWeight: '600' },
-  completeBtn: { flex: 1, padding: '12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '15px', fontWeight: '600' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' },
-  sectionTitle: { fontSize: '20px', fontWeight: '700', margin: '0 0 4px 0' },
-  sectionSubtitle: { color: '#666', fontSize: '14px', margin: 0 },
-  refreshBtn: { background: '#1a1a1a', color: '#999', border: '1px solid #2a2a2a', padding: '10px 16px', borderRadius: '10px', cursor: 'pointer', fontSize: '14px' },
-  empty: { background: '#111', border: '1px solid #1a1a1a', padding: '48px 24px', borderRadius: '16px', textAlign: 'center' },
-  emptyIcon: { fontSize: '48px', margin: '0 0 16px 0' },
-  emptyTitle: { fontSize: '18px', fontWeight: '600', margin: '0 0 8px 0' },
-  emptySubtitle: { color: '#666', fontSize: '14px', margin: 0 },
-  studentInfo: { display: 'flex', alignItems: 'center', gap: '10px' },
-  studentAvatar2: { fontSize: '24px' },
-  sharedBadge: { background: '#1a0a00', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' },
-  scheduledTag: { background: '#1a0a00', color: '#f59e0b', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' },
-  requestTime: { color: '#666', fontSize: '13px', margin: '0 0 12px 0' },
-  actionBtns: { display: 'flex', gap: '8px', marginTop: '16px' },
-  acceptBtn: {
+  ratingBadgeIcon: {
+    fontSize: '12px',
+    color: '#e63946'
+  },
+  ratingLabel: {
+    color: '#888888',
+    fontSize: '11px',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    fontWeight: '700',
+    margin: 0
+  },
+  ratingValue: {
+    fontSize: '34px',
+    fontWeight: '900',
+    color: '#ffffff',
+    margin: 0,
+    lineHeight: '1.1',
+    letterSpacing: '-0.5px'
+  },
+  ratingMax: {
+    fontSize: '14px',
+    color: '#666666',
+    fontWeight: '600'
+  },
+  ratingStarsBox: {
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  ratingCount: {
+    color: '#777777',
+    fontSize: '11px',
+    margin: '5px 0 0 0',
+    fontWeight: '500'
+  },
+  ratingRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
+  statusTag: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '5px',
+    padding: '5px 10px',
+    borderRadius: '20px'
+  },
+  ratingStatus: {
+    fontSize: '12px',
+    fontWeight: '700',
+    letterSpacing: '0.3px'
+  },
+  messagebox: {
+    background: 'linear-gradient(135deg, #1c1415 0%, #141414 100%)',
+    padding: '12px 16px',
+    borderRadius: '12px',
+    marginBottom: '18px',
+    borderLeft: '4px solid #e63946',
+    borderTop: '1px solid rgba(230, 57, 70, 0.2)',
+    borderRight: '1px solid rgba(255, 255, 255, 0.05)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+    fontSize: '13px',
+    color: '#e0e0e0',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
+  },
+  messageIcon: {
+    fontSize: '16px'
+  },
+  tabContainer: {
+    display: 'flex',
+    gap: '8px',
+    marginBottom: '20px',
+    background: '#121212',
+    padding: '4px',
+    borderRadius: '14px',
+    border: '1px solid rgba(255, 255, 255, 0.06)'
+  },
+  tabActive: {
     flex: 1,
-    padding: '12px',
-    background: '#e63946',
-    color: 'white',
+    padding: '12px 14px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
     border: 'none',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '15px',
-    fontWeight: '600',
-    boxShadow: '0 4px 15px rgba(230, 57, 70, 0.4)',
+    fontSize: '13px',
+    fontWeight: '700',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    boxShadow: '0 4px 14px rgba(230, 57, 70, 0.45)',
     transition: 'all 0.2s ease'
   },
-  rejectBtn: { padding: '12px 20px', background: 'transparent', color: '#666', border: '1px solid #2a2a2a', borderRadius: '10px', cursor: 'pointer', fontSize: '15px' },
-  popup: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
-  popupCard: { background: '#111', border: '1px solid #2a2a2a', padding: '24px', borderRadius: '16px', maxWidth: '320px', width: '90%' },
+  tabInactive: {
+    flex: 1,
+    padding: '12px 14px',
+    background: 'transparent',
+    color: '#777777',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '600',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    transition: 'all 0.2s ease'
+  },
+  tabBadge: {
+    background: '#ffffff',
+    color: '#c1121f',
+    borderRadius: '12px',
+    padding: '2px 7px',
+    fontSize: '11px',
+    fontWeight: '800'
+  },
+  activeRideCard: {
+    background: 'linear-gradient(145deg, #181213 0%, #121212 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.35)',
+    padding: '20px',
+    borderRadius: '18px',
+    marginBottom: '20px',
+    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(230, 57, 70, 0.15)'
+  },
+  activeCardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '18px',
+    paddingBottom: '14px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+  },
+  tripTypeLabel: {
+    color: '#e63946',
+    fontSize: '10px',
+    fontWeight: '800',
+    letterSpacing: '1px',
+    display: 'block'
+  },
+  activeRideTitle: {
+    fontSize: '17px',
+    fontWeight: '800',
+    color: '#ffffff',
+    margin: 0
+  },
+  statusBadge: {
+    padding: '6px 12px',
+    borderRadius: '20px',
+    fontSize: '12px',
+    fontWeight: '700',
+    letterSpacing: '0.3px'
+  },
+  passengerGroup: {
+    background: 'rgba(0, 0, 0, 0.45)',
+    padding: '14px',
+    borderRadius: '14px',
+    marginBottom: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.06)'
+  },
+  passengerGroupHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '12px'
+  },
+  poolFareTag: {
+    background: 'rgba(245, 158, 11, 0.15)',
+    color: '#f59e0b',
+    padding: '3px 8px',
+    borderRadius: '6px',
+    fontSize: '12px',
+    fontWeight: '700'
+  },
+  passengerItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    background: 'rgba(255, 255, 255, 0.04)',
+    padding: '10px 12px',
+    borderRadius: '10px',
+    border: '1px solid rgba(255, 255, 255, 0.04)'
+  },
+  passengerAvatar: {
+    width: '30px',
+    height: '30px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #e63946 0%, #991b1b 100%)',
+    color: '#ffffff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px',
+    fontWeight: '800'
+  },
+  passengerName: {
+    color: '#ffffff',
+    fontSize: '13px',
+    fontWeight: '700',
+    margin: '0 0 2px 0'
+  },
+  passengerRole: {
+    color: '#777777',
+    fontSize: '11px',
+    margin: 0
+  },
+  callSmallBtn: {
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    padding: '6px 12px',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '12px',
+    fontWeight: '700',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    boxShadow: '0 2px 8px rgba(230, 57, 70, 0.4)'
+  },
+  totalFareBanner: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: '12px',
+    paddingTop: '10px',
+    borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+  },
+  studentCard: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    background: 'rgba(0, 0, 0, 0.45)',
+    padding: '14px 16px',
+    borderRadius: '14px',
+    marginBottom: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.06)'
+  },
+  studentAvatar: {
+    width: '42px',
+    height: '42px',
+    background: 'linear-gradient(135deg, #222 0%, #181818 100%)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '20px'
+  },
+  clientLabel: {
+    color: '#777777',
+    fontSize: '10px',
+    fontWeight: '700',
+    letterSpacing: '0.8px',
+    display: 'block'
+  },
+  studentName: {
+    fontWeight: '700',
+    margin: '0 0 2px 0',
+    fontSize: '14px',
+    color: '#ffffff'
+  },
+  studentId: {
+    color: '#888888',
+    fontSize: '11px',
+    margin: 0
+  },
+  callBtn: {
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    padding: '8px 14px',
+    borderRadius: '10px',
+    textDecoration: 'none',
+    fontSize: '12px',
+    fontWeight: '700',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    boxShadow: '0 4px 14px rgba(230, 57, 70, 0.4)'
+  },
+  routeContainer: {
+    display: 'flex',
+    gap: '12px',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '14px',
+    borderRadius: '14px',
+    marginBottom: '16px',
+    border: '1px solid rgba(255, 255, 255, 0.05)'
+  },
+  routeTimeline: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: '6px',
+    paddingBottom: '6px'
+  },
+  routeDotPickup: {
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    background: '#10b981',
+    boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)'
+  },
+  routeVerticalLine: {
+    width: '2px',
+    flex: 1,
+    minHeight: '26px',
+    background: 'linear-gradient(to bottom, #10b981 0%, #e63946 100%)',
+    margin: '4px 0'
+  },
+  routeDotDropoff: {
+    width: '10px',
+    height: '10px',
+    borderRadius: '2px',
+    background: '#e63946',
+    boxShadow: '0 0 8px rgba(230, 57, 70, 0.6)'
+  },
+  routeDetails: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    gap: '10px'
+  },
+  routeStop: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  routeStopHeader: {
+    marginBottom: '2px'
+  },
+  routeTagPickup: {
+    fontSize: '10px',
+    fontWeight: '800',
+    color: '#10b981',
+    letterSpacing: '0.8px'
+  },
+  routeTagDropoff: {
+    fontSize: '10px',
+    fontWeight: '800',
+    color: '#e63946',
+    letterSpacing: '0.8px'
+  },
+  routeAddress: {
+    color: '#f0f0f0',
+    fontSize: '13px',
+    fontWeight: '600',
+    margin: 0
+  },
+  scheduledBanner: {
+    background: 'rgba(245, 158, 11, 0.1)',
+    border: '1px solid rgba(245, 158, 11, 0.3)',
+    color: '#f59e0b',
+    padding: '10px 14px',
+    borderRadius: '10px',
+    fontSize: '12px',
+    marginBottom: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  activeBtnRow: {
+    display: 'flex',
+    gap: '10px',
+    flexDirection: 'column'
+  },
+  startTripBtn: {
+    width: '100%',
+    padding: '14px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '15px',
+    fontWeight: '800',
+    letterSpacing: '0.3px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    boxShadow: '0 6px 20px rgba(230, 57, 70, 0.5)',
+    transition: 'all 0.2s ease'
+  },
+  completeTripBtn: {
+    width: '100%',
+    padding: '14px',
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '15px',
+    fontWeight: '800',
+    letterSpacing: '0.3px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    boxShadow: '0 6px 20px rgba(16, 185, 129, 0.5)',
+    transition: 'all 0.2s ease'
+  },
+  cancelTripBtn: {
+    padding: '11px',
+    background: 'transparent',
+    color: '#e63946',
+    border: '1px solid rgba(230, 57, 70, 0.5)',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '600',
+    transition: 'all 0.2s ease'
+  },
+  popup: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.82)',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '16px'
+  },
+  popupCard: {
+    background: '#161616',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    padding: '24px',
+    borderRadius: '18px',
+    maxWidth: '340px',
+    width: '100%',
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8)'
+  },
+  popupWarningIcon: {
+    fontSize: '36px',
+    marginBottom: '8px'
+  },
+  confirmCancelBtn: {
+    flex: 1,
+    padding: '12px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: '700',
+    fontSize: '13px'
+  },
+  keepRideBtn: {
+    flex: 1,
+    padding: '12px',
+    background: '#222222',
+    color: '#a0a0a0',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '13px'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: '16px'
+  },
+  sectionTitle: {
+    fontSize: '17px',
+    fontWeight: '800',
+    margin: '0 0 2px 0',
+    color: '#ffffff',
+    letterSpacing: '-0.3px'
+  },
+  sectionSubtitle: {
+    color: '#777777',
+    fontSize: '12px',
+    margin: 0
+  },
+  refreshBtn: {
+    background: 'rgba(255, 255, 255, 0.05)',
+    color: '#a0a0a0',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    padding: '8px 14px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '12px',
+    fontWeight: '600',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    transition: 'all 0.2s ease'
+  },
+  empty: {
+    background: 'linear-gradient(145deg, #141414 0%, #0f0f0f 100%)',
+    border: '1px dashed rgba(255, 255, 255, 0.12)',
+    padding: '44px 20px',
+    borderRadius: '18px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  emptyIconBox: {
+    width: '64px',
+    height: '64px',
+    borderRadius: '50%',
+    background: 'rgba(230, 57, 70, 0.08)',
+    border: '1px solid rgba(230, 57, 70, 0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '14px'
+  },
+  emptyTitle: {
+    fontSize: '16px',
+    fontWeight: '700',
+    margin: '0 0 6px 0',
+    color: '#ffffff'
+  },
+  emptySubtitle: {
+    color: '#777777',
+    fontSize: '12px',
+    margin: '0 0 16px 0',
+    maxWidth: '320px',
+    lineHeight: '1.4'
+  },
+  goOnlinePromptBtn: {
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    color: '#ffffff',
+    border: 'none',
+    padding: '10px 20px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '700',
+    boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4)'
+  },
+  rideCard: {
+    background: 'linear-gradient(145deg, #161616 0%, #111111 100%)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    padding: '16px',
+    borderRadius: '16px',
+    marginBottom: '14px',
+    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.45)',
+    position: 'relative'
+  },
+  requestCardTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '14px'
+  },
+  studentInfo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  studentAvatarSmall: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    background: 'rgba(255, 255, 255, 0.08)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '16px'
+  },
+  vehicleTypeTag: {
+    background: 'rgba(255, 255, 255, 0.06)',
+    color: '#bbb',
+    padding: '2px 7px',
+    borderRadius: '4px',
+    fontSize: '11px',
+    fontWeight: '600'
+  },
+  sharedBadge: {
+    background: 'rgba(245, 158, 11, 0.15)',
+    color: '#f59e0b',
+    padding: '2px 7px',
+    borderRadius: '4px',
+    fontSize: '11px',
+    fontWeight: '700'
+  },
+  privateBadge: {
+    background: 'rgba(230, 57, 70, 0.12)',
+    color: '#e63946',
+    padding: '2px 7px',
+    borderRadius: '4px',
+    fontSize: '11px',
+    fontWeight: '700'
+  },
+  fullBadge: {
+    background: '#e63946',
+    color: '#ffffff',
+    padding: '2px 5px',
+    borderRadius: '4px',
+    fontSize: '10px',
+    fontWeight: '800'
+  },
+  fareHighlightBox: {
+    textAlign: 'right',
+    background: 'rgba(230, 57, 70, 0.08)',
+    border: '1px solid rgba(230, 57, 70, 0.25)',
+    padding: '6px 12px',
+    borderRadius: '10px'
+  },
+  fareLabel: {
+    fontSize: '9px',
+    color: '#e63946',
+    fontWeight: '800',
+    letterSpacing: '0.8px',
+    display: 'block'
+  },
+  fareAmount: {
+    fontSize: '18px',
+    fontWeight: '900',
+    color: '#ffffff',
+    margin: 0,
+    lineHeight: '1.1'
+  },
+  requestMetaRow: {
+    marginBottom: '14px'
+  },
+  scheduledMetaTag: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    fontSize: '12px',
+    color: '#f59e0b',
+    background: 'rgba(245, 158, 11, 0.08)',
+    padding: '6px 10px',
+    borderRadius: '8px',
+    border: '1px solid rgba(245, 158, 11, 0.2)'
+  },
+  timestampMetaTag: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    fontSize: '11px',
+    color: '#777777'
+  },
+  actionBtns: {
+    display: 'flex',
+    gap: '8px'
+  },
+  acceptBtn: {
+    flex: 2,
+    padding: '12px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '800',
+    boxShadow: '0 4px 16px rgba(230, 57, 70, 0.4)',
+    transition: 'all 0.2s ease',
+    letterSpacing: '0.2px'
+  },
+  rejectBtn: {
+    flex: 1,
+    padding: '12px',
+    background: 'rgba(255, 255, 255, 0.04)',
+    color: '#888888',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '600',
+    transition: 'all 0.2s ease'
+  },
+  scheduledHeaderConfirmed: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '14px'
+  },
+  confirmedBadgeCount: {
+    background: 'rgba(16, 185, 129, 0.15)',
+    color: '#10b981',
+    padding: '3px 8px',
+    borderRadius: '6px',
+    fontSize: '11px',
+    fontWeight: '700'
+  },
+  confirmedBadge: {
+    background: 'rgba(16, 185, 129, 0.15)',
+    color: '#10b981',
+    border: '1px solid rgba(16, 185, 129, 0.3)',
+    padding: '4px 10px',
+    borderRadius: '8px',
+    fontSize: '11px',
+    fontWeight: '800',
+    letterSpacing: '0.5px'
+  },
+  phoneLink: {
+    color: '#e63946',
+    fontSize: '12px',
+    textDecoration: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    fontWeight: '600',
+    marginTop: '2px'
+  },
+  scheduledBannerConfirmed: {
+    background: 'rgba(16, 185, 129, 0.08)',
+    border: '1px solid rgba(16, 185, 129, 0.25)',
+    color: '#10b981',
+    padding: '8px 12px',
+    borderRadius: '8px',
+    fontSize: '12px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
+  openSlotBadge: {
+    background: 'rgba(230, 57, 70, 0.12)',
+    color: '#e63946',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    fontSize: '11px',
+    fontWeight: '700'
+  },
+  alreadyTakenBadge: {
+    background: 'rgba(245, 158, 11, 0.12)',
+    color: '#f59e0b',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    fontSize: '11px',
+    fontWeight: '700'
+  },
+  confirmPreAcceptBtn: {
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    color: '#ffffff',
+    border: 'none',
+    padding: '8px 14px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '12px',
+    fontWeight: '700',
+    boxShadow: '0 3px 10px rgba(16, 185, 129, 0.35)',
+    transition: 'all 0.2s ease'
+  }
 };
 
 export default DriverDashboard;
