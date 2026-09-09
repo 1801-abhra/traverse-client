@@ -21,6 +21,7 @@ function Login() {
       );
       localStorage.setItem('user', JSON.stringify(data));
       localStorage.setItem('token', data.token);
+      localStorage.setItem('sessionToken', data.sessionToken);
       if (data.role === 'student') navigate('/student');
       else navigate('/driver');
     } catch (err) {
@@ -520,4 +521,4 @@ const styles = {
   }
 };
 
-export default Login;
+export default Login;

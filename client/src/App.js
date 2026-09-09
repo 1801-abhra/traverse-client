@@ -8,6 +8,29 @@ import RideHistory from './pages/RideHistory';
 import AdminDashboard from './pages/AdminDashboard';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import axios from 'axios';
+
+// Add session token to all requests
+axios.interceptors.request.use((config) => {
+  const sessionToken = localStorage.getItem('sessionToken');
+  if (sessionToken) {
+    config.headers['x-session-token'] = sessionToken;
+  }
+  return config;
+});
+
+// Handle session expired
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.data?.message === 'SESSION_EXPIRED') {
+      localStorage.clear();
+      window.location.href = '/login';
+      alert('You have been logged in from another device. Please login again.');
+    }
+    return Promise.reject(error);
+  }
+);
 
 const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem('user'));
