@@ -366,7 +366,6 @@ function StudentDashboard() {
       setMessage(err.response?.data?.message || 'Failed to join ride');
     }
   };
-
   const leaveSharedRide = async () => {
     try {
       const res = await axios.put(
@@ -376,6 +375,7 @@ function StudentDashboard() {
       );
       setActiveRide(null);
       setMessage('Left shared ride successfully');
+      showToast('You left the shared ride', 'warning');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Failed to leave ride');
     }
@@ -628,13 +628,6 @@ function StudentDashboard() {
                     🕐 {new Date(activeRide.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                   </p>
                 )}
-
-                {/* Leave ride button - only for non-original students */}
-                {activeRide.student?._id !== user._id && activeRide.status === 'searching' && (
-                  <button onClick={leaveSharedRide} style={styles.leaveRideBtn}>
-                    Leave Shared Ride
-                  </button>
-                )}
               </div>
             )}
 
@@ -782,7 +775,13 @@ function StudentDashboard() {
 
             {/* Ride Cancellation Actions */}
             {activeRide.status === 'searching' && (
-              <button onClick={cancelRide} style={styles.cancelBtn}>Cancel Ride Search</button>
+              <>
+                {(activeRide.student?._id === user._id || activeRide.student === user._id) ? (
+                  <button onClick={cancelRide} style={styles.cancelBtn}>Cancel Ride</button>
+                ) : (
+                  <button onClick={leaveSharedRide} style={styles.cancelBtn}>Leave Shared Ride</button>
+                )}
+              </>
             )}
             {activeRide.status === 'accepted' && (
               <button onClick={() => setShowCancelPopup(true)} style={styles.cancelBtn}>
