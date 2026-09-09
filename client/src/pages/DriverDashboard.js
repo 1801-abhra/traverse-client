@@ -40,13 +40,10 @@ function DriverDashboard() {
 
   const fetchAvailableRides = async () => {
     try {
-      const res = await axios.get(
-        `${API}/api/rides/available?t=${Date.now()}`,
-        { headers: { Authorization: `Bearer ${token}`, 'Cache-Control': 'no-cache' } }
-      );
+      const res = await axios.get(`${API}/api/rides/available`, { headers: { Authorization: `Bearer ${token}` } });
       setRides(res.data);
     } catch (err) {
-      setMessage('Failed to fetch rides');
+      console.log('Failed to fetch rides:', err.message);
     } finally {
       setPageLoading(false);
     }
