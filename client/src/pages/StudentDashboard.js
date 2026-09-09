@@ -652,7 +652,11 @@ function StudentDashboard() {
                   </div>
                 </div>
                 {activeRide.driver?.phone && (
-                  <a href={`tel:${activeRide.driver.phone}`} className="traverse-btn-primary" style={styles.callBtn}>
+                  <a href={`tel:${activeRide.driver.phone}`}
+                    style={styles.callBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}>
                     📞 Call Driver
                   </a>
                 )}
