@@ -1,12 +1,51 @@
-.vscode/ 
-node_modules/ 
-.antigravity/ 
-.cursor/ 
-.gemini/ 
-AppData/ 
-Desktop/ 
-Downloads/ 
-Documents/ 
-*.exe 
-NTUSER* 
-ntuser* 
+# Personal folders
+OneDrive/
+Desktop/
+Downloads/
+Documents/
+Music/
+Pictures/
+Videos/
+Contacts/
+Favorites/
+Links/
+Searches/
+Saved Games/
+AppData/
+C++/
+python/
+backend-/
+ride-connect/
+new traverse/
+breadboard-guide/
+
+# IDE folders
+.vscode/
+.vscode-shared/
+.antigravity/
+.cursor/
+.gemini/
+.copilot/
+.claude/
+.claude.json
+
+# System files
+NTUSER*
+ntuser*
+*.exe
+*.c
+*.pl
+.gitconfig
+.lesshst
+.viminfo
+.ssh/
+abhra.pl
+saksham.c
+helloworld.c
+helloworld.exe
+a.exe
+package-lock.json
+
+# Node
+node_modules/
+.env
