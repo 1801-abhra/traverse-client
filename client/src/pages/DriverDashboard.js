@@ -309,7 +309,19 @@ function DriverDashboard() {
       setShowCancelPopup(false);
     }
   };
-  const logout = () => { localStorage.clear(); navigate('/login'); };
+  const logout = async () => {
+    try {
+      await axios.post(
+        `${API}/api/auth/logout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      console.log('Logout error:', err);
+    }
+    localStorage.clear();
+    navigate('/login');
+  };
 
   const statusColor = {
     searching: '#f59e0b', accepted: '#e63946',
