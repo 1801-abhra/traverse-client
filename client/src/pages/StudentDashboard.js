@@ -200,6 +200,21 @@ function StudentDashboard() {
       }
     }
   }, [scheduledTime, isScheduled, selectedRoute, selectedVehicle]);
+
+  useEffect(() => {
+    if (rideType === 'shared' && selectedRoute) {
+      const pickup = selectedPickup || 'JUIT Campus, Waknaghat';
+      const dropoff = selectedRoute.destination;
+      axios.get(
+        `${API}/api/rides/shared/available?pickup=${encodeURIComponent(pickup)}&dropoff=${encodeURIComponent(dropoff)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      ).then(res => setSharedRides(res.data))
+        .catch(err => console.log('Failed to fetch shared rides'));
+    } else if (rideType === 'private') {
+      setSharedRides([]);
+    }
+  }, [rideType, selectedRoute]);
+
   const bookRide = async (e) => {
     e.preventDefault();
     if (!selectedRoute || !selectedVehicle) {
@@ -207,7 +222,6 @@ function StudentDashboard() {
       return;
     }
 
-    // Calculate surge fare for Waknaghat based on scheduled time
     let finalFare = fare;
     if (selectedRoute.destination === 'Waknaghat') {
       const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
@@ -245,6 +259,7 @@ function StudentDashboard() {
       setMessage(err.response?.data?.message || 'Booking failed');
     }
   };
+
   const cancelRide = async () => {
     try {
       const res = await axios.put(
@@ -265,11 +280,9 @@ function StudentDashboard() {
     try {
       const pickup = selectedPickup || 'JUIT Campus, Waknaghat';
       const dropoff = selectedRoute?.destination || '';
-
       const params = new URLSearchParams();
       params.append('pickup', pickup);
       if (dropoff) params.append('dropoff', dropoff);
-
       const res = await axios.get(
         `${API}/api/rides/shared/available?${params.toString()}`,
         { headers: { Authorization: `Bearer ${token}` } }
@@ -296,7 +309,6 @@ function StudentDashboard() {
       console.log('Route fetch error:', err);
     }
   };
-
   const getFullRoute = async (pickup, destination) => {
     try {
       // Get coordinates for pickup and destination
@@ -986,10 +998,20 @@ function StudentDashboard() {
                         setDestCoords(route.coords);
                         setMapCenter(route.coords);
                         setDistance(calculateDistance(JUIT_COORDS, route.coords));
-                        if (rideType === 'shared') fetchSharedRides();
+                        // Fetch shared rides with new route immediately
+                        if (rideType === 'shared') {
+                          const pickup = selectedPickup || 'JUIT Campus, Waknaghat';
+                          const dropoff = route.destination;
+                          axios.get(
+                            `${API}/api/rides/shared/available?pickup=${encodeURIComponent(pickup)}&dropoff=${encodeURIComponent(dropoff)}`,
+                            { headers: { Authorization: `Bearer ${token}` } }
+                          ).then(res => setSharedRides(res.data))
+                            .catch(err => console.log('Failed to fetch shared rides'));
+                        }
                       } else {
                         setDestCoords(null);
                         setDistance(null);
+                        setSharedRides([]); // Clear shared rides when destination cleared
                       }
                     }}
                     required
