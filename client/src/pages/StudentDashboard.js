@@ -449,15 +449,15 @@ function StudentDashboard() {
           100% { background-position: 0% 0%; }
         }
         @keyframes pulseSearching {
-          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6); }
-          50% { transform: scale(1.08); opacity: 0.85; box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+          50% { transform: scale(1.1); opacity: 0.85; box-shadow: 0 0 0 9px rgba(245, 158, 11, 0); }
         }
         @keyframes pulseActive {
-          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.6); }
-          50% { transform: scale(1.08); opacity: 0.85; box-shadow: 0 0 0 8px rgba(230, 57, 70, 0); }
+          0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+          50% { transform: scale(1.1); opacity: 0.85; box-shadow: 0 0 0 9px rgba(230, 57, 70, 0); }
         }
         @keyframes slideUpIn {
-          0% { opacity: 0; transform: translateY(24px) scale(0.98); }
+          0% { opacity: 0; transform: translateY(20px) scale(0.98); }
           100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         .traverse-select:focus, .traverse-input:focus {
@@ -483,9 +483,21 @@ function StudentDashboard() {
           color: #ffffff !important;
           border-color: #444 !important;
         }
+        @media (max-width: 480px) {
+          .nav-text-desktop { display: none !important; }
+          .nav-text-mobile { display: inline !important; }
+          .nav-user-desktop { display: none !important; }
+          .nav-btn-mobile { padding: 6px 9px !important; font-size: 11px !important; }
+          .nav-btn-red-mobile { padding: 6px 10px !important; font-size: 11px !important; }
+        }
+        @media (min-width: 481px) {
+          .nav-text-desktop { display: inline !important; }
+          .nav-text-mobile { display: none !important; }
+          .nav-user-desktop { display: block !important; }
+        }
       `}</style>
 
-      {/* Sleek Dark Navbar with Backdrop Blur */}
+      {/* Sleek Dark Navbar - guaranteed single line on 375px mobile */}
       <nav style={styles.navbar}>
         <div style={styles.navBrand}>
           <div style={styles.navLogoBox}>
@@ -494,11 +506,17 @@ function StudentDashboard() {
           <span style={styles.navTitle}>TRAVERSE</span>
         </div>
         <div style={styles.navRight}>
-          <span style={styles.navUser}>👤 {user.name}</span>
-          <button onClick={fetchActiveRide} className="nav-btn-hover" style={styles.navIconBtn} title="Refresh Ride">🔄</button>
-          <button onClick={() => navigate('/history')} className="nav-btn-hover" style={styles.navBtn}>History</button>
-          <button onClick={() => setShowAbout(true)} className="nav-btn-hover" style={styles.navBtn}>About</button>
-          <button onClick={logout} style={styles.navBtnRed}>Logout</button>
+          <span className="nav-user-desktop" style={styles.navUser}>👤 {user.name}</span>
+          <button onClick={fetchActiveRide} className="nav-btn-hover nav-btn-mobile" style={styles.navIconBtn} title="Refresh Ride">🔄</button>
+          <button onClick={() => navigate('/history')} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn}>
+            <span>📋</span><span className="nav-text-desktop"> History</span>
+          </button>
+          <button onClick={() => setShowAbout(true)} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn}>
+            <span>ℹ️</span><span className="nav-text-desktop"> About</span>
+          </button>
+          <button onClick={logout} className="nav-btn-red-mobile" style={styles.navBtnRed}>
+            <span>🚪</span><span className="nav-text-desktop"> Logout</span><span className="nav-text-mobile"> Exit</span>
+          </button>
         </div>
       </nav>
 
@@ -952,12 +970,12 @@ function StudentDashboard() {
                 </div>
               )}
 
-              {/* Uber-Style Vehicle Cards */}
+              {/* Uber-Style Vehicle Cards with Realistic SVG Illustrations */}
               {selectedRoute && (
                 <div style={styles.inputGroup}>
                   <label style={styles.label}>SELECT VEHICLE</label>
                   <div style={styles.vehicleCards}>
-                    {/* 4+1 Sedan Card */}
+                    {/* 4+1 Sedan Card with Realistic Sedan SVG */}
                     <div
                       onClick={() => {
                         setSelectedVehicle('4+1');
@@ -977,24 +995,33 @@ function StudentDashboard() {
                       }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <svg width="68" height="38" viewBox="0 0 72 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12,28 L12,32 Q12,34 14,34 L18,34 Q20,34 20,32 L20,28 Z" fill="#333" />
-                          <circle cx="16" cy="32" r="5" fill="#222" stroke="#555" strokeWidth="1.5" />
-                          <circle cx="16" cy="32" r="2.5" fill="#444" />
-                          <path d="M52,28 L52,32 Q52,34 54,34 L58,34 Q60,34 60,32 L60,28 Z" fill="#333" />
-                          <circle cx="56" cy="32" r="5" fill="#222" stroke="#555" strokeWidth="1.5" />
-                          <circle cx="56" cy="32" r="2.5" fill="#444" />
-                          <path d="M8,28 L10,18 Q11,16 13,16 L20,16 L26,10 Q28,8 31,8 L42,8 Q45,8 47,10 L54,16 L62,16 Q64,16 65,18 L66,22 L66,28 Q66,30 64,30 L8,30 Q6,30 6,28 Z" fill="#e63946" />
-                          <path d="M26,10 L22,16 L50,16 L46,10 Z" fill="#c0102020" />
-                          <path d="M26,10 Q28,8 31,8 L42,8 Q45,8 47,10 L50,16 L22,16 Z" fill="#cc2233" />
-                          <rect x="23" y="10" width="10" height="6" rx="1" fill="#1a2a3a" opacity="0.7" />
-                          <rect x="35" y="10" width="13" height="6" rx="1" fill="#1a2a3a" opacity="0.7" />
-                          <path d="M10,20 L14,16 L22,16 L20,20 Z" fill="#1a2a3a" opacity="0.6" />
-                          <path d="M62,20 L60,16 L52,16 L54,20 Z" fill="#1a2a3a" opacity="0.6" />
-                          <rect x="6" y="24" width="60" height="4" rx="1" fill="#cc2233" />
-                          <rect x="64" y="20" width="3" height="3" rx="1" fill="#ffdd88" opacity="0.9" />
-                          <rect x="5" y="20" width="3" height="3" rx="1" fill="#ff4444" opacity="0.7" />
-                          <path d="M8,28 L64,28" stroke="#aa1122" strokeWidth="0.5" />
+                        <svg width="86" height="38" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <ellipse cx="60" cy="46" rx="52" ry="3" fill="black" opacity="0.6" />
+                          <path d="M12,38 C8,38 6,36 6,32 C6,27 10,25 18,24 L34,22 L48,11 C51,9 56,8 64,8 L84,8 C91,8 96,11 100,16 L108,22 C114,23 118,26 118,30 C118,34 116,38 112,38 C110,38 108,34 103,34 C97,34 94,38 90,38 L42,38 C38,38 35,34 29,34 C24,34 21,38 12,38 Z" fill="url(#sedanGrad)" />
+                          <path d="M37,21 L49,12 C52,10 55,9.5 62,9.5 L68,9.5 L68,21 Z" fill="#141c24" stroke="#222" strokeWidth="0.8" />
+                          <path d="M71,9.5 L83,9.5 C88,9.5 92,11.5 95,15 L101,21 L71,21 Z" fill="#141c24" stroke="#222" strokeWidth="0.8" />
+                          <path d="M43,18 L50,12 L53,12 L47,18 Z" fill="white" opacity="0.2" />
+                          <path d="M74,18 L80,11 L83,11 L77,18 Z" fill="white" opacity="0.2" />
+                          <line x1="69.5" y1="9.5" x2="69.5" y2="36" stroke="#8a101c" strokeWidth="1" />
+                          <line x1="40" y1="21" x2="40" y2="36" stroke="#8a101c" strokeWidth="1" />
+                          <line x1="97" y1="21" x2="97" y2="35" stroke="#8a101c" strokeWidth="1" />
+                          <rect x="58" y="23" width="7" height="2" rx="1" fill="#1a1a1a" />
+                          <rect x="85" y="23" width="7" height="2" rx="1" fill="#1a1a1a" />
+                          <path d="M112,25 C116,26 117,28 117,30 L111,30 Z" fill="#fff8e7" opacity="0.9" />
+                          <path d="M7,26 C6,27 6,29 7,31 L12,31 Z" fill="#ff2a3b" />
+                          <circle cx="26" cy="38" r="9" fill="#111111" stroke="#333" strokeWidth="1.5" />
+                          <circle cx="26" cy="38" r="6" fill="#1f1f1f" stroke="#e63946" strokeWidth="0.8" />
+                          <circle cx="26" cy="38" r="2.5" fill="#888" />
+                          <circle cx="98" cy="38" r="9" fill="#111111" stroke="#333" strokeWidth="1.5" />
+                          <circle cx="98" cy="38" r="6" fill="#1f1f1f" stroke="#e63946" strokeWidth="0.8" />
+                          <circle cx="98" cy="38" r="2.5" fill="#888" />
+                          <defs>
+                            <linearGradient id="sedanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#ff4d5a" />
+                              <stop offset="40%" stopColor="#e63946" />
+                              <stop offset="100%" stopColor="#9e1522" />
+                            </linearGradient>
+                          </defs>
                         </svg>
                       </div>
                       <div style={styles.vehicleInfo}>
@@ -1002,7 +1029,7 @@ function StudentDashboard() {
                           <p style={styles.vehicleTypeTxt}>4+1 Sedan</p>
                           <span style={styles.capacityBadge}>👤 4 seats</span>
                         </div>
-                        <p style={styles.vehicleSeats}>Fast & comfortable campus ride</p>
+                        <p style={styles.vehicleSeats}>Sporty & fast campus ride</p>
                       </div>
                       <div style={styles.vehicleFare}>
                         {selectedRoute.destination === 'Waknaghat' ? (
@@ -1025,7 +1052,7 @@ function StudentDashboard() {
                       </div>
                     </div>
 
-                    {/* 6+1 SUV Card */}
+                    {/* 6+1 SUV Card with Realistic SUV SVG */}
                     <div
                       onClick={() => {
                         setSelectedVehicle('6+1');
@@ -1045,22 +1072,37 @@ function StudentDashboard() {
                       }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <svg width="74" height="40" viewBox="0 0 80 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M4,30 L4,22 Q4,18 8,16 L16,14 L20,8 Q22,6 25,6 L55,6 Q58,6 60,8 L64,14 L72,16 Q76,18 76,22 L76,30 Q76,32 74,32 L6,32 Q4,32 4,30 Z" fill="#e63946" />
-                          <path d="M20,8 L16,14 L64,14 L60,8 Z" fill="#cc2233" />
-                          <rect x="18" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
-                          <rect x="32" y="8" width="12" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
-                          <rect x="47" y="8" width="11" height="6" rx="1" fill="#1a2a3a" opacity="0.75" />
-                          <path d="M6,20 L10,14 L18,14 L14,20 Z" fill="#1a2a3a" opacity="0.6" />
-                          <path d="M74,20 L70,14 L62,14 L66,20 Z" fill="#1a2a3a" opacity="0.6" />
-                          <rect x="4" y="26" width="72" height="5" rx="1" fill="#cc2233" />
-                          <rect x="74" y="18" width="4" height="4" rx="1" fill="#ffdd88" opacity="0.9" />
-                          <rect x="2" y="18" width="4" height="4" rx="1" fill="#ff4444" opacity="0.7" />
-                          <circle cx="16" cy="36" r="5.5" fill="#222" stroke="#555" strokeWidth="1.5" />
-                          <circle cx="16" cy="36" r="2.5" fill="#444" />
-                          <circle cx="64" cy="36" r="5.5" fill="#222" stroke="#555" strokeWidth="1.5" />
-                          <circle cx="64" cy="36" r="2.5" fill="#444" />
-                          <rect x="28" y="28" width="24" height="2" rx="1" fill="#aa1122" opacity="0.5" />
+                        <svg width="90" height="40" viewBox="0 0 120 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <ellipse cx="60" cy="50" rx="54" ry="3.5" fill="black" opacity="0.6" />
+                          <line x1="38" y1="5" x2="88" y2="5" stroke="#555" strokeWidth="2" strokeLinecap="round" />
+                          <line x1="44" y1="5" x2="44" y2="7.5" stroke="#666" strokeWidth="2" />
+                          <line x1="82" y1="5" x2="82" y2="7.5" stroke="#666" strokeWidth="2" />
+                          <path d="M10,40 C6,40 5,38 5,32 C5,25 8,23 16,22 L32,20 L40,8 C42,6.5 46,6 52,6 L94,6 C98,6 102,7.5 104,10 L110,18 C115,20 118,23 118,28 C118,34 116,40 111,40 C109,40 106,34 100,34 C94,34 91,40 86,40 L44,40 C39,40 36,34 30,34 C24,34 21,40 10,40 Z" fill="url(#suvGrad)" />
+                          <path d="M35,19 L42,9.5 C44,8 47,7.5 53,7.5 L64,7.5 L64,19 Z" fill="#141c24" stroke="#222" strokeWidth="0.8" />
+                          <path d="M67,7.5 L84,7.5 L84,19 L67,19 Z" fill="#141c24" stroke="#222" strokeWidth="0.8" />
+                          <path d="M87,7.5 L95,7.5 C98,7.5 101,9 103,11.5 L107,19 L87,19 Z" fill="#141c24" stroke="#222" strokeWidth="0.8" />
+                          <path d="M42,17 L47,10 L50,10 L45,17 Z" fill="white" opacity="0.2" />
+                          <path d="M72,17 L78,9 L81,9 L75,17 Z" fill="white" opacity="0.2" />
+                          <line x1="65.5" y1="7.5" x2="65.5" y2="38" stroke="#8a101c" strokeWidth="1" />
+                          <line x1="85.5" y1="7.5" x2="85.5" y2="38" stroke="#8a101c" strokeWidth="1" />
+                          <line x1="37" y1="19" x2="37" y2="38" stroke="#8a101c" strokeWidth="1" />
+                          <rect x="53" y="22" width="7" height="2" rx="1" fill="#1a1a1a" />
+                          <rect x="74" y="22" width="7" height="2" rx="1" fill="#1a1a1a" />
+                          <path d="M112,23 C116,24 117,27 117,29 L111,29 Z" fill="#fff8e7" opacity="0.95" />
+                          <path d="M6,24 C5,25 5,30 6,32 L11,32 Z" fill="#ff2a3b" />
+                          <circle cx="27" cy="40" r="10.5" fill="#111111" stroke="#333" strokeWidth="1.8" />
+                          <circle cx="27" cy="40" r="7" fill="#1e1e1e" stroke="#e63946" strokeWidth="1" />
+                          <circle cx="27" cy="40" r="3" fill="#888" />
+                          <circle cx="95" cy="40" r="10.5" fill="#111111" stroke="#333" strokeWidth="1.8" />
+                          <circle cx="95" cy="40" r="7" fill="#1e1e1e" stroke="#e63946" strokeWidth="1" />
+                          <circle cx="95" cy="40" r="3" fill="#888" />
+                          <defs>
+                            <linearGradient id="suvGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" stopColor="#ff525f" />
+                              <stop offset="40%" stopColor="#e63946" />
+                              <stop offset="100%" stopColor="#94121e" />
+                            </linearGradient>
+                          </defs>
                         </svg>
                       </div>
                       <div style={styles.vehicleInfo}>
@@ -1068,7 +1110,7 @@ function StudentDashboard() {
                           <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
                           <span style={styles.capacityBadge}>👥 6 seats</span>
                         </div>
-                        <p style={styles.vehicleSeats}>Spacious for group & luggage</p>
+                        <p style={styles.vehicleSeats}>Tall & spacious for groups</p>
                       </div>
                       <div style={styles.vehicleFare}>
                         {selectedRoute.destination === 'Waknaghat' ? (
@@ -1154,97 +1196,106 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: window.innerWidth <= 768 ? '12px 16px' : '14px 24px',
-    background: 'rgba(17, 17, 17, 0.85)',
+    padding: '10px 14px',
+    background: 'rgba(17, 17, 17, 0.88)',
     backdropFilter: 'blur(16px)',
     WebkitBackdropFilter: 'blur(16px)',
     borderBottom: '1px solid rgba(230, 57, 70, 0.2)',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6)',
     position: 'sticky',
     top: 0,
-    zIndex: 100
+    zIndex: 100,
+    flexWrap: 'nowrap',
+    overflow: 'hidden'
   },
   navBrand: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px'
+    gap: '8px',
+    flexShrink: 0
   },
   navLogoBox: {
-    width: '36px',
-    height: '36px',
-    borderRadius: '10px',
+    width: '32px',
+    height: '32px',
+    borderRadius: '9px',
     background: 'linear-gradient(145deg, #241315 0%, #12090b 100%)',
     border: '1px solid rgba(230, 57, 70, 0.35)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  navLogo: { fontSize: '18px', lineHeight: 1 },
+  navLogo: { fontSize: '16px', lineHeight: 1 },
   navTitle: {
-    fontSize: '18px',
+    fontSize: '16px',
     fontWeight: '900',
-    letterSpacing: '3px',
+    letterSpacing: '2.5px',
     color: '#ffffff',
-    textShadow: '0 0 16px rgba(230, 57, 70, 0.7)'
+    textShadow: '0 0 14px rgba(230, 57, 70, 0.7)'
   },
   navRight: {
     display: 'flex',
     alignItems: 'center',
-    gap: '6px'
+    gap: '4px',
+    flexWrap: 'nowrap',
+    flexShrink: 0
   },
   navUser: {
     color: '#a0a0a0',
-    fontSize: '13px',
+    fontSize: '12px',
     fontWeight: '500',
-    marginRight: '6px',
-    display: window.innerWidth <= 768 ? 'none' : 'block'
+    marginRight: '4px'
   },
   navBtn: {
     background: 'rgba(255, 255, 255, 0.04)',
-    color: '#b0b0b0',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    padding: '7px 12px',
+    color: '#c0c0c0',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    padding: '6px 10px',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '12px',
     fontWeight: '600',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.2s ease',
+    whiteSpace: 'nowrap',
+    flexShrink: 0
   },
   navIconBtn: {
     background: 'rgba(255, 255, 255, 0.04)',
-    color: '#b0b0b0',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    padding: '7px 10px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontSize: '13px',
-    transition: 'all 0.2s ease'
-  },
-  navBtnRed: {
-    background: 'rgba(230, 57, 70, 0.1)',
-    color: '#e63946',
-    border: '1px solid rgba(230, 57, 70, 0.4)',
-    padding: '7px 12px',
+    color: '#c0c0c0',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    padding: '6px 8px',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '12px',
-    fontWeight: '600',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.2s ease',
+    flexShrink: 0
+  },
+  navBtnRed: {
+    background: 'rgba(230, 57, 70, 0.12)',
+    color: '#e63946',
+    border: '1px solid rgba(230, 57, 70, 0.45)',
+    padding: '6px 11px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '12px',
+    fontWeight: '700',
+    transition: 'all 0.2s ease',
+    whiteSpace: 'nowrap',
+    flexShrink: 0
   },
   content: {
     width: '100%',
-    maxWidth: '440px',
-    margin: '18px auto 0',
-    padding: '0 16px',
+    maxWidth: '430px',
+    margin: '16px auto 0',
+    padding: '0 14px',
     boxSizing: 'border-box'
   },
   messagebox: {
     background: 'rgba(28, 28, 28, 0.9)',
     border: '1px solid rgba(230, 57, 70, 0.3)',
     borderLeft: '4px solid #e63946',
-    padding: '12px 16px',
+    padding: '12px 14px',
     borderRadius: '12px',
-    marginBottom: '16px',
+    marginBottom: '14px',
     fontSize: '13px',
     color: '#e0e0e0',
     display: 'flex',
@@ -1255,11 +1306,11 @@ const styles = {
   rideCard: {
     background: 'linear-gradient(165deg, rgba(26, 26, 26, 0.95) 0%, rgba(14, 14, 14, 0.98) 100%)',
     border: '1px solid rgba(230, 57, 70, 0.25)',
-    padding: '20px 18px',
+    padding: '20px 16px',
     borderRadius: '20px',
     marginBottom: '20px',
     boxShadow: '0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(230, 57, 70, 0.12)',
-    animation: 'slideUpIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+    animation: 'slideUpIn 0.45s cubic-bezier(0.16, 1, 0.3, 1)'
   },
   rideCardHeader: {
     display: 'flex',
@@ -1516,16 +1567,16 @@ const styles = {
   bookCard: {
     background: 'linear-gradient(165deg, rgba(26, 26, 26, 0.95) 0%, rgba(14, 14, 14, 0.98) 100%)',
     border: '1px solid rgba(230, 57, 70, 0.22)',
-    padding: '24px 20px',
+    padding: '22px 18px',
     borderRadius: '20px',
     boxShadow: '0 20px 48px rgba(0, 0, 0, 0.85), 0 0 35px rgba(230, 57, 70, 0.12)',
-    animation: 'slideUpIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+    animation: 'slideUpIn 0.45s cubic-bezier(0.16, 1, 0.3, 1)'
   },
   bookCardHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '18px'
+    marginBottom: '16px'
   },
   bookTitle: {
     fontSize: '20px',
@@ -1548,7 +1599,7 @@ const styles = {
     border: '1px solid #262626',
     borderRadius: '14px',
     padding: '4px',
-    marginBottom: '18px'
+    marginBottom: '16px'
   },
   rideTypeActive: {
     flex: 1,
@@ -1654,13 +1705,13 @@ const styles = {
   },
   vehicleCard: {
     background: 'linear-gradient(145deg, #181818 0%, #121212 100%)',
-    border: '1px solid #2a2a2a',
+    border: '1.5px solid #282828',
     padding: '14px 16px',
     borderRadius: '14px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: '14px',
+    gap: '12px',
     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'relative'
   },
@@ -1673,7 +1724,8 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '64px'
+    width: '88px',
+    flexShrink: 0
   },
   vehicleInfo: {
     flex: 1
@@ -1697,7 +1749,8 @@ const styles = {
     margin: '3px 0 0 0'
   },
   vehicleFare: {
-    textAlign: 'right'
+    textAlign: 'right',
+    flexShrink: 0
   },
   originalFare: {
     display: 'block',
@@ -1822,4 +1875,4 @@ const styles = {
   }
 };
 
-export default StudentDashboard;
+export default StudentDashboard;
