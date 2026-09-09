@@ -1,0 +1,12 @@
+.vscode/ 
+node_modules/ 
+.antigravity/ 
+.cursor/ 
+.gemini/ 
+AppData/ 
+Desktop/ 
+Downloads/ 
+Documents/ 
+*.exe 
+NTUSER* 
+ntuser* 
