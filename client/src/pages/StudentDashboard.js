@@ -432,7 +432,9 @@ function StudentDashboard() {
       );
       setRating(stars);
       setRated(true);
-      setMessage('Thanks for rating!');
+      setActiveRide(null);
+      setCompletedRide(null);
+      setMessage('Thanks for rating! ⭐');
     } catch (err) {
       setMessage('Rating failed');
     }
