@@ -8,14 +8,16 @@ import RideHistory from './pages/RideHistory';
 import AdminDashboard from './pages/AdminDashboard';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import FacultyDashboard from './pages/FacultyDashboard';
 
 const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   if (!user || !token) return <Navigate to='/login' />;
+
   if (role && user.role !== role) {
-    // Redirect to correct dashboard instead of login
     if (user.role === 'student') return <Navigate to='/student' />;
+    if (user.role === 'faculty') return <Navigate to='/faculty' />;
     if (user.role === 'driver') return <Navigate to='/driver' />;
   }
   return children;
@@ -25,6 +27,7 @@ const AutoRedirect = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
   if (!user || !token) return <Navigate to='/login' />;
+  if (user.role === 'faculty') return <Navigate to='/faculty' />;
   if (user.role === 'student') return <Navigate to='/student' />;
   if (user.role === 'driver') return <Navigate to='/driver' />;
   return <Navigate to='/login' />;
@@ -50,6 +53,11 @@ function App() {
         <Route path='/history' element={
           <PrivateRoute>
             <RideHistory />
+          </PrivateRoute>
+        } />
+        <Route path='/faculty' element={
+          <PrivateRoute role='faculty'>
+            <FacultyDashboard />
           </PrivateRoute>
         } />
         <Route path='/admin' element={<AdminDashboard />} />
