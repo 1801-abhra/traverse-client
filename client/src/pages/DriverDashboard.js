@@ -672,7 +672,14 @@ function DriverDashboard() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <span style={styles.clientLabel}>RIDER DETAILS</span>
-                  <p style={styles.studentName}>{activeRide.student?.name || 'Student Passenger'}</p>
+                  <p style={styles.studentName}>
+                    {activeRide.student?.name || 'Student Passenger'}
+                    {activeRide.student?.role === 'faculty' && (
+                      <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '600', marginLeft: '6px' }}>
+                        (Faculty)
+                      </span>
+                    )}
+                  </p>
                   <p style={styles.studentId}>Verified Campus Passenger</p>
                 </div>
                 {activeRide.student?.phone && (
@@ -835,7 +842,14 @@ function DriverDashboard() {
                       <div style={styles.studentInfo}>
                         <div style={styles.studentAvatarSmall}>👤</div>
                         <div>
-                          <p style={styles.studentName}>{ride.student?.name || 'Campus Rider'}</p>
+                          <p style={styles.studentName}>
+                            {ride.student?.name || 'Campus Rider'}
+                            {ride.student?.role === 'faculty' && (
+                              <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '600', marginLeft: '6px' }}>
+                                (Faculty)
+                              </span>
+                            )}
+                          </p>
                           <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '2px' }}>
                             <span style={styles.vehicleTypeTag}>
                               🚗 {ride.vehicleType || 'Sedan'}
