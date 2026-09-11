@@ -216,6 +216,16 @@ function StudentDashboard() {
     }
   }, [rideType, selectedRoute]);
 
+  // Auto-poll every 15 seconds as fallback for real-time updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (activeRide && activeRide.status !== 'completed' && activeRide.status !== 'cancelled') {
+        fetchActiveRide();
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [activeRide]);
+
   const bookRide = async (e) => {
     e.preventDefault();
     if (booking) return;

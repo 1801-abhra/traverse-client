@@ -214,6 +214,16 @@ function DriverDashboard() {
     }
   }, [activeRide]);
 
+  // Auto-poll every 15 seconds as fallback
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!activeRide) {
+        fetchAvailableRides();
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [activeRide]);
+
   const preAcceptRide = async (rideId) => {
     try {
       await axios.put(
