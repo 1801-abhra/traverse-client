@@ -188,6 +188,7 @@ function FacultyDashboard() {
         socket.on('ride:accepted', (ride) => {
             setActiveRide(ride);
             setDriverLocation(null);
+            setMessage(`🚗 ${ride.driver.name} accepted your ride!`);
             showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
         });
         socket.on('ride:updated', (ride) => {
@@ -197,13 +198,15 @@ function FacultyDashboard() {
                 return;
             }
             setActiveRide(ride);
+            if (ride.status === 'ontheway') {
+                setMessage('🚗 Driver is on the way!');
+                showToast('🚗 Driver is on the way!', 'info');
+            }
             if (ride.status === 'completed') {
+                setMessage('✅ Ride completed! Please rate your experience.');
                 setCompletedRide(ride);
                 showToast('✅ Ride completed! Please rate your experience.', 'success');
                 setDriverLocation(null);
-            }
-            if (ride.status === 'ontheway') {
-                showToast('🚗 Driver is on the way!', 'info');
             }
         });
         socket.on('driver:location', ({ lat, lng }) => {
@@ -422,7 +425,7 @@ function FacultyDashboard() {
                 </div>
                 <div style={styles.navRight}>
                     <span className="nav-user-desktop" style={styles.navUser}>👤 {user?.name}</span>
-                    <span style={styles.facultyBadge}>👨‍🏫 Faculty</span>
+                    <span className="nav-user-desktop" style={styles.facultyBadge}>👨‍🏫 Faculty</span>
                     <button onClick={fetchActiveRide} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="Refresh Ride">
                         <span>🔄</span><span>Refresh</span>
                     </button>
