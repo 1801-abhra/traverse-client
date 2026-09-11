@@ -231,6 +231,8 @@ function FacultyDashboard() {
     const bookRide = async (e) => {
         e.preventDefault();
         if (booking) return;
+        setRated(false);  // Reset rating state
+        setRating(0);     // Reset stars
         if (!selectedRoute || !selectedVehicle) {
             setMessage('Please select destination and vehicle type');
             return;
