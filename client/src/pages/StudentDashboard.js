@@ -135,8 +135,8 @@ function StudentDashboard() {
     socket.on('ride:accepted', (ride) => {
       setActiveRide(ride);
       setDriverLocation(null);
+      setMessage(`🚗 ${ride.driver.name} accepted your ride!`);
       showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
-      // Get full route from pickup to destination
       getFullRoute(ride.pickup, ride.dropoff);
     });
     socket.on('ride:shared-cancelled', ({ message }) => {
@@ -151,13 +151,15 @@ function StudentDashboard() {
         return;
       }
       setActiveRide(ride);
+      if (ride.status === 'ontheway') {
+        setMessage('🚗 Driver is on the way!');
+        showToast('🚗 Driver is on the way!', 'info');
+      }
       if (ride.status === 'completed') {
+        setMessage('✅ Ride completed! Please rate your experience.');
         setCompletedRide(ride);
         showToast('✅ Ride completed! Please rate your experience.', 'success');
         setDriverLocation(null);
-      }
-      if (ride.status === 'ontheway') {
-        showToast('🚗 Driver is on the way!', 'info');
       }
     });
     socket.on('ride:matched', ({ message, ride }) => {
