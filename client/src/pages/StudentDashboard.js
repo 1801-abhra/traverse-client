@@ -60,6 +60,7 @@ function FlyTo({ coords }) {
 }
 
 function StudentDashboard() {
+  const [booking, setBooking] = useState(false);
   const [completedRide, setCompletedRide] = useState(null);
   const [sharedPassengers, setSharedPassengers] = useState([]);
   const [fullRouteCoords, setFullRouteCoords] = useState([]);
@@ -217,11 +218,13 @@ function StudentDashboard() {
 
   const bookRide = async (e) => {
     e.preventDefault();
+    if (booking) return;
     if (!selectedRoute || !selectedVehicle) {
       setMessage('Please select destination and vehicle type');
       return;
     }
 
+    setBooking(true);
     let finalFare = fare;
     if (selectedRoute.destination === 'Waknaghat') {
       const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
@@ -257,6 +260,8 @@ function StudentDashboard() {
       }
     } catch (err) {
       setMessage(err.response?.data?.message || 'Booking failed');
+    } finally {
+      setBooking(false);
     }
   };
 
@@ -879,7 +884,6 @@ function StudentDashboard() {
               <h3 style={styles.bookTitle}>Book a Ride</h3>
               <span style={styles.quickTag}>⚡ Instant & Scheduled</span>
             </div>
-
             {/* Ride Type Switcher */}
             <div style={styles.rideTypeContainer}>
               <button
@@ -889,13 +893,15 @@ function StudentDashboard() {
               >
                 🚗 Private Ride
               </button>
-              <button
-                type='button'
-                onClick={() => { setRideType('shared'); fetchSharedRides(); }}
-                style={rideType === 'shared' ? styles.rideTypeActive : styles.rideTypeInactive}
-              >
-                👥 Share Ride
-              </button>
+              {user.role !== 'faculty' && (
+                <button
+                  type='button'
+                  onClick={() => { setRideType('shared'); fetchSharedRides(); }}
+                  style={rideType === 'shared' ? styles.rideTypeActive : styles.rideTypeInactive}
+                >
+                  👥 Share Ride
+                </button>
+              )}
             </div>
 
             {/* Shared Available Rides List */}
@@ -1255,12 +1261,19 @@ function StudentDashboard() {
 
               {/* Rapido-Style Large Bold Red Gradient Button */}
               <button
-                className={selectedVehicle ? "traverse-btn-primary" : ""}
-                style={selectedVehicle ? styles.bookBtn : styles.bookBtnDisabled}
+                className={selectedVehicle && !booking ? "traverse-btn-primary" : ""}
+                style={selectedVehicle && driversAvailable && !booking ? styles.bookBtn : styles.bookBtnDisabled}
                 type='submit'
-                disabled={!selectedVehicle}
+                disabled={!selectedVehicle || !driversAvailable || booking}
               >
-                {selectedVehicle ? `🚖 Request ${selectedVehicle} Ride — ₹${fare}` : 'Select a Vehicle to Continue'}
+                {booking ? (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <div style={{ width: '16px', height: '16px', border: '2px solid white', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    Booking...
+                  </div>
+                ) : !selectedVehicle ? 'Select a Vehicle to Continue' :
+                  !driversAvailable ? 'No drivers available' :
+                    `🚖 Request ${selectedVehicle} Ride — ₹${fare}`}
               </button>
             </form>
           </div>
