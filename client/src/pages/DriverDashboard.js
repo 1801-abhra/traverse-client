@@ -231,27 +231,39 @@ function DriverDashboard() {
 
   useEffect(() => {
     if (activeRide && socket) {
-      // Get location immediately first
-      navigator.geolocation.getCurrentPosition((pos) => {
-        socket.emit('driver:location', {
-          rideId: activeRide._id,
-          studentId: activeRide.student,
-          sharedWithId: activeRide.sharedWith || null,
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        });
-      }, null, { enableHighAccuracy: true });
+      const studentId = activeRide.student?._id || activeRide.student;
+      socket.emit('join:ride', activeRide._id);
 
-      // Then keep watching
-      navigator.geolocation.watchPosition((pos) => {
+      const sendLocation = (pos) => {
+        if (!pos?.coords) return;
         socket.emit('driver:location', {
           rideId: activeRide._id,
-          studentId: activeRide.student,
+          studentId: studentId,
           sharedWithId: activeRide.sharedWith || null,
+          passengers: activeRide.passengers || [],
           lat: pos.coords.latitude,
           lng: pos.coords.longitude
         });
-      }, null, { enableHighAccuracy: true, maximumAge: 0 });
+      };
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendLocation, null, { enableHighAccuracy: true });
+
+        const watchId = navigator.geolocation.watchPosition(sendLocation, null, {
+          enableHighAccuracy: true,
+          maximumAge: 2000,
+          timeout: 10000
+        });
+
+        const intervalId = setInterval(() => {
+          navigator.geolocation.getCurrentPosition(sendLocation, null, { enableHighAccuracy: true });
+        }, 3000);
+
+        return () => {
+          navigator.geolocation.clearWatch(watchId);
+          clearInterval(intervalId);
+        };
+      }
     }
   }, [activeRide]);
 
@@ -317,9 +329,27 @@ function DriverDashboard() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setActiveRide(res.data);
+      const rideData = res.data;
+      setActiveRide(rideData);
       setRides([]);
       setMessage('Ride accepted! Head to pickup location.');
+
+      if (socket) {
+        socket.emit('join:ride', rideData._id);
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((pos) => {
+            const studentId = rideData.student?._id || rideData.student;
+            socket.emit('driver:location', {
+              rideId: rideData._id,
+              studentId: studentId,
+              sharedWithId: rideData.sharedWith || null,
+              passengers: rideData.passengers || [],
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude
+            });
+          }, null, { enableHighAccuracy: true });
+        }
+      }
     } catch (err) {
       setMessage(err.response?.data?.message || 'Cannot accept ride');
     }

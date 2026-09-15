@@ -89,6 +89,20 @@ function StudentDashboard() {
   const [driverLocation, setDriverLocation] = useState(null);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const arrivalNotifiedRef = React.useRef(false);
+  const activeRideRef = React.useRef(null);
+  const studentLocationRef = React.useRef(null);
+
+  React.useEffect(() => {
+    activeRideRef.current = activeRide;
+    if (!activeRide) {
+      arrivalNotifiedRef.current = false;
+    }
+  }, [activeRide]);
+
+  React.useEffect(() => {
+    studentLocationRef.current = studentLocation;
+  }, [studentLocation]);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
@@ -107,12 +121,28 @@ function StudentDashboard() {
   }, []);
 
   useEffect(() => {
-    if (activeRide && activeRide.status === 'ontheway') {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        setStudentLocation([pos.coords.latitude, pos.coords.longitude]);
-      });
+    if (activeRide && (activeRide.status === 'accepted' || activeRide.status === 'ontheway')) {
+      if (socket) {
+        socket.emit('join:ride', activeRide._id);
+      }
+
+      const pickupRoute = ROUTES.find(r => r.destination === activeRide.pickup);
+      const defaultPickupCoords = pickupRoute ? pickupRoute.coords : JUIT_COORDS;
+      if (!studentLocationRef.current) {
+        setStudentLocation(defaultPickupCoords);
+      }
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          setStudentLocation([pos.coords.latitude, pos.coords.longitude]);
+        }, () => {
+          setStudentLocation(defaultPickupCoords);
+        }, { enableHighAccuracy: true });
+      }
+
+      getFullRoute(activeRide.pickup, activeRide.dropoff);
     }
-  }, [activeRide]);
+  }, [activeRide?.status, activeRide?._id]);
 
   useEffect(() => {
     if (socket) socket.disconnect();
@@ -168,9 +198,11 @@ function StudentDashboard() {
       showToast(message, 'match');
     });
     socket.on('driver:location', ({ lat, lng }) => {
-      setDriverLocation([lat, lng]);
-      if (studentLocation) {
-        getRoute([lat, lng], studentLocation);
+      if (lat !== undefined && lng !== undefined) {
+        const driverCoords = [lat, lng];
+        setDriverLocation(driverCoords);
+        const currentTarget = studentLocationRef.current || JUIT_COORDS;
+        getRoute(driverCoords, currentTarget);
       }
     });
     socket.on('ride:passenger-joined', ({ message, ride }) => {
@@ -319,8 +351,21 @@ function StudentDashboard() {
       if (data.routes && data.routes.length > 0) {
         const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
         setRouteCoords(coords);
-        const distanceKm = (data.routes[0].distance / 1000).toFixed(1);
+        const distanceMeters = data.routes[0].distance;
+        const distanceKm = (distanceMeters / 1000).toFixed(1);
         setDriverDistance(distanceKm);
+
+        // Proximity arrival alert (< 500 meters)
+        if (distanceMeters <= 500 && !arrivalNotifiedRef.current) {
+          arrivalNotifiedRef.current = true;
+          if (activeRideRef.current?.status === 'accepted') {
+            showToast('🚗 Driver is arriving now (< 500m)! Please be at pickup.', 'info');
+            setMessage('🚗 Driver is arriving now! Please proceed to pickup point.');
+          } else if (activeRideRef.current?.status === 'ontheway') {
+            showToast('📍 Approaching destination (< 500m)! Prepare to deboard.', 'info');
+            setMessage('📍 Approaching destination! Prepare to deboard.');
+          }
+        }
       }
     } catch (err) {
       console.log('Route fetch error:', err);
@@ -328,12 +373,13 @@ function StudentDashboard() {
   };
   const getFullRoute = async (pickup, destination) => {
     try {
-      // Get coordinates for pickup and destination
-      const pickupRoute = ROUTES.find(r => r.destination === destination);
-      if (!pickupRoute) return;
+      const pickupRoute = ROUTES.find(r => r.destination === pickup);
+      const destRoute = ROUTES.find(r => r.destination === destination);
 
-      const destCoords = pickupRoute.coords;
-      const pickupCoords = JUIT_COORDS;
+      const pickupCoords = pickupRoute ? pickupRoute.coords : JUIT_COORDS;
+      const destCoords = destRoute ? destRoute.coords : (destination === 'JUIT Campus, Waknaghat' ? JUIT_COORDS : null);
+
+      if (!destCoords) return;
 
       const res = await fetch(
         `https://router.project-osrm.org/route/v1/driving/${pickupCoords[1]},${pickupCoords[0]};${destCoords[1]},${destCoords[0]}?overview=full&geometries=geojson`
@@ -341,7 +387,7 @@ function StudentDashboard() {
       const data = await res.json();
       if (data.routes && data.routes.length > 0) {
         const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-        setRouteCoords(coords);
+        setFullRouteCoords(coords);
       }
     } catch (err) {
       console.log('Full route error:', err);
@@ -713,88 +759,105 @@ function StudentDashboard() {
             {(activeRide.status === 'ontheway' || activeRide.status === 'accepted') && (
               <div style={{ marginTop: '16px' }}>
                 <div style={styles.trackingHeader}>
-                  <span style={{ color: '#d0d0d0', fontSize: '13px', fontWeight: '600' }}>🗺️ Live Driver Tracking</span>
-                  {driverDistance && <span style={styles.driverDistanceTag}>~{driverDistance} km away</span>}
-                </div>
-                {driverLocation ? (
-                  <div style={styles.mapWrapper}>
-                    <MapContainer
-                      center={driverLocation}
-                      zoom={13}
-                      style={{ height: '280px', width: '100%' }}
-                    >
-                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-                      {/* Full route dashed line */}
-                      {routeCoords.length > 0 && (
-                        <Polyline
-                          positions={routeCoords}
-                          color='#e63946'
-                          weight={4}
-                          opacity={0.6}
-                          dashArray='8 4'
-                        />
-                      )}
-
-                      {/* Driver to student solid line */}
-                      {studentLocation && driverLocation && (
-                        <Polyline
-                          positions={[driverLocation, studentLocation]}
-                          color='#e63946'
-                          weight={4}
-                          opacity={0.9}
-                        />
-                      )}
-
-                      {/* Driver marker */}
-                      <Marker position={driverLocation}
-                        icon={L.divIcon({
-                          html: '🚗',
-                          className: '',
-                          iconSize: [32, 32],
-                          iconAnchor: [16, 16]
-                        })}>
-                        <Popup>Your Driver</Popup>
-                      </Marker>
-
-                      {/* Student location */}
-                      {studentLocation && (
-                        <Marker position={studentLocation}
-                          icon={L.divIcon({
-                            html: '📍',
-                            className: '',
-                            iconSize: [32, 32],
-                            iconAnchor: [16, 32]
-                          })}>
-                          <Popup>Your Location</Popup>
-                        </Marker>
-                      )}
-
-                      {/* Destination marker */}
-                      {activeRide.dropoff && ROUTES.find(r => r.destination === activeRide.dropoff) && (
-                        <Marker
-                          position={ROUTES.find(r => r.destination === activeRide.dropoff).coords}
-                          icon={L.divIcon({
-                            html: '🏁',
-                            className: '',
-                            iconSize: [32, 32],
-                            iconAnchor: [16, 32]
-                          })}>
-                          <Popup>Destination: {activeRide.dropoff}</Popup>
-                        </Marker>
-                      )}
-
-                      <FlyTo coords={driverLocation} />
-                    </MapContainer>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 8px #10b981' }} />
+                    <span style={{ color: '#ffffff', fontSize: '13px', fontWeight: '700', letterSpacing: '0.3px' }}>
+                      {activeRide.status === 'accepted' ? '🚗 Driver Heading to Pickup' : '🏁 Trip In Progress'}
+                    </span>
                   </div>
-                ) : (
-                  <div style={styles.mapWaitingBox}>
-                    <span style={{ fontSize: '24px', marginBottom: '6px' }}>📡</span>
-                    <p style={{ color: '#888', fontSize: '13px', margin: 0 }}>Connecting to driver's GPS live location...</p>
+                  {driverDistance && (
+                    <span style={{ ...styles.driverDistanceTag, background: 'rgba(230, 57, 70, 0.15)', color: '#e63946', border: '1px solid rgba(230, 57, 70, 0.3)', fontWeight: '700', padding: '4px 8px', borderRadius: '6px' }}>
+                      ~{driverDistance} km away
+                    </span>
+                  )}
+                </div>
+
+                <div style={styles.mapWrapper}>
+                  <MapContainer
+                    center={driverLocation || (ROUTES.find(r => r.destination === activeRide.pickup)?.coords || JUIT_COORDS)}
+                    zoom={13}
+                    style={{ height: '300px', width: '100%' }}
+                  >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+                    {/* Overall Journey Dashed Reference Line (Pickup -> Dropoff) */}
+                    {fullRouteCoords.length > 0 && (
+                      <Polyline
+                        positions={fullRouteCoords}
+                        color='#888888'
+                        weight={3}
+                        opacity={0.5}
+                        dashArray='6 6'
+                      />
+                    )}
+
+                    {/* Live Active Driving Route Line */}
+                    {routeCoords.length > 0 && (
+                      <Polyline
+                        positions={routeCoords}
+                        color='#e63946'
+                        weight={5}
+                        opacity={0.9}
+                      />
+                    )}
+
+                    {/* Pickup Marker */}
+                    <Marker
+                      position={(ROUTES.find(r => r.destination === activeRide.pickup)?.coords || JUIT_COORDS)}
+                      icon={L.divIcon({
+                        html: `<div style="background:#10b981;color:white;padding:3px 8px;border-radius:10px;display:flex;align-items:center;gap:4px;box-shadow:0 3px 10px rgba(0,0,0,0.6);border:2px solid #ffffff;font-weight:700;font-size:11px;white-space:nowrap;">🟢 ${activeRide.pickup || 'Pickup'}</div>`,
+                        className: '',
+                        iconSize: [90, 26],
+                        iconAnchor: [45, 13]
+                      })}
+                    >
+                      <Popup>Pickup: {activeRide.pickup}</Popup>
+                    </Marker>
+
+                    {/* Destination Marker */}
+                    {(ROUTES.find(r => r.destination === activeRide.dropoff)?.coords || (activeRide.dropoff === 'JUIT Campus, Waknaghat' ? JUIT_COORDS : null)) && (
+                      <Marker
+                        position={(ROUTES.find(r => r.destination === activeRide.dropoff)?.coords || (activeRide.dropoff === 'JUIT Campus, Waknaghat' ? JUIT_COORDS : null))}
+                        icon={L.divIcon({
+                          html: `<div style="background:#ef4444;color:white;padding:3px 8px;border-radius:10px;display:flex;align-items:center;gap:4px;box-shadow:0 3px 10px rgba(0,0,0,0.6);border:2px solid #ffffff;font-weight:700;font-size:11px;white-space:nowrap;">🏁 ${activeRide.dropoff || 'Destination'}</div>`,
+                          className: '',
+                          iconSize: [90, 26],
+                          iconAnchor: [45, 13]
+                        })}
+                      >
+                        <Popup>Destination: {activeRide.dropoff}</Popup>
+                      </Marker>
+                    )}
+
+                    {/* Live Driver Car Marker */}
+                    {driverLocation ? (
+                      <Marker
+                        position={driverLocation}
+                        icon={L.divIcon({
+                          html: `<div style="background:#e63946;color:#ffffff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(230,57,70,0.9);border:2.5px solid #ffffff;font-size:20px;">🚗</div>`,
+                          className: '',
+                          iconSize: [40, 40],
+                          iconAnchor: [20, 20]
+                        })}
+                      >
+                        <Popup>
+                          <b>{activeRide.driver?.name || 'Your Driver'}</b><br/>
+                          {activeRide.driver?.vehicleNumber || ''}
+                        </Popup>
+                      </Marker>
+                    ) : null}
+
+                    <FlyTo coords={driverLocation || (ROUTES.find(r => r.destination === activeRide.pickup)?.coords || JUIT_COORDS)} />
+                  </MapContainer>
+                </div>
+                {!driverLocation && (
+                  <div style={{ background: 'rgba(230, 57, 70, 0.1)', border: '1px solid rgba(230, 57, 70, 0.3)', borderRadius: '8px', padding: '8px 12px', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px' }}>📡</span>
+                    <span style={{ color: '#e63946', fontSize: '12px', fontWeight: '500' }}>Connecting to driver live GPS feed...</span>
                   </div>
                 )}
               </div>
-            )}
+            )}}
 
             {/* Fare Summary */}
             {activeRide.fare > 0 && (
