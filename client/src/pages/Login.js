@@ -954,12 +954,12 @@ const styles = {
   },
   taglineText: {
     fontSize: '12px',
-    fontWeight: '800',
-    letterSpacing: '1.5px',
-    color: '#ff4d5a',
+    fontWeight: '900',
+    letterSpacing: '1.8px',
+    color: '#ffffff',
     textTransform: 'uppercase',
     margin: 0,
-    textShadow: '0 0 14px rgba(230, 57, 70, 0.6)'
+    textShadow: '0 0 16px rgba(230, 57, 70, 0.85), 0 0 32px rgba(230, 57, 70, 0.45)'
   },
   aboutSection: {
     width: '100%',
