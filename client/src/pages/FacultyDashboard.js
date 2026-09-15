@@ -369,23 +369,41 @@ function FacultyDashboard() {
         }
     };
 
-    const rateRide = async (stars) => {
-        try {
-            const rideId = activeRide?._id || completedRide?._id;
-            await axios.put(
-                `${API}/api/rides/rate/${rideId}`,
-                { rating: stars },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setRating(stars);
-            setRated(true);
-            setActiveRide(null);
-            setCompletedRide(null);
-            setMessage('Thanks for rating! ⭐');
-        } catch (err) {
-            setMessage('Rating failed');
-        }
-    };
+    const dismissRating = () => {
+    setRated(false);
+    setRating(0);
+    setActiveRide(null);
+    setCompletedRide(null);
+    setMessage('');
+  };
+
+  const rateRide = async (stars) => {
+    try {
+      const rideId = activeRide?._id || completedRide?._id;
+      if (rideId) {
+        await axios.put(
+          `${API}/api/rides/rate/${rideId}`,
+          { rating: stars },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+      setRating(stars);
+      setRated(true);
+      setActiveRide(null);
+      setCompletedRide(null);
+      showToast(`⭐ Rated ${stars} stars! Thank you.`, 'success');
+      setMessage('');
+
+      setTimeout(() => {
+        setRated(false);
+        setRating(0);
+      }, 2500);
+    } catch (err) {
+      console.log('Rating error:', err);
+      showToast('Rating submission failed', 'warning');
+      dismissRating();
+    }
+  };
 
     const logout = async () => {
         try {
@@ -745,56 +763,55 @@ function FacultyDashboard() {
                         )}
 
                         {/* Post-ride Rating */}
-                        {activeRide.status === 'completed' && !rated && (
-                            <div style={styles.ratingBox}>
-                                <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
-                                <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
-                                    {[1, 2, 3, 4, 5].map(star => (
-                                        <span key={star} onClick={() => rateRide(star)}
-                                            style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>★</span>
-                                    ))}
-                                </div>
-                                <button onClick={() => { setActiveRide(null); setCompletedRide(null); }} style={styles.skipRatingBtn}>
-                                    Skip Rating
-                                </button>
-                            </div>
-                        )}
-                        {rated && (
-                            <div style={{ textAlign: 'center', marginTop: '16px' }}>
-                                <p style={{ color: '#10b981', fontWeight: '600', margin: '0 0 10px 0' }}>✅ Rated {rating} stars!</p>
-                                <button onClick={() => { setActiveRide(null); setCompletedRide(null); }} style={styles.doneRatingBtn}>
-                                    Done ✓
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
+            {activeRide && activeRide.status === 'completed' && !rated && (
+              <div style={styles.ratingBox}>
+                <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <span key={star} onClick={() => rateRide(star)}
+                      style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>⭐</span>
+                  ))}
+                </div>
+                <button onClick={dismissRating} style={styles.skipRatingBtn}>
+                  Skip Rating
+                </button>
+              </div>
+            )}
+            {rated && (
+              <div style={{ textAlign: 'center', margin: '14px 0', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
+                <p style={{ color: '#10b981', fontWeight: '700', margin: '0 0 8px 0', fontSize: '15px' }}>✅ Rated {rating} stars!</p>
+                <button onClick={dismissRating} style={styles.doneRatingBtn}>
+                  Done ✓
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
-                {/* Rating for completed ride without activeRide */}
-                {!activeRide && completedRide && !rated && (
-                    <div style={styles.ratingBox}>
-                        <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
-                            {[1, 2, 3, 4, 5].map(star => (
-                                <span key={star} onClick={() => rateRide(star)}
-                                    style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>★</span>
-                            ))}
-                        </div>
-                        <button onClick={() => setCompletedRide(null)} style={styles.skipRatingBtn}>
-                            Skip Rating
-                        </button>
-                    </div>
-                )}
-                {!activeRide && rated && (
-                    <div style={{ textAlign: 'center', marginTop: '16px' }}>
-                        <p style={{ color: '#10b981', fontWeight: '600', margin: '0 0 10px 0' }}>✅ Rated {rating} stars!</p>
-                        <button onClick={() => setCompletedRide(null)} style={styles.doneRatingBtn}>
-                            Done ✓
-                        </button>
-                    </div>
-                )}
-
-                {/* BOOKING INTERFACE */}
+        {/* Rating for completed shared ride passengers */}
+        {!activeRide && completedRide && !rated && (
+          <div style={styles.ratingBox}>
+            <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
+              {[1, 2, 3, 4, 5].map(star => (
+                <span key={star} onClick={() => rateRide(star)}
+                  style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>⭐</span>
+              ))}
+            </div>
+            <button onClick={dismissRating} style={styles.skipRatingBtn}>
+              Skip Rating
+            </button>
+          </div>
+        )}
+        {!activeRide && rated && (
+          <div style={{ textAlign: 'center', margin: '14px 0', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
+            <p style={{ color: '#10b981', fontWeight: '700', margin: '0 0 8px 0', fontSize: '15px' }}>✅ Rated {rating} stars!</p>
+            <button onClick={dismissRating} style={styles.doneRatingBtn}>
+              Done ✓
+            </button>
+          </div>
+        )}
+        {/* BOOKING INTERFACE */}
                 {!activeRide && !completedRide && (
                     <div style={styles.bookCard}>
                         <div style={styles.bookCardHeader}>
