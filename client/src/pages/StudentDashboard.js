@@ -350,7 +350,7 @@ function StudentDashboard() {
   const checkDriversAvailable = async (vehicleType) => {
     try {
       const res = await axios.get(
-        `${API}/api/rides/drivers-available?vehicleType=${vehicleType}`,
+        `${API}/api/rides/drivers-available?vehicleType=${encodeURIComponent(vehicleType)}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setDriversAvailable(res.data.available);
