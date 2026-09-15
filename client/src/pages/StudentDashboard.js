@@ -1214,7 +1214,7 @@ function StudentDashboard() {
                       </div>
                       <div style={styles.vehicleInfo}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <p style={styles.vehicleTypeTxt}>4+1 Sedan</p>
+                          <p style={styles.vehicleTypeTxt}>Sedan (4+1)</p>
                           <span style={styles.capacityBadge}>👤 4 seats</span>
                         </div>
                         <p style={styles.vehicleSeats}>Sporty & fast campus ride</p>
@@ -1295,7 +1295,7 @@ function StudentDashboard() {
                       </div>
                       <div style={styles.vehicleInfo}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <p style={styles.vehicleTypeTxt}>6+1 SUV</p>
+                          <p style={styles.vehicleTypeTxt}>SUV (6+1)</p>
                           <span style={styles.capacityBadge}>👥 6 seats</span>
                         </div>
                         <p style={styles.vehicleSeats}>Tall & spacious for groups</p>

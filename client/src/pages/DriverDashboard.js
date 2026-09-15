@@ -33,7 +33,8 @@ function DriverDashboard() {
   const [activeRide, setActiveRide] = useState(null);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const userVehicleTypeRef = React.useRef(user?.vehicleType || '');
   const token = localStorage.getItem('token');
   const [accepting, setAccepting] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
@@ -110,6 +111,12 @@ function DriverDashboard() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setIsAvailable(res.data.isAvailable);
+        isAvailableRef.current = res.data.isAvailable;
+        if (res.data.vehicleType) {
+          userVehicleTypeRef.current = res.data.vehicleType;
+          const currentUser = JSON.parse(localStorage.getItem('user')) || {};
+          localStorage.setItem('user', JSON.stringify({ ...currentUser, vehicleType: res.data.vehicleType }));
+        }
       } catch (err) {
         console.log('Failed to fetch availability');
       }
@@ -121,7 +128,7 @@ function DriverDashboard() {
       reconnectionAttempts: 5,
       reconnectionDelay: 1000
     });
-    socket.emit('join', { userId: user._id, role: 'driver' });
+    socket.emit('join', { userId: user._id, role: 'driver', vehicleType: userVehicleTypeRef.current || user.vehicleType });
     // Request notification permission
     requestNotificationPermission().then(fcmToken => {
       console.log('Driver FCM token:', fcmToken ? 'received' : 'null');
@@ -135,7 +142,9 @@ function DriverDashboard() {
     });
     socket.on('new:ride', (ride) => {
       if (isAvailableRef.current) {
-        if (user?.vehicleType && ride?.vehicleType && ride.vehicleType !== user.vehicleType) {
+        const myType = (userVehicleTypeRef.current || user?.vehicleType || '').toString().replace(/ /g, '+').trim();
+        const incomingType = (ride?.vehicleType || '4+1').toString().replace(/ /g, '+').trim();
+        if (myType && incomingType && myType !== incomingType) {
           return;
         }
         if (ride.isScheduled) {

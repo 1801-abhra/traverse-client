@@ -386,7 +386,7 @@ function Register() {
                         onClick={() => setForm({ ...form, vehicleType: '4+1' })}
                         style={form.vehicleType === '4+1' ? styles.roleTabActive : styles.roleTabInactive}
                       >
-                        🚗 4+1 Sedan
+                        🚗 Sedan (4+1)
                       </button>
                       <button
                         type="button"
@@ -394,7 +394,7 @@ function Register() {
                         onClick={() => setForm({ ...form, vehicleType: '6+1' })}
                         style={form.vehicleType === '6+1' ? styles.roleTabActive : styles.roleTabInactive}
                       >
-                        🚐 6+1 SUV
+                        🚐 SUV (6+1)
                       </button>
                     </div>
                   </div>
