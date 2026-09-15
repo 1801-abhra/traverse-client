@@ -72,8 +72,8 @@ function DriverDashboard() {
     }
   };
 
-  const fetchScheduledRides = async () => {
-    setScheduledLoading(true);
+  const fetchScheduledRides = async (showLoading = true) => {
+    if (showLoading) setScheduledLoading(true);
     try {
       const [available, mine] = await Promise.all([
         axios.get(`${API}/api/rides/scheduled`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -83,8 +83,9 @@ function DriverDashboard() {
       setMyScheduledRides(mine.data);
     } catch (err) {
       console.log('Failed to fetch scheduled rides');
+    } finally {
+      if (showLoading) setScheduledLoading(false);
     }
-    setScheduledLoading(false);
   };
 
   useEffect(() => {
@@ -98,6 +99,7 @@ function DriverDashboard() {
       if (!document.hidden) {
         fetchAvailableRides();
         fetchDriverActiveRide();
+        fetchScheduledRides(false);
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -133,11 +135,23 @@ function DriverDashboard() {
     });
     socket.on('new:ride', (ride) => {
       if (isAvailableRef.current) {
-        setRides(prev => {
-          const exists = prev.some(r => r._id === ride._id);
-          if (exists) return prev;
-          return [ride, ...prev];
-        });
+        if (user?.vehicleType && ride?.vehicleType && ride.vehicleType !== user.vehicleType) {
+          return;
+        }
+        if (ride.isScheduled) {
+          setScheduledRides(prev => {
+            const exists = prev.some(r => r._id === ride._id);
+            if (exists) return prev;
+            const updated = [ride, ...prev];
+            return updated.sort((a, b) => new Date(a.scheduledTime) - new Date(b.scheduledTime));
+          });
+        } else {
+          setRides(prev => {
+            const exists = prev.some(r => r._id === ride._id);
+            if (exists) return prev;
+            return [ride, ...prev];
+          });
+        }
         rideSound.current.play().catch(() => {
           pendingSoundRef.current = true;
         });
@@ -157,14 +171,25 @@ function DriverDashboard() {
       setMessage(message);
       setShowCancelPopup(false);
       fetchAvailableRides();
+      fetchScheduledRides(false);
     });
     socket.on('ride:passenger-updated', ({ rideId, passengers, isFull, fare }) => {
       setRides(prev => prev.map(r =>
         r._id === rideId ? { ...r, passengers, isFull, fare } : r
       ));
+      setScheduledRides(prev => prev.map(r =>
+        r._id === rideId ? { ...r, passengers, isFull, fare } : r
+      ));
+    });
+    socket.on('ride:scheduled-claimed', ({ rideId, driverId }) => {
+      if (driverId !== user?._id) {
+        setScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
+      }
     });
     socket.on('ride:cancelled', ({ rideId }) => {
       setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
+      setScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
+      setMyScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
     });
     if (navigator.geolocation) {
       const watchId = navigator.geolocation.watchPosition((pos) => {
@@ -214,13 +239,14 @@ function DriverDashboard() {
     }
   }, [activeRide]);
 
-  // Auto-poll every 15 seconds as fallback
+  // Auto-poll fallback
   useEffect(() => {
     const interval = setInterval(() => {
       if (!activeRide) {
         fetchAvailableRides();
+        fetchScheduledRides(false);
       }
-    }, 5000);
+    }, 10000);
     return () => clearInterval(interval);
   }, [activeRide]);
 
