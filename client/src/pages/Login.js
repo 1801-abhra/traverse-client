@@ -613,10 +613,7 @@ function Login() {
               <div style={styles.aboutLogoBox}>
                 <img src="/3d-taxi.webp" alt="Traverse" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }} />
               </div>
-              <div>
-                <span style={styles.aboutTitle}>TRAVERSE CAMPUS CAB</span>
-                <span style={styles.aboutSubtitle}>JUIT WAKNAGHAT • SOLAN HP</span>
-              </div>
+              <span style={styles.aboutTitle}>TRAVERSE UNI CAB</span>
             </div>
           </div>
 
@@ -983,6 +980,7 @@ const styles = {
   aboutBrandRow: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: '10px'
   },
   aboutLogoBox: {
@@ -998,13 +996,14 @@ const styles = {
     overflow: 'hidden'
   },
   aboutTitle: {
-    fontSize: '14px',
+    fontSize: '15px',
     fontWeight: '900',
-    letterSpacing: '1.5px',
+    letterSpacing: '1.8px',
     color: '#e63946',
     display: 'block',
     lineHeight: '1.1',
-    textShadow: '0 0 10px rgba(230, 57, 70, 0.4)'
+    textShadow: '0 0 12px rgba(230, 57, 70, 0.45)',
+    textAlign: 'center'
   },
   aboutSubtitle: {
     fontSize: '8px',
