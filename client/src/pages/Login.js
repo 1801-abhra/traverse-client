@@ -615,7 +615,7 @@ function Login() {
         <div style={styles.taglineBanner}>
           <div style={styles.taglineGlowLine} />
           <div style={styles.taglineContent}>
-            <span style={{ fontSize: '18px', marginRight: '6px' }}>🚗</span>
+            <div style={styles.tagline3dCarWrap}><img src="/3d-taxi.webp" alt="3D Taxi" style={styles.tagline3dCarImg} /></div>
             <span style={styles.taglineText}>
               TRAVERSE YOURSELF FROM YOUR PICKUP TO DROP LOCATION
             </span>
@@ -719,7 +719,7 @@ function Login() {
                     </div>
                   </div>
                   <div style={styles.feature}>
-                    <div style={styles.featureIconBox}>🚗</div>
+                    <div style={styles.featureIconBox}><img src="/3d-taxi.webp" alt="Taxi" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /></div>
                     <div>
                       <p style={styles.featureTitle}>Verified Drivers</p>
                       <p style={styles.featureDesc}>All drivers are registered with verified vehicle numbers and license credentials on record.</p>
@@ -791,7 +791,7 @@ function Login() {
                 </div>
 
                 <div style={{ ...styles.userRoleHeader, marginTop: '24px' }}>
-                  <span style={{ fontSize: '16px' }}>🚗</span>
+                  <img src="/3d-taxi.webp" alt="Driver" style={{ width: '22px', height: '22px', objectFit: 'contain', marginRight: '6px', verticalAlign: 'middle' }} />
                   <h3 style={{ ...styles.sectionTitle, margin: 0 }}>For Campus Drivers & Captains</h3>
                 </div>
                 <div style={styles.steps}>
@@ -929,6 +929,25 @@ const styles = {
     boxSizing: 'border-box',
     position: 'relative',
     overflowX: 'hidden'
+  },
+  tagline3dCarWrap: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '9px',
+    background: 'radial-gradient(circle, rgba(230, 57, 70, 0.3) 0%, rgba(25, 12, 14, 0.9) 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.5)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 12px rgba(230, 57, 70, 0.4)',
+    flexShrink: 0,
+    marginRight: '8px'
+  },
+  tagline3dCarImg: {
+    width: '26px',
+    height: '26px',
+    objectFit: 'contain',
+    filter: 'drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6))'
   },
   taglineBanner: {
     margin: '36px 0 24px 0',
