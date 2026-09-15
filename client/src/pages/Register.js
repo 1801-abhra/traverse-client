@@ -194,7 +194,11 @@ function Register() {
         {/* Header Branding Area consistent with Login.js */}
         <header style={styles.header}>
           <div style={styles.logoBadge}>
-            <span style={styles.floatingTaxi}>🚖</span>
+            <img
+              src="/3d-taxi.webp"
+              alt="Traverse 3D Taxi"
+              style={styles.floatingTaxiImg}
+            />
           </div>
           <h1 style={styles.brandTitle}>TRAVERSE</h1>
           <p style={styles.brandTagline}>
@@ -488,19 +492,22 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '56px',
-    height: '56px',
-    borderRadius: '16px',
+    width: '72px',
+    height: '72px',
+    borderRadius: '20px',
     background: 'linear-gradient(145deg, #1f1416 0%, #12090b 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.35)',
-    boxShadow: '0 8px 24px rgba(230, 57, 70, 0.25)',
-    marginBottom: '12px'
+    border: '1px solid rgba(230, 57, 70, 0.45)',
+    boxShadow: '0 10px 30px rgba(230, 57, 70, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+    marginBottom: '12px',
+    overflow: 'hidden',
+    padding: '3px'
   },
-  floatingTaxi: {
-    fontSize: '28px',
-    display: 'inline-block',
-    animation: 'floatTaxi 3.2s ease-in-out infinite',
-    lineHeight: 1
+  floatingTaxiImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderRadius: '16px',
+    animation: 'floatTaxi 3.2s ease-in-out infinite'
   },
   brandTitle: {
     margin: '0 0 6px 0',
