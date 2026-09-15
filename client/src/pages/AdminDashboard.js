@@ -5,6 +5,10 @@ import { useNavigate } from 'react-router-dom';
 const API = 'https://traverse-app.onrender.com';
 
 function AdminDashboard() {
+  const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [rides, setRides] = useState([]);
   const [users, setUsers] = useState([]);
   const [tab, setTab] = useState('overview');
@@ -31,14 +35,17 @@ function AdminDashboard() {
     setLoading(false);
   };
 
-  const fetchData = async (t) => {
+  const fetchData = async (t, searchTerm = '', page = 1) => {
     try {
       const [ridesRes, usersRes] = await Promise.all([
-        axios.get(`${API}/api/rides/admin/rides`, { headers: { Authorization: `Bearer ${t}` } }),
-        axios.get(`${API}/api/auth/admin/users`, { headers: { Authorization: `Bearer ${t}` } })
+        axios.get(`${API}/api/rides/admin/rides?search=${searchTerm}&page=${page}&limit=20`, { headers: { Authorization: `Bearer ${t}` } }),
+        axios.get(`${API}/api/auth/admin/users?search=${searchTerm}&page=${page}&limit=20`, { headers: { Authorization: `Bearer ${t}` } })
       ]);
-      setRides(ridesRes.data);
-      setUsers(usersRes.data);
+      setRides(ridesRes.data.rides || ridesRes.data);
+      setUsers(usersRes.data.users || usersRes.data);
+      setTotalPages(usersRes.data.pages || 1);
+      setCurrentPage(page);
+      setTotalUsers(usersRes.data.total || 0);
     } catch (err) { console.log('Fetch error:', err); }
   };
 
@@ -349,6 +356,23 @@ function AdminDashboard() {
           })}
         </div>
 
+        {/* Search Bar */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+          <input
+            style={{ flex: 1, padding: '12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px', color: 'white', fontSize: '14px', outline: 'none' }}
+            placeholder='🔍 Search by name, email, phone...'
+            value={search}
+            onChange={e => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+              fetchData(tokenRef.current, e.target.value, 1);
+            }}
+          />
+          <button onClick={() => fetchData(tokenRef.current, search, 1)} style={{ padding: '12px 20px', background: '#e63946', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer' }}>
+            Search
+          </button>
+        </div>
+
         {/* RIDES TAB */}
         {tab === 'rides' && (
           <div>
@@ -443,6 +467,27 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+                <button
+                  onClick={() => { setCurrentPage(p => p - 1); fetchData(tokenRef.current, search, currentPage - 1); }}
+                  disabled={currentPage === 1}
+                  style={{ padding: '8px 16px', background: currentPage === 1 ? '#1a1a1a' : '#e63946', color: currentPage === 1 ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}>
+                  ← Prev
+                </button>
+                <span style={{ padding: '8px 16px', color: '#999', fontSize: '14px' }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => { setCurrentPage(p => p + 1); fetchData(tokenRef.current, search, currentPage + 1); }}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: '8px 16px', background: currentPage === totalPages ? '#1a1a1a' : '#e63946', color: currentPage === totalPages ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}>
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -526,6 +571,27 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+                <button
+                  onClick={() => { setCurrentPage(p => p - 1); fetchData(tokenRef.current, search, currentPage - 1); }}
+                  disabled={currentPage === 1}
+                  style={{ padding: '8px 16px', background: currentPage === 1 ? '#1a1a1a' : '#e63946', color: currentPage === 1 ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}>
+                  ← Prev
+                </button>
+                <span style={{ padding: '8px 16px', color: '#999', fontSize: '14px' }}>
+                  Page {currentPage} of {totalPages} ({totalUsers} total)
+                </span>
+                <button
+                  onClick={() => { setCurrentPage(p => p + 1); fetchData(tokenRef.current, search, currentPage + 1); }}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: '8px 16px', background: currentPage === totalPages ? '#1a1a1a' : '#e63946', color: currentPage === totalPages ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}>
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -597,6 +663,27 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+                <button
+                  onClick={() => { setCurrentPage(p => p - 1); fetchData(tokenRef.current, search, currentPage - 1); }}
+                  disabled={currentPage === 1}
+                  style={{ padding: '8px 16px', background: currentPage === 1 ? '#1a1a1a' : '#e63946', color: currentPage === 1 ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}>
+                  ← Prev
+                </button>
+                <span style={{ padding: '8px 16px', color: '#999', fontSize: '14px' }}>
+                  Page {currentPage} of {totalPages} ({totalUsers} total)
+                </span>
+                <button
+                  onClick={() => { setCurrentPage(p => p + 1); fetchData(tokenRef.current, search, currentPage + 1); }}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: '8px 16px', background: currentPage === totalPages ? '#1a1a1a' : '#e63946', color: currentPage === totalPages ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}>
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -703,6 +790,27 @@ function AdminDashboard() {
                 </div>
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+                <button
+                  onClick={() => { setCurrentPage(p => p - 1); fetchData(tokenRef.current, search, currentPage - 1); }}
+                  disabled={currentPage === 1}
+                  style={{ padding: '8px 16px', background: currentPage === 1 ? '#1a1a1a' : '#e63946', color: currentPage === 1 ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}>
+                  ← Prev
+                </button>
+                <span style={{ padding: '8px 16px', color: '#999', fontSize: '14px' }}>
+                  Page {currentPage} of {totalPages} ({totalUsers} total)
+                </span>
+                <button
+                  onClick={() => { setCurrentPage(p => p + 1); fetchData(tokenRef.current, search, currentPage + 1); }}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: '8px 16px', background: currentPage === totalPages ? '#1a1a1a' : '#e63946', color: currentPage === totalPages ? '#666' : 'white', border: 'none', borderRadius: '8px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}>
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
