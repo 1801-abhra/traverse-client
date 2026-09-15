@@ -158,13 +158,26 @@ function DriverDashboard() {
       }
     });
     socket.on('ride:passenger-joined', ({ message, ride }) => {
-      setActiveRide(ride);
-      setMessage(message);
+      if (ride?.isScheduled && ride?.status === 'searching') {
+        setMyScheduledRides(prev => prev.map(r => r._id === ride._id ? ride : r));
+        setScheduledRides(prev => prev.map(r => r._id === ride._id ? ride : r));
+        setMessage(message || 'A new passenger joined the scheduled ride!');
+        rideSound.current.play().catch(() => { pendingSoundRef.current = true; });
+      } else {
+        setActiveRide(ride);
+        setMessage(message);
+      }
     });
 
     socket.on('ride:passenger-left', ({ message, ride }) => {
-      setActiveRide(ride);
-      setMessage(message);
+      if (ride?.isScheduled && ride?.status === 'searching') {
+        setMyScheduledRides(prev => prev.map(r => r._id === ride._id ? ride : r));
+        setScheduledRides(prev => prev.map(r => r._id === ride._id ? ride : r));
+        setMessage(message || 'A passenger left the scheduled ride.');
+      } else {
+        setActiveRide(ride);
+        setMessage(message);
+      }
     });
     socket.on('ride:cancelled-by-party', ({ message }) => {
       setActiveRide(null);
@@ -173,13 +186,16 @@ function DriverDashboard() {
       fetchAvailableRides();
       fetchScheduledRides(false);
     });
-    socket.on('ride:passenger-updated', ({ rideId, passengers, isFull, fare }) => {
-      setRides(prev => prev.map(r =>
-        r._id === rideId ? { ...r, passengers, isFull, fare } : r
-      ));
-      setScheduledRides(prev => prev.map(r =>
-        r._id === rideId ? { ...r, passengers, isFull, fare } : r
-      ));
+    socket.on('ride:passenger-updated', ({ rideId, passengers, isFull, fare, ride }) => {
+      const updateFn = r => {
+        if (r._id === rideId) {
+          return ride ? { ...r, ...ride } : { ...r, passengers, isFull, fare };
+        }
+        return r;
+      };
+      setRides(prev => prev.map(updateFn));
+      setScheduledRides(prev => prev.map(updateFn));
+      setMyScheduledRides(prev => prev.map(updateFn));
     });
     socket.on('ride:scheduled-claimed', ({ rideId, driverId }) => {
       if (driverId !== user?._id) {
@@ -992,24 +1008,109 @@ function DriverDashboard() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                       {myScheduledRides.map(ride => (
                         <div key={ride._id} className="driver-card-hover" style={{ ...styles.rideCard, border: '1px solid rgba(16, 185, 129, 0.45)', background: 'linear-gradient(145deg, #121814 0%, #111111 100%)' }}>
+                          {/* Top Row: Rider Info, Badges, and Fare */}
                           <div style={styles.requestCardTop}>
                             <div style={styles.studentInfo}>
                               <div style={{ ...styles.studentAvatarSmall, background: 'rgba(16, 185, 129, 0.2)', color: '#10b981' }}>👤</div>
                               <div>
-                                <p style={styles.studentName}>{ride.student?.name || 'Rider'}</p>
-                                {ride.student?.phone && (
-                                  <a href={`tel:${ride.student.phone}`} style={styles.phoneLink}>
-                                    <span>📞</span>
-                                    <span>{ride.student.phone}</span>
-                                  </a>
-                                )}
+                                <p style={styles.studentName}>
+                                  {ride.student?.name || 'Campus Rider'}
+                                  {ride.student?.role === 'faculty' && (
+                                    <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '600', marginLeft: '6px' }}>
+                                      (Faculty)
+                                    </span>
+                                  )}
+                                </p>
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '2px', flexWrap: 'wrap' }}>
+                                  <span style={styles.vehicleTypeTag}>
+                                    🚗 {ride.vehicleType || '4+1'}
+                                  </span>
+                                  {ride.rideType === 'shared' ? (
+                                    <span style={styles.sharedBadge}>
+                                      👥 Pool ({ride.passengers?.length || 1}/{ride.maxPassengers || 4})
+                                    </span>
+                                  ) : (
+                                    <span style={styles.privateBadge}>
+                                      🔒 Private
+                                    </span>
+                                  )}
+                                  {ride.isFull && (
+                                    <span style={styles.fullBadge}>FULL</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                            <span style={styles.confirmedBadge}>
-                              CONFIRMED ✓
-                            </span>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                              <span style={styles.confirmedBadge}>
+                                CONFIRMED ✅
+                              </span>
+                              <div style={styles.fareHighlightBox}>
+                                <span style={styles.fareLabel}>{ride.rideType === 'shared' ? 'PER SEAT' : 'FARE'}</span>
+                                <p style={{ ...styles.fareAmount, color: '#10b981' }}>₹{ride.fare}</p>
+                              </div>
+                            </div>
                           </div>
 
+                          {/* Shared Pool Passengers Manifest */}
+                          {ride.rideType === 'shared' && ride.passengers?.length > 0 && (
+                            <div style={{ ...styles.passengerGroup, margin: '10px 0 8px 0', padding: '10px 12px', borderRadius: '10px' }}>
+                              <div style={styles.passengerGroupHeader}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  <span style={{ fontSize: '15px' }}>👥</span>
+                                  <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    Confirmed Pool Passengers ({ride.passengers.length}/{ride.maxPassengers || 4})
+                                  </span>
+                                </div>
+                                <span style={styles.poolFareTag}>
+                                  ₹{ride.fare} / seat
+                                </span>
+                              </div>
+
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                                {ride.passengers.map((p, i) => (
+                                  <div key={i} style={{ ...styles.passengerItem, padding: '6px 8px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <div style={{ ...styles.passengerAvatar, width: '24px', height: '24px', fontSize: '11px' }}>
+                                        {i + 1}
+                                      </div>
+                                      <div>
+                                        <p style={{ ...styles.passengerName, fontSize: '13px' }}>{p.name || p.student?.name || 'Passenger'}</p>
+                                        <p style={{ ...styles.passengerRole, fontSize: '10px' }}>
+                                          {i === 0 ? 'Primary Booker' : `Joined Passenger ${i + 1}`}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    {(p.phone || (i === 0 && ride.student?.phone)) && (
+                                      <a href={`tel:${p.phone || ride.student?.phone}`} style={styles.callSmallBtn}>
+                                        <span>📞</span>
+                                        <span>Call</span>
+                                      </a>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+
+                              <div style={{ ...styles.totalFareBanner, marginTop: '8px', paddingTop: '6px' }}>
+                                <span style={{ color: '#999', fontSize: '12px' }}>Total Fare Collection:</span>
+                                <span style={{ color: '#10b981', fontSize: '15px', fontWeight: '800' }}>
+                                  ₹{ride.fare * ride.passengers.length}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Private ride direct phone */}
+                          {ride.rideType !== 'shared' && ride.student?.phone && (
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '4px 0 8px 0' }}>
+                              <a href={`tel:${ride.student.phone}`} style={styles.phoneLink}>
+                                <span>📞 Call Rider:</span>
+                                <span>{ride.student.phone}</span>
+                              </a>
+                            </div>
+                          )}
+
+                          {/* Middle: Route Info */}
                           <div style={styles.routeContainer}>
                             <div style={styles.routeTimeline}>
                               <div style={styles.routeDotPickup} />
@@ -1029,7 +1130,7 @@ function DriverDashboard() {
                           </div>
 
                           <div style={styles.scheduledBannerConfirmed}>
-                            <span>🕐 Scheduled Time:</span>
+                            <span>⏰ Scheduled Time:</span>
                             <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
                           </div>
                         </div>
@@ -1042,7 +1143,7 @@ function DriverDashboard() {
                 <div style={styles.header}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '18px' }}>🕐</span>
+                      <span style={{ fontSize: '18px' }}>📅</span>
                       <h3 style={styles.sectionTitle}>Available Pre-Bookings</h3>
                     </div>
                     <p style={styles.sectionSubtitle}>Claim upcoming scheduled rides in advance</p>
@@ -1058,7 +1159,7 @@ function DriverDashboard() {
                 {!scheduledLoading && scheduledRides.length === 0 && (
                   <div className="driver-card-hover" style={styles.empty}>
                     <div style={styles.emptyIconBox}>
-                      <span style={{ fontSize: '32px' }}>🕐</span>
+                      <span style={{ fontSize: '32px' }}>📅</span>
                     </div>
                     <h4 style={styles.emptyTitle}>No Scheduled Trips</h4>
                     <p style={styles.emptySubtitle}>All upcoming rides are currently claimed or none posted.</p>
@@ -1072,21 +1173,104 @@ function DriverDashboard() {
                         <div style={styles.studentInfo}>
                           <div style={styles.studentAvatarSmall}>👤</div>
                           <div>
-                            <p style={styles.studentName}>{ride.student?.name || 'Campus Passenger'}</p>
-                            {ride.student?.phone && (
-                              <a href={`tel:${ride.student.phone}`} style={styles.phoneLink}>
-                                <span>📞</span>
-                                <span>{ride.student.phone}</span>
-                              </a>
-                            )}
+                            <p style={styles.studentName}>
+                              {ride.student?.name || 'Campus Passenger'}
+                              {ride.student?.role === 'faculty' && (
+                                <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '600', marginLeft: '6px' }}>
+                                  (Faculty)
+                                </span>
+                              )}
+                            </p>
+                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginTop: '2px', flexWrap: 'wrap' }}>
+                              <span style={styles.vehicleTypeTag}>
+                                🚗 {ride.vehicleType || '4+1'}
+                              </span>
+                              {ride.rideType === 'shared' ? (
+                                <span style={styles.sharedBadge}>
+                                  👥 Pool ({ride.passengers?.length || 1}/{ride.maxPassengers || 4})
+                                </span>
+                              ) : (
+                                <span style={styles.privateBadge}>
+                                  🔒 Private
+                                </span>
+                              )}
+                              {ride.isFull && (
+                                <span style={styles.fullBadge}>FULL</span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        {ride.driver ? (
-                          <span style={styles.alreadyTakenBadge}>Assigned</span>
-                        ) : (
-                          <span style={styles.openSlotBadge}>Open Booking</span>
-                        )}
+
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                          {ride.driver ? (
+                            <span style={styles.alreadyTakenBadge}>Assigned</span>
+                          ) : (
+                            <span style={styles.openSlotBadge}>Open Booking</span>
+                          )}
+                          <div style={styles.fareHighlightBox}>
+                            <span style={styles.fareLabel}>{ride.rideType === 'shared' ? 'PER SEAT' : 'EST. FARE'}</span>
+                            <p style={styles.fareAmount}>₹{ride.fare}</p>
+                          </div>
+                        </div>
                       </div>
+
+                      {/* Shared Pool Passengers Manifest */}
+                      {ride.rideType === 'shared' && ride.passengers?.length > 0 && (
+                        <div style={{ ...styles.passengerGroup, margin: '10px 0 8px 0', padding: '10px 12px', borderRadius: '10px' }}>
+                          <div style={styles.passengerGroupHeader}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span style={{ fontSize: '15px' }}>👥</span>
+                              <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                Joined Pool Passengers ({ride.passengers.length}/{ride.maxPassengers || 4})
+                              </span>
+                            </div>
+                            <span style={styles.poolFareTag}>
+                              ₹{ride.fare} / seat
+                            </span>
+                          </div>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '6px' }}>
+                            {ride.passengers.map((p, i) => (
+                              <div key={i} style={{ ...styles.passengerItem, padding: '6px 8px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <div style={{ ...styles.passengerAvatar, width: '24px', height: '24px', fontSize: '11px' }}>
+                                    {i + 1}
+                                  </div>
+                                  <div>
+                                    <p style={{ ...styles.passengerName, fontSize: '13px' }}>{p.name || p.student?.name || 'Passenger'}</p>
+                                    <p style={{ ...styles.passengerRole, fontSize: '10px' }}>
+                                      {i === 0 ? 'Primary Booker' : `Joined Passenger ${i + 1}`}
+                                    </p>
+                                  </div>
+                                </div>
+                                {(p.phone || (i === 0 && ride.student?.phone)) && (
+                                  <a href={`tel:${p.phone || ride.student?.phone}`} style={styles.callSmallBtn}>
+                                    <span>📞</span>
+                                    <span>Call</span>
+                                  </a>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+
+                          <div style={{ ...styles.totalFareBanner, marginTop: '8px', paddingTop: '6px' }}>
+                            <span style={{ color: '#999', fontSize: '12px' }}>Total Pool Collection:</span>
+                            <span style={{ color: '#e63946', fontSize: '15px', fontWeight: '800' }}>
+                              ₹{ride.fare * ride.passengers.length}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Private ride phone */}
+                      {ride.rideType !== 'shared' && ride.student?.phone && (
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '4px 0 8px 0' }}>
+                          <a href={`tel:${ride.student.phone}`} style={styles.phoneLink}>
+                            <span>📞</span>
+                            <span>{ride.student.phone}</span>
+                          </a>
+                        </div>
+                      )}
 
                       <div style={styles.routeContainer}>
                         <div style={styles.routeTimeline}>
@@ -1107,19 +1291,19 @@ function DriverDashboard() {
                       </div>
 
                       <div style={styles.scheduledBanner}>
-                        <span>🕐 Trip Time:</span>
+                        <span>⏰ Trip Time:</span>
                         <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
                       </div>
 
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-                        <span style={styles.vehicleTypeTag}>🚗 {ride.vehicleType || 'Standard'}</span>
+                        <span style={styles.vehicleTypeTag}>🚗 {ride.vehicleType || '4+1'}</span>
                         {!ride.driver && (
                           <button
                             onClick={() => preAcceptRide(ride._id)}
                             className="traverse-btn-accept"
                             style={styles.confirmPreAcceptBtn}
                           >
-                            ✓ Claim Scheduled Ride
+                            ✅ Claim Scheduled Ride
                           </button>
                         )}
                       </div>
