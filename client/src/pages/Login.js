@@ -161,67 +161,50 @@ function Login() {
         }
       `}</style>
 
-      {/* 3D Car Driving Animation Scene (One-time on page load, behind login card) */}
+      {/* 3D Car Driving Animation Scene (One-time on page load, passes behind login portal card) */}
       {showCarAnimation && (
         <div
           style={{
-            position: 'fixed',
+            position: 'absolute',
             left: 0,
             right: 0,
-            bottom: 0,
-            top: 0,
+            top: '290px',
+            height: '150px',
             pointerEvents: 'none',
             zIndex: 0,
             overflow: 'hidden',
-            animation: 'fadeOutRoadScene 4.8s ease-out forwards'
+            animation: 'fadeOutRoadScene 4.6s ease-out forwards'
           }}
         >
-          {/* Perspective Asphalt Road at bottom */}
+          {/* Glowing Cyber Highway Track passing behind the login card */}
           <div
             style={{
               position: 'absolute',
-              bottom: 0,
+              top: '92px',
               left: '-10%',
               width: '120%',
-              height: '95px',
-              background: 'linear-gradient(180deg, #161616 0%, #0d0d0d 100%)',
-              transform: 'perspective(500px) rotateX(16deg)',
-              transformOrigin: 'bottom center',
-              borderTop: '2px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: 'inset 0 12px 30px rgba(0, 0, 0, 0.9), 0 -8px 25px rgba(230, 57, 70, 0.08)'
+              height: '3px',
+              background: 'linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.3) 15%, #e63946 50%, rgba(230, 57, 70, 0.3) 85%, transparent 100%)',
+              boxShadow: '0 0 16px rgba(230, 57, 70, 0.7), 0 0 32px rgba(230, 57, 70, 0.35)'
             }}
-          >
-            {/* Dashed Center Road Line */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '48%',
-                left: 0,
-                width: '100%',
-                height: '3px',
-                background: 'repeating-linear-gradient(90deg, #e63946 0px, #e63946 32px, transparent 32px, transparent 64px)',
-                opacity: 0.85,
-                boxShadow: '0 0 10px rgba(230, 57, 70, 0.4)'
-              }}
-            />
-            {/* Subtle Road Edge White Line */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '12%',
-                left: 0,
-                width: '100%',
-                height: '1px',
-                background: 'rgba(255, 255, 255, 0.2)'
-              }}
-            />
-          </div>
-
-          {/* 3D Moving Car Track */}
+          />
           <div
             style={{
               position: 'absolute',
-              bottom: '22px',
+              top: '74px',
+              left: '-10%',
+              width: '120%',
+              height: '24px',
+              background: 'linear-gradient(180deg, rgba(230, 57, 70, 0.06) 0%, rgba(230, 57, 70, 0) 100%)',
+              borderBottom: '1px dashed rgba(230, 57, 70, 0.25)'
+            }}
+          />
+
+          {/* 3D Moving Car Track - crosses behind the login card from left to right */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '36px',
               left: 0,
               width: '100%',
               animation: 'driveAcross3D 3.6s cubic-bezier(0.22, 0.45, 0.35, 0.98) forwards'
