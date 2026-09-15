@@ -8,6 +8,7 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCarAnimation, setShowCarAnimation] = useState(true);
+  const [aboutTab, setAboutTab] = useState('about');
   const animTimerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -609,6 +610,299 @@ function Login() {
             </div>
           </div>
         </div>
+
+        {/* Middle Brand Tagline Banner */}
+        <div style={styles.taglineBanner}>
+          <div style={styles.taglineGlowLine} />
+          <div style={styles.taglineContent}>
+            <span style={{ fontSize: '18px', marginRight: '6px' }}>🚗</span>
+            <span style={styles.taglineText}>
+              TRAVERSE YOURSELF FROM YOUR PICKUP TO DROP LOCATION
+            </span>
+          </div>
+          <div style={styles.taglineGlowLine} />
+        </div>
+
+        {/* Bottom About & Terms & Conditions Section */}
+        <section style={styles.aboutSection}>
+          <div style={styles.aboutHeader}>
+            <div style={styles.aboutBrandRow}>
+              <div style={styles.aboutLogoBox}>
+                <img src="/3d-taxi.webp" alt="Traverse" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }} />
+              </div>
+              <div>
+                <span style={styles.aboutTitle}>TRAVERSE CAMPUS CAB</span>
+                <span style={styles.aboutSubtitle}>JUIT WAKNAGHAT • SOLAN HP</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Nav Tabs */}
+          <div style={styles.aboutTabsContainer}>
+            <button
+              onClick={() => setAboutTab('about')}
+              style={aboutTab === 'about' ? styles.aboutTabActive : styles.aboutTabInactive}
+              type="button"
+            >
+              📖 About Us
+            </button>
+            <button
+              onClick={() => setAboutTab('how')}
+              style={aboutTab === 'how' ? styles.aboutTabActive : styles.aboutTabInactive}
+              type="button"
+            >
+              ⚡ How It Works
+            </button>
+            <button
+              onClick={() => setAboutTab('terms')}
+              style={aboutTab === 'terms' ? styles.aboutTabActive : styles.aboutTabInactive}
+              type="button"
+            >
+              📜 Terms & Rules
+            </button>
+            <button
+              onClick={() => setAboutTab('help')}
+              style={aboutTab === 'help' ? styles.aboutTabActive : styles.aboutTabInactive}
+              type="button"
+            >
+              💬 Help & FAQs
+            </button>
+          </div>
+
+          {/* Scrollable Tab Content Container */}
+          <div style={styles.aboutContentBox}>
+            {/* ABOUT TAB */}
+            {aboutTab === 'about' && (
+              <div>
+                <div style={styles.missionCard}>
+                  <span style={styles.missionQuoteMark}>“</span>
+                  <p style={styles.missionText}>
+                    Safe, Affordable & Direct campus mobility — Connecting JUIT university students with trusted local drivers on mountain roads.
+                  </p>
+                </div>
+
+                <h3 style={styles.sectionTitle}>
+                  <span style={styles.titleAccent}>|</span> Our Story
+                </h3>
+                <div style={styles.storyCard}>
+                  <p style={styles.text}>
+                    Traverse-Unicab was born out of a real problem faced by students in the hill regions of Himachal Pradesh.
+                    Getting a taxi in mountain areas is not just expensive — it's unreliable. Students at JUIT often struggled
+                    to find safe and affordable transport, especially during odd hours.
+                  </p>
+                  <p style={styles.text}>
+                    At the same time, local drivers were frustrated with high commissions charged by commercial aggregators,
+                    leaving them with minimal earnings despite long hours on tough terrain.
+                  </p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>
+                    Traverse bridges this gap — connecting university students and faculty directly with verified local drivers at
+                    fixed student-friendly union rates, with <b>zero commission cuts</b> eating into driver earnings.
+                  </p>
+                </div>
+
+                <h3 style={styles.sectionTitle}>
+                  <span style={styles.titleAccent}>|</span> Why Traverse?
+                </h3>
+                <div style={styles.featureList}>
+                  <div style={styles.feature}>
+                    <div style={styles.featureIconBox}>🔒</div>
+                    <div>
+                      <p style={styles.featureTitle}>Safety First</p>
+                      <p style={styles.featureDesc}>All rides logged in real time. Driver credentials stored. Special focus on student safety.</p>
+                    </div>
+                  </div>
+                  <div style={styles.feature}>
+                    <div style={styles.featureIconBox}>🏷️</div>
+                    <div>
+                      <p style={styles.featureTitle}>Student-Friendly Rates</p>
+                      <p style={styles.featureDesc}>Pre-negotiated fixed rates agreed with the campus taxi union exclusively for JUIT.</p>
+                    </div>
+                  </div>
+                  <div style={styles.feature}>
+                    <div style={styles.featureIconBox}>🚗</div>
+                    <div>
+                      <p style={styles.featureTitle}>Verified Drivers</p>
+                      <p style={styles.featureDesc}>All drivers are registered with verified vehicle numbers and license credentials on record.</p>
+                    </div>
+                  </div>
+                  <div style={styles.feature}>
+                    <div style={styles.featureIconBox}>📡</div>
+                    <div>
+                      <p style={styles.featureTitle}>Live GPS Tracking</p>
+                      <p style={styles.featureDesc}>High-frequency live location sharing, pickup and destination pins, and arrival alerts.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={styles.contactCard}>
+                  <div style={styles.contactHeader}>
+                    <span style={{ fontSize: '18px' }}>✉️</span>
+                    <span style={styles.contactTitle}>Official Support Desk</span>
+                  </div>
+                  <a href="mailto:traverseuni@gmail.com" style={styles.contactEmail}>traverseuni@gmail.com</a>
+                  <p style={styles.contactDesc}>Direct assistance for queries, verification appeals, or general feedback</p>
+                </div>
+              </div>
+            )}
+
+            {/* HOW IT WORKS TAB */}
+            {aboutTab === 'how' && (
+              <div>
+                <div style={styles.userRoleHeader}>
+                  <span style={{ fontSize: '16px' }}>🎓</span>
+                  <h3 style={{ ...styles.sectionTitle, margin: 0 }}>For Students & Riders</h3>
+                </div>
+                <div style={styles.steps}>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>1</div>
+                    <div>
+                      <p style={styles.stepTitle}>Register with JUIT Email</p>
+                      <p style={styles.stepDesc}>Sign up using your verified @juitsolan.in email and student ID</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>2</div>
+                    <div>
+                      <p style={styles.stepTitle}>Choose Destination & Vehicle</p>
+                      <p style={styles.stepDesc}>Select destination and vehicle type — Sedan (4+1) or SUV (6+1)</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>3</div>
+                    <div>
+                      <p style={styles.stepTitle}>Instant or Scheduled Booking</p>
+                      <p style={styles.stepDesc}>Book an immediate cab or schedule in advance for trains, flights, or night trips</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>4</div>
+                    <div>
+                      <p style={styles.stepTitle}>Live Driver Tracking</p>
+                      <p style={styles.stepDesc}>Track your driver live on the map as they approach your pickup point</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>5</div>
+                    <div>
+                      <p style={styles.stepTitle}>Rate & Review</p>
+                      <p style={styles.stepDesc}>Leave feedback after trip completion to maintain top service quality</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ ...styles.userRoleHeader, marginTop: '24px' }}>
+                  <span style={{ fontSize: '16px' }}>🚗</span>
+                  <h3 style={{ ...styles.sectionTitle, margin: 0 }}>For Campus Drivers & Captains</h3>
+                </div>
+                <div style={styles.steps}>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>1</div>
+                    <div>
+                      <p style={styles.stepTitle}>Register Vehicle Profile</p>
+                      <p style={styles.stepDesc}>Sign up with your personal email, phone number, vehicle number, and vehicle type</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>2</div>
+                    <div>
+                      <p style={styles.stepTitle}>Admin Approval</p>
+                      <p style={styles.stepDesc}>Traverse administrators verify and activate your driver account</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>3</div>
+                    <div>
+                      <p style={styles.stepTitle}>Go Online</p>
+                      <p style={styles.stepDesc}>Toggle Online to start receiving instant matching requests and scheduled pre-bookings</p>
+                    </div>
+                  </div>
+                  <div style={styles.step}>
+                    <div style={styles.stepNum}>4</div>
+                    <div>
+                      <p style={styles.stepTitle}>Accept & Complete Trips</p>
+                      <p style={styles.stepDesc}>Accept ride dispatches, navigate with live GPS, and collect full fare directly</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TERMS & CONDITIONS TAB */}
+            {aboutTab === 'terms' && (
+              <div>
+                <div style={styles.warningCard}>
+                  <span style={{ fontSize: '18px' }}>⚠️</span>
+                  <span style={{ fontSize: '13px', lineHeight: '1.4' }}>
+                    Traverse is a university community platform. Please review the service terms and cancellation policies.
+                  </span>
+                </div>
+
+                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Eligibility</h3>
+                <div style={styles.termsBox}>
+                  <p style={styles.text}>• Only students and faculty with a valid <b>@juitsolan.in</b> email can register as riders</p>
+                  <p style={styles.text}>• Drivers must provide authentic vehicle registration and license details</p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>• All users must provide genuine contact information</p>
+                </div>
+
+                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Booking & Cancellation Policy</h3>
+                <div style={styles.termsBox}>
+                  <p style={styles.text}>• Students can cancel rides <b>free of charge</b> before a driver accepts</p>
+                  <p style={styles.text}>• Cancelling after driver acceptance counts as a cancellation strike</p>
+                  <p style={styles.text}>• <b>5 cancellations after acceptance = automatic review / account blacklist</b></p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>• Blacklisted users must contact <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', fontWeight: '700' }}>traverseuni@gmail.com</a> to appeal</p>
+                </div>
+
+                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Fixed Pricing & Night Surge</h3>
+                <div style={styles.termsBox}>
+                  <p style={styles.text}>• Standard fares are fixed as per campus taxi union agreements</p>
+                  <p style={styles.text}>• Night surge applies on JUIT ↔ Waknaghat route between <b>9:00 PM - 7:00 AM</b></p>
+                  <p style={styles.text}>• Shared rides automatically split the total fare equally between confirmed passengers</p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>• Scheduled ride fares reflect the selected timing and vehicle type</p>
+                </div>
+
+                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Safety & Privacy</h3>
+                <div style={styles.termsBox}>
+                  <p style={styles.text}>• All rides and live coordinates are logged for passenger security</p>
+                  <p style={styles.text}>• Driver details including phone and vehicle number are shared with riders upon acceptance</p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>• Women's safety is our top priority — drivers are verified university-associated operators</p>
+                </div>
+              </div>
+            )}
+
+            {/* HELP & FAQS TAB */}
+            {aboutTab === 'help' && (
+              <div>
+                <div style={styles.warningCard}>
+                  <span style={{ fontSize: '18px' }}>📬</span>
+                  <span style={{ fontSize: '13px', lineHeight: '1.4' }}>
+                    Verification emails may land in your <b>Spam / Junk</b> folder — please check there first!
+                  </span>
+                </div>
+
+                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Email & Verification</h3>
+                <div style={styles.termsBox}>
+                  <p style={styles.text}>• Verification email not in inbox? Check your <b>Spam/Junk</b> folder</p>
+                  <p style={styles.text}>• Mark our email as <b>"Not Spam"</b> to receive future trip confirmations</p>
+                  <p style={styles.text}>• Verification links expire in 24 hours — request a new link if needed</p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>• Ensure your email is spelled correctly (@juitsolan.in)</p>
+                </div>
+
+                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Account Access & Support</h3>
+                <div style={styles.termsBox}>
+                  <p style={styles.text}>• Students and faculty must use <b>@juitsolan.in</b> institutional email</p>
+                  <p style={styles.text}>• Drivers must use their personal email address</p>
+                  <p style={{ ...styles.text, marginBottom: 0 }}>• For password reset or account recovery, contact <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', fontWeight: '700' }}>traverseuni@gmail.com</a></p>
+                </div>
+
+                <div style={styles.contactCard}>
+                  <p style={styles.contactTitle}>📞 Need Urgent Assistance?</p>
+                  <a href="mailto:traverseuni@gmail.com" style={styles.contactEmail}>traverseuni@gmail.com</a>
+                  <p style={styles.contactDesc}>We respond promptly to student and driver inquiries</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );
@@ -628,12 +922,323 @@ const styles = {
     color: '#ffffff',
     fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: '24px 16px',
+    padding: '24px 16px 60px 16px',
     boxSizing: 'border-box',
     position: 'relative',
     overflowX: 'hidden'
+  },
+  taglineBanner: {
+    margin: '36px 0 24px 0',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '10px',
+    textAlign: 'center'
+  },
+  taglineGlowLine: {
+    width: '100%',
+    height: '1.5px',
+    background: 'linear-gradient(90deg, transparent 0%, #e63946 50%, transparent 100%)',
+    opacity: 0.7,
+    boxShadow: '0 0 10px rgba(230, 57, 70, 0.5)'
+  },
+  taglineContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    padding: '4px 8px'
+  },
+  taglineText: {
+    fontSize: '12px',
+    fontWeight: '800',
+    letterSpacing: '1.5px',
+    color: '#ff4d5a',
+    textTransform: 'uppercase',
+    margin: 0,
+    textShadow: '0 0 14px rgba(230, 57, 70, 0.6)'
+  },
+  aboutSection: {
+    width: '100%',
+    background: 'rgba(18, 18, 18, 0.88)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '20px',
+    overflow: 'hidden',
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(230, 57, 70, 0.08)',
+    boxSizing: 'border-box'
+  },
+  aboutHeader: {
+    padding: '16px 18px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    background: 'linear-gradient(135deg, rgba(32, 8, 10, 0.6) 0%, rgba(18, 18, 18, 0.9) 100%)'
+  },
+  aboutBrandRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  aboutLogoBox: {
+    width: '34px',
+    height: '34px',
+    borderRadius: '9px',
+    background: 'linear-gradient(135deg, #1c1c1c 0%, #2a1114 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 10px rgba(230, 57, 70, 0.3)',
+    overflow: 'hidden'
+  },
+  aboutTitle: {
+    fontSize: '14px',
+    fontWeight: '900',
+    letterSpacing: '1.5px',
+    color: '#e63946',
+    display: 'block',
+    lineHeight: '1.1',
+    textShadow: '0 0 10px rgba(230, 57, 70, 0.4)'
+  },
+  aboutSubtitle: {
+    fontSize: '8px',
+    fontWeight: '800',
+    letterSpacing: '0.8px',
+    color: '#888888',
+    display: 'block'
+  },
+  aboutTabsContainer: {
+    display: 'flex',
+    gap: '6px',
+    padding: '10px 14px',
+    background: 'rgba(0, 0, 0, 0.35)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+    overflowX: 'auto',
+    WebkitOverflowScrolling: 'touch'
+  },
+  aboutTabActive: {
+    padding: '7px 12px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '9px',
+    cursor: 'pointer',
+    fontSize: '11px',
+    fontWeight: '700',
+    whiteSpace: 'nowrap',
+    boxShadow: '0 2px 10px rgba(230, 57, 70, 0.4)',
+    flexShrink: 0
+  },
+  aboutTabInactive: {
+    padding: '7px 12px',
+    background: 'rgba(255, 255, 255, 0.04)',
+    color: '#888888',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
+    borderRadius: '9px',
+    cursor: 'pointer',
+    fontSize: '11px',
+    fontWeight: '600',
+    whiteSpace: 'nowrap',
+    flexShrink: 0
+  },
+  aboutContentBox: {
+    padding: '16px 18px 24px',
+    color: '#d0d0d0',
+    fontSize: '13px'
+  },
+  missionCard: {
+    background: 'linear-gradient(135deg, #20080a 0%, #151112 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.35)',
+    padding: '14px 16px',
+    borderRadius: '12px',
+    marginBottom: '18px',
+    position: 'relative',
+    boxShadow: '0 4px 16px rgba(230, 57, 70, 0.12)'
+  },
+  missionQuoteMark: {
+    position: 'absolute',
+    top: '4px',
+    left: '10px',
+    fontSize: '24px',
+    color: 'rgba(230, 57, 70, 0.3)',
+    fontFamily: 'serif',
+    lineHeight: 1
+  },
+  missionText: {
+    color: '#ffb3b8',
+    fontSize: '13px',
+    fontStyle: 'italic',
+    margin: 0,
+    textAlign: 'center',
+    fontWeight: '600',
+    lineHeight: '1.5'
+  },
+  sectionTitle: {
+    color: '#ffffff',
+    fontSize: '14px',
+    fontWeight: '800',
+    margin: '18px 0 10px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
+  titleAccent: {
+    color: '#e63946',
+    fontWeight: '900'
+  },
+  storyCard: {
+    background: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.06)',
+    padding: '12px 14px',
+    borderRadius: '11px',
+    marginBottom: '14px'
+  },
+  text: {
+    color: '#a0a0a0',
+    fontSize: '12.5px',
+    lineHeight: '1.6',
+    marginBottom: '8px'
+  },
+  featureList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    marginBottom: '18px'
+  },
+  feature: {
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'flex-start',
+    background: 'rgba(255, 255, 255, 0.02)',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    padding: '10px 12px',
+    borderRadius: '10px'
+  },
+  featureIconBox: {
+    width: '30px',
+    height: '30px',
+    borderRadius: '8px',
+    background: 'rgba(230, 57, 70, 0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '15px',
+    flexShrink: 0
+  },
+  featureTitle: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: '12.5px',
+    margin: '0 0 2px 0'
+  },
+  featureDesc: {
+    color: '#888888',
+    fontSize: '11.5px',
+    margin: 0,
+    lineHeight: '1.4'
+  },
+  contactCard: {
+    background: 'linear-gradient(135deg, #181415 0%, #121212 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.25)',
+    padding: '14px',
+    borderRadius: '12px',
+    textAlign: 'center',
+    marginTop: '18px'
+  },
+  contactHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    marginBottom: '4px'
+  },
+  contactTitle: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: '12px',
+    margin: 0
+  },
+  contactEmail: {
+    color: '#e63946',
+    fontSize: '14px',
+    fontWeight: '800',
+    display: 'block',
+    marginBottom: '3px',
+    textDecoration: 'none'
+  },
+  contactDesc: {
+    color: '#777777',
+    fontSize: '11px',
+    margin: 0
+  },
+  userRoleHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    marginBottom: '10px'
+  },
+  steps: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    marginBottom: '14px'
+  },
+  step: {
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'flex-start',
+    background: 'rgba(255, 255, 255, 0.02)',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    padding: '10px 12px',
+    borderRadius: '10px'
+  },
+  stepNum: {
+    width: '24px',
+    height: '24px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#ffffff',
+    fontSize: '11px',
+    fontWeight: '800',
+    flexShrink: 0,
+    boxShadow: '0 2px 8px rgba(230, 57, 70, 0.4)'
+  },
+  stepTitle: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: '12.5px',
+    margin: '0 0 2px 0'
+  },
+  stepDesc: {
+    color: '#888888',
+    fontSize: '11.5px',
+    margin: 0,
+    lineHeight: '1.4'
+  },
+  warningCard: {
+    background: 'rgba(245, 158, 11, 0.1)',
+    border: '1px solid rgba(245, 158, 11, 0.3)',
+    color: '#f59e0b',
+    padding: '10px 12px',
+    borderRadius: '10px',
+    marginBottom: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  termsBox: {
+    background: 'rgba(255, 255, 255, 0.02)',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    padding: '10px 12px',
+    borderRadius: '10px',
+    marginBottom: '12px'
   },
   ambientGlow: {
     position: 'absolute',
