@@ -293,7 +293,23 @@ function DriverDashboard() {
     return () => clearInterval(interval);
   }, [activeRide]);
 
-  const preAcceptRide = async (rideId) => {
+    const startScheduledRide = async (rideId) => {
+    try {
+      const res = await axios.put(
+        `${API}/api/rides/start-scheduled/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActiveRide(res.data);
+      fetchScheduledRides();
+      setMyScheduledRides(prev => prev.filter(r => r._id !== rideId));
+      setMessage('Scheduled ride started! Student has been notified.');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Failed to start ride');
+    }
+  };
+
+const preAcceptRide = async (rideId) => {
     try {
       await axios.put(
         `${API}/api/rides/pre-accept/${rideId}`,
@@ -1180,6 +1196,19 @@ function DriverDashboard() {
                           <div style={styles.scheduledBannerConfirmed}>
                             <span>⏰ Scheduled Time:</span>
                             <b>{new Date(ride.scheduledTime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</b>
+
+                          {ride.student?.phone && (
+                            <div style={{ marginTop: '10px' }}>
+                              <a href={`tel:${ride.student.phone}`} style={styles.callBtn}>
+                                📞 Call Student
+                              </a>
+                            </div>
+                          )}
+                          <button
+                            onClick={() => startScheduledRide(ride._id)}
+                            style={{ ...styles.acceptBtn, marginTop: '8px', width: '100%', justifyContent: 'center' }}>
+                            🚗 Start Now — Begin This Ride
+                          </button>
                           </div>
                         </div>
                       ))}

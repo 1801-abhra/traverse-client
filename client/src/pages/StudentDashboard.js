@@ -273,6 +273,16 @@ function StudentDashboard() {
   const bookRide = async (e) => {
     e.preventDefault();
     if (booking) return;
+        if (isScheduled && scheduledTime) {
+      const scheduled = new Date(scheduledTime);
+      const now = new Date();
+      const hoursDiff = (scheduled - now) / (1000 * 60 * 60);
+      if (hoursDiff > 48) {
+        setMessage('⚠️ Scheduled rides can only be booked up to 48 hours in advance.');
+        setBooking(false);
+        return;
+      }
+    }
     if (!selectedRoute || !selectedVehicle) {
       setMessage('Please select destination and vehicle type');
       return;
@@ -1548,7 +1558,8 @@ function StudentDashboard() {
                     style={styles.dateInput}
                     value={scheduledTime}
                     onChange={e => setScheduledTime(e.target.value)}
-                    min={new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000)).toISOString().slice(0, 16)}
+                    min={new Date(new Date().getTime() + (30 * 60 * 1000)).toISOString().slice(0, 16)}
+                    max={new Date(new Date().getTime() + (48 * 60 * 60 * 1000)).toISOString().slice(0, 16)}
                     required={isScheduled}
                   />
                 </div>
