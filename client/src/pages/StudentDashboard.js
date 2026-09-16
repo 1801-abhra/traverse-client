@@ -171,12 +171,21 @@ function StudentDashboard() {
       showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
       getFullRoute(ride.pickup, ride.dropoff);
     });
-        socket.on('ride:cancelled', ({ rideId }) => {
-      const currentActiveId = activeRideRef.current?._id;
-      if (currentActiveId && rideId && currentActiveId.toString() === rideId.toString()) {
-        setActiveRide(null);
-        setMessage('Ride cancelled.');
-      }
+            socket.on('ride:cancelled', ({ rideId }) => {
+      setSharedRides(prev => prev.filter(r => r._id?.toString() !== rideId?.toString()));
+      // Only clear activeRide if it matches the cancelled ride
+      setActiveRide(prev => {
+        if (prev && rideId && prev._id?.toString() === rideId?.toString()) {
+          setMessage('Your ride was cancelled.');
+          return null;
+        }
+        return prev; // Keep activeRide unchanged if different ride
+      });
+    });
+    socket.on('ride:accepted-by-driver', ({ rideId, driverId }) => {
+      // This ride was accepted by another driver - just ignore on student side
+      // Student's own ride acceptance is handled by ride:accepted event
+      console.log('Another ride accepted:', rideId);
     });
     socket.on('ride:shared-cancelled', ({ message }) => {
       fetchActiveRide();
@@ -442,7 +451,11 @@ function StudentDashboard() {
       }
     } catch (err) {
       console.log('No active ride');
-      if (!completedRide) setActiveRide(null);
+      // Only clear if we are sure there is no active ride
+      // Do not clear if there was a network error
+      if (err.response && err.response.status === 404) {
+        if (!completedRide) setActiveRide(null);
+      }
     } finally {
       setPageLoading(false);
     }
