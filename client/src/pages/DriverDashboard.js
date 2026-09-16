@@ -211,6 +211,12 @@ function DriverDashboard() {
         setScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
       }
     });
+        socket.on('ride:accepted-by-driver', ({ rideId, driverId }) => {
+      // Only remove this specific ride from available lists
+      setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
+      setScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
+      setMyScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
+    });
     socket.on('ride:cancelled', ({ rideId }) => {
       setRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
       setScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));

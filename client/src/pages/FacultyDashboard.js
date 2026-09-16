@@ -288,6 +288,13 @@ function FacultyDashboard() {
                 getRoute(driverCoords, currentTarget);
             }
         });
+                socket.on('ride:cancelled', ({ rideId }) => {
+            const currentActiveId = activeRideRef.current?._id;
+            if (currentActiveId && rideId && currentActiveId.toString() === rideId.toString()) {
+                setActiveRide(null);
+                setMessage('Ride cancelled.');
+            }
+        });
         socket.on('ride:cancelled-by-party', ({ message }) => {
             setActiveRide(null);
             setMessage(message);

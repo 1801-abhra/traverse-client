@@ -171,6 +171,13 @@ function StudentDashboard() {
       showToast(`🚗 ${ride.driver.name} accepted your ride!`, 'accepted');
       getFullRoute(ride.pickup, ride.dropoff);
     });
+        socket.on('ride:cancelled', ({ rideId }) => {
+      const currentActiveId = activeRideRef.current?._id;
+      if (currentActiveId && rideId && currentActiveId.toString() === rideId.toString()) {
+        setActiveRide(null);
+        setMessage('Ride cancelled.');
+      }
+    });
     socket.on('ride:shared-cancelled', ({ message }) => {
       fetchActiveRide();
       showToast(message, 'warning');
