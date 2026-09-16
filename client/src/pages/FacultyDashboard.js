@@ -71,6 +71,8 @@ function calculateDistance(coord1, coord2) {
 
 function FacultyDashboard() {
     const [completedRide, setCompletedRide] = useState(null);
+    const [showReceipt, setShowReceipt] = useState(false);
+    const [receiptRide, setReceiptRide] = useState(null);
     const [selectedPickup, setSelectedPickup] = useState('JUIT Campus, Waknaghat');
     const [toast, setToast] = useState(null);
     const [showAbout, setShowAbout] = useState(false);
@@ -272,6 +274,7 @@ function FacultyDashboard() {
             if (ride.status === 'completed') {
                 setMessage('✅ Ride completed! Please rate your experience.');
                 setCompletedRide(ride);
+                setReceiptRide(ride);
                 showToast('✅ Ride completed! Please rate your experience.', 'success');
                 setDriverLocation(null);
             }
@@ -380,6 +383,8 @@ function FacultyDashboard() {
   const rateRide = async (stars) => {
     try {
       const rideId = activeRide?._id || completedRide?._id;
+      const currentRideObj = activeRide || completedRide;
+      if (currentRideObj) setReceiptRide(currentRideObj);
       if (rideId) {
         await axios.put(
           `${API}/api/rides/rate/${rideId}`,
@@ -538,6 +543,181 @@ function FacultyDashboard() {
                 />
             )}
             {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+
+      {/* RIDE RECEIPT MODAL */}
+      {showReceipt && (
+        <div style={styles.receiptOverlay} onClick={() => { setShowReceipt(false); dismissRating(); }}>
+          <div style={styles.receiptSheet} onClick={(e) => e.stopPropagation()}>
+            <div style={styles.receiptDragBar} />
+            
+            {/* Header */}
+            <div style={styles.receiptHeader}>
+              <div style={styles.receiptHeaderTop}>
+                <div style={styles.receiptLogoBadge}>
+                  <img src="/traverse-3d-taxi.png" alt="Traverse" style={{ width: '24px', height: '24px', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
+                </div>
+                <div>
+                  <span style={styles.receiptTitle}>TRAVERSE RIDE RECEIPT</span>
+                  <span style={styles.receiptSubtitle}>Official Ride Summary</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => { setShowReceipt(false); dismissRating(); }} 
+                style={styles.receiptCloseBtn}
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Fare Display */}
+            {(() => {
+              const r = receiptRide || activeRide || completedRide || {};
+              const fare = r.fare || r.totalFare || 0;
+              const isShared = r.rideType === 'shared';
+              const vehicleTypeStr = r.vehicleType || (r.vehicleDetails ? (r.vehicleDetails.model || r.vehicleDetails.make) : 'Sedan (4+1)');
+              const displayVehicleType = (vehicleTypeStr && (vehicleTypeStr.toLowerCase().includes('suv') || vehicleTypeStr.includes('6+1'))) ? 'SUV (6+1)' : 'Sedan (4+1)';
+              const driver = r.driver || (r.vehicleDetails ? { name: r.driverName, phone: r.driverPhone, vehicleNumber: r.vehicleNumber } : {});
+              const driverName = driver.name || r.driverName || 'Traverse Driver';
+              const vehicleNumber = driver.vehicleNumber || r.vehicleNumber || (driver.vehicleDetails && driver.vehicleDetails.licensePlate) || 'HP-01-XXXX';
+              const carDetails = (driver.vehicleDetails && (driver.vehicleDetails.make || driver.vehicleDetails.model)) 
+                ? `${driver.vehicleDetails.make || ''} ${driver.vehicleDetails.model || ''}`.trim() 
+                : (displayVehicleType);
+              const driverPhone = driver.phone || r.driverPhone || '';
+              const pickup = r.pickupLocation?.address || r.pickupLocation || 'Pickup Point';
+              const dropoff = r.dropoffLocation?.address || r.dropoffLocation || 'Dropoff Point';
+              const rideDate = r.createdAt ? new Date(r.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+              const currentRating = rating || r.rating || (r.feedback && r.feedback.rating) || 5;
+
+              const handleShare = async () => {
+                const shareText = `I just completed a ride with Traverse!\nFrom: ${pickup}\nTo: ${dropoff}\nFare: ₹${fare}\nBook at: https://traverse-unicab.vercel.app`;
+                if (navigator.share) {
+                  try {
+                    await navigator.share({
+                      title: 'Traverse Ride Receipt',
+                      text: shareText,
+                      url: 'https://traverse-unicab.vercel.app'
+                    });
+                  } catch (err) {
+                    if (err.name !== 'AbortError') {
+                      if (navigator.clipboard) {
+                        navigator.clipboard.writeText(shareText);
+                        showToast('Receipt details copied to clipboard!', 'success');
+                      }
+                    }
+                  }
+                } else if (navigator.clipboard) {
+                  navigator.clipboard.writeText(shareText);
+                  showToast('Receipt copied to clipboard!', 'success');
+                } else {
+                  showToast(`From: ${pickup} To: ${dropoff} Fare: ₹${fare}`, 'info');
+                }
+              };
+
+              return (
+                <>
+                  {/* Fare Card */}
+                  <div style={styles.receiptFareCard}>
+                    <span style={styles.receiptFareLabel}>TOTAL FARE PAID</span>
+                    <h2 style={styles.receiptFareAmount}>₹{fare}</h2>
+                    <div style={styles.receiptFareTagsRow}>
+                      <span style={styles.receiptPillGreen}>✓ Completed</span>
+                      <span style={styles.receiptPillRed}>{isShared ? 'Shared Ride' : 'Private Ride'}</span>
+                      <span style={styles.receiptPillDark}>{displayVehicleType}</span>
+                    </div>
+                  </div>
+
+                  {/* Route Card */}
+                  <div style={styles.receiptSectionBox}>
+                    <span style={styles.receiptSectionHeader}>ROUTE DETAILS</span>
+                    <div style={styles.receiptRouteContainer}>
+                      <div style={styles.receiptRouteTimeline}>
+                        <div style={styles.receiptDotPickup} />
+                        <div style={styles.receiptRouteVertical} />
+                        <div style={styles.receiptDotDropoff} />
+                      </div>
+                      <div style={styles.receiptRouteDetails}>
+                        <div>
+                          <span style={styles.receiptTagPickup}>PICKUP</span>
+                          <p style={styles.receiptAddressText}>{pickup}</p>
+                        </div>
+                        <div style={{ marginTop: '12px' }}>
+                          <span style={styles.receiptTagDropoff}>DROPOFF</span>
+                          <p style={styles.receiptAddressText}>{dropoff}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Driver Details Card */}
+                  <div style={styles.receiptSectionBox}>
+                    <span style={styles.receiptSectionHeader}>DRIVER & VEHICLE</span>
+                    <div style={styles.receiptDriverCard}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={styles.receiptDriverAvatar}>🚖</div>
+                          <div>
+                            <h4 style={styles.receiptDriverName}>{driverName}</h4>
+                            <p style={styles.receiptDriverPlate}>
+                              {vehicleNumber} • {carDetails}
+                            </p>
+                            {driverPhone && <p style={styles.receiptDriverPhone}>📞 {driverPhone}</p>}
+                          </div>
+                        </div>
+                        {driverPhone && (
+                          <a href={`tel:${driverPhone}`} style={styles.receiptCallBtn}>
+                            <span>📞</span> Call
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Meta Details Grid */}
+                  <div style={styles.receiptMetaGrid}>
+                    <div style={styles.receiptMetaItem}>
+                      <span style={styles.receiptMetaLabel}>DATE & TIME</span>
+                      <span style={styles.receiptMetaValue}>{rideDate}</span>
+                    </div>
+                    <div style={styles.receiptMetaItem}>
+                      <span style={styles.receiptMetaLabel}>RATING GIVEN</span>
+                      <span style={{ ...styles.receiptMetaValue, color: '#e63946', fontWeight: '700' }}>
+                        {'⭐'.repeat(Math.min(5, Math.max(1, currentRating)))} ({currentRating}/5)
+                      </span>
+                    </div>
+                    <div style={styles.receiptMetaItem}>
+                      <span style={styles.receiptMetaLabel}>RIDE TYPE</span>
+                      <span style={styles.receiptMetaValue}>{isShared ? 'Shared Cab' : 'Private Cab'}</span>
+                    </div>
+                    <div style={styles.receiptMetaItem}>
+                      <span style={styles.receiptMetaLabel}>VEHICLE TYPE</span>
+                      <span style={styles.receiptMetaValue}>{displayVehicleType}</span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div style={styles.receiptActionsRow}>
+                    <button 
+                      onClick={handleShare} 
+                      style={styles.receiptShareBtn}
+                      title="Share Receipt"
+                    >
+                      <span>📤</span> Share Receipt
+                    </button>
+                    <button 
+                      onClick={() => { setShowReceipt(false); dismissRating(); }} 
+                      style={styles.receiptDoneBtn}
+                    >
+                      Done ✓
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
 
             <main style={styles.content}>
                 {message && (
@@ -766,23 +946,33 @@ function FacultyDashboard() {
             {activeRide && activeRide.status === 'completed' && !rated && (
               <div style={styles.ratingBox}>
                 <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '12px' }}>
                   {[1, 2, 3, 4, 5].map(star => (
                     <span key={star} onClick={() => rateRide(star)}
                       style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>⭐</span>
                   ))}
                 </div>
-                <button onClick={dismissRating} style={styles.skipRatingBtn}>
-                  Skip Rating
-                </button>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                  <button onClick={dismissRating} style={styles.skipRatingBtn}>
+                    Skip Rating
+                  </button>
+                  <button onClick={() => { if (activeRide || completedRide) setReceiptRide(activeRide || completedRide); setShowReceipt(true); }} style={styles.viewReceiptBtn}>
+                    🧾 View Receipt
+                  </button>
+                </div>
               </div>
             )}
             {rated && (
               <div style={{ textAlign: 'center', margin: '14px 0', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
                 <p style={{ color: '#10b981', fontWeight: '700', margin: '0 0 8px 0', fontSize: '15px' }}>✅ Rated {rating} stars!</p>
-                <button onClick={dismissRating} style={styles.doneRatingBtn}>
-                  Done ✓
-                </button>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                  <button onClick={dismissRating} style={styles.doneRatingBtn}>
+                    Done ✓
+                  </button>
+                  <button onClick={() => setShowReceipt(true)} style={styles.viewReceiptBtn}>
+                    🧾 View Receipt
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -792,23 +982,33 @@ function FacultyDashboard() {
         {!activeRide && completedRide && !rated && (
           <div style={styles.ratingBox}>
             <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '12px' }}>
               {[1, 2, 3, 4, 5].map(star => (
                 <span key={star} onClick={() => rateRide(star)}
                   style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>⭐</span>
               ))}
             </div>
-            <button onClick={dismissRating} style={styles.skipRatingBtn}>
-              Skip Rating
-            </button>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+              <button onClick={dismissRating} style={styles.skipRatingBtn}>
+                Skip Rating
+              </button>
+              <button onClick={() => { if (completedRide) setReceiptRide(completedRide); setShowReceipt(true); }} style={styles.viewReceiptBtn}>
+                🧾 View Receipt
+              </button>
+            </div>
           </div>
         )}
         {!activeRide && rated && (
           <div style={{ textAlign: 'center', margin: '14px 0', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
             <p style={{ color: '#10b981', fontWeight: '700', margin: '0 0 8px 0', fontSize: '15px' }}>✅ Rated {rating} stars!</p>
-            <button onClick={dismissRating} style={styles.doneRatingBtn}>
-              Done ✓
-            </button>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+              <button onClick={dismissRating} style={styles.doneRatingBtn}>
+                Done ✓
+              </button>
+              <button onClick={() => setShowReceipt(true)} style={styles.viewReceiptBtn}>
+                🧾 View Receipt
+              </button>
+            </div>
           </div>
         )}
         {/* BOOKING INTERFACE */}
@@ -1453,7 +1653,350 @@ const styles = {
         transition: 'all 0.2s ease',
         marginTop: '6px'
     },
-    ratingBox: {
+    viewReceiptBtn: {
+    padding: '8px 16px',
+    background: 'rgba(230, 57, 70, 0.15)',
+    color: '#ff4d5a',
+    border: '1px solid rgba(230, 57, 70, 0.45)',
+    borderRadius: '10px',
+    fontSize: '12px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
+  receiptOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.82)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    zIndex: 1000,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  },
+  receiptSheet: {
+    width: '100%',
+    maxWidth: '480px',
+    maxHeight: '90vh',
+    overflowY: 'auto',
+    background: 'linear-gradient(180deg, #181818 0%, #101010 100%)',
+    borderTopLeftRadius: '24px',
+    borderTopRightRadius: '24px',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    borderBottom: 'none',
+    padding: '16px 20px 32px 20px',
+    boxShadow: '0 -10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(230, 57, 70, 0.15)',
+    animation: 'slideUpSheet 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+    boxSizing: 'border-box'
+  },
+  receiptDragBar: {
+    width: '42px',
+    height: '4px',
+    borderRadius: '4px',
+    background: 'rgba(255, 255, 255, 0.2)',
+    margin: '0 auto 14px auto'
+  },
+  receiptHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px',
+    paddingBottom: '12px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+  },
+  receiptHeaderTop: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  receiptLogoBadge: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '10px',
+    background: 'radial-gradient(circle, rgba(230, 57, 70, 0.25) 0%, rgba(20, 20, 20, 0.9) 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.45)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 12px rgba(230, 57, 70, 0.35)'
+  },
+  receiptTitle: {
+    fontSize: '14px',
+    fontWeight: '900',
+    letterSpacing: '1.2px',
+    color: '#ffffff',
+    display: 'block',
+    lineHeight: '1.2'
+  },
+  receiptSubtitle: {
+    fontSize: '10.5px',
+    color: '#888888',
+    fontWeight: '600',
+    display: 'block'
+  },
+  receiptCloseBtn: {
+    background: 'rgba(255, 255, 255, 0.08)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '50%',
+    width: '28px',
+    height: '28px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '700'
+  },
+  receiptFareCard: {
+    background: 'linear-gradient(135deg, #1f0a0d 0%, #2a0e12 50%, #150608 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    borderRadius: '16px',
+    padding: '18px 16px',
+    textAlign: 'center',
+    boxShadow: '0 8px 24px rgba(230, 57, 70, 0.18)',
+    marginBottom: '16px'
+  },
+  receiptFareLabel: {
+    fontSize: '10px',
+    fontWeight: '800',
+    letterSpacing: '1.2px',
+    color: '#ff8c94',
+    display: 'block',
+    marginBottom: '2px'
+  },
+  receiptFareAmount: {
+    fontSize: '36px',
+    fontWeight: '900',
+    color: '#ffffff',
+    margin: '0 0 10px 0',
+    lineHeight: '1.1',
+    textShadow: '0 0 20px rgba(230, 57, 70, 0.6)'
+  },
+  receiptFareTagsRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '6px',
+    flexWrap: 'wrap'
+  },
+  receiptPillGreen: {
+    fontSize: '10.5px',
+    fontWeight: '800',
+    background: 'rgba(16, 185, 129, 0.15)',
+    color: '#10b981',
+    border: '1px solid rgba(16, 185, 129, 0.4)',
+    padding: '3px 8px',
+    borderRadius: '12px'
+  },
+  receiptPillRed: {
+    fontSize: '10.5px',
+    fontWeight: '800',
+    background: 'rgba(230, 57, 70, 0.15)',
+    color: '#ff4d5a',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    padding: '3px 8px',
+    borderRadius: '12px'
+  },
+  receiptPillDark: {
+    fontSize: '10.5px',
+    fontWeight: '700',
+    background: 'rgba(255, 255, 255, 0.06)',
+    color: '#dddddd',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    padding: '3px 8px',
+    borderRadius: '12px'
+  },
+  receiptDashedLine: {
+    width: '100%',
+    height: '1px',
+    borderBottom: '1px dashed rgba(255, 255, 255, 0.15)',
+    margin: '16px 0'
+  },
+  receiptSectionBox: {
+    marginBottom: '14px'
+  },
+  receiptSectionHeader: {
+    fontSize: '10px',
+    fontWeight: '800',
+    letterSpacing: '1px',
+    color: '#888888',
+    display: 'block',
+    marginBottom: '8px'
+  },
+  receiptRouteContainer: {
+    display: 'flex',
+    gap: '12px',
+    background: 'rgba(0, 0, 0, 0.4)',
+    padding: '12px 14px',
+    borderRadius: '14px',
+    border: '1px solid rgba(255, 255, 255, 0.06)'
+  },
+  receiptRouteTimeline: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: '4px',
+    paddingBottom: '4px'
+  },
+  receiptDotPickup: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    background: '#10b981',
+    boxShadow: '0 0 6px rgba(16, 185, 129, 0.7)'
+  },
+  receiptRouteVertical: {
+    width: '2px',
+    flex: 1,
+    minHeight: '22px',
+    background: 'linear-gradient(to bottom, #10b981 0%, #e63946 100%)',
+    margin: '3px 0'
+  },
+  receiptDotDropoff: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '2px',
+    background: '#e63946',
+    boxShadow: '0 0 6px rgba(230, 57, 70, 0.7)'
+  },
+  receiptRouteDetails: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  receiptTagPickup: {
+    fontSize: '8.5px',
+    fontWeight: '800',
+    color: '#10b981',
+    letterSpacing: '0.8px',
+    display: 'block'
+  },
+  receiptTagDropoff: {
+    fontSize: '8.5px',
+    fontWeight: '800',
+    color: '#e63946',
+    letterSpacing: '0.8px',
+    display: 'block'
+  },
+  receiptAddressText: {
+    color: '#ffffff',
+    fontSize: '13px',
+    fontWeight: '600',
+    margin: '1px 0 0 0'
+  },
+  receiptDriverCard: {
+    background: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    borderRadius: '14px',
+    padding: '12px 14px',
+    marginBottom: '14px'
+  },
+  receiptDriverAvatar: {
+    width: '38px',
+    height: '38px',
+    borderRadius: '50%',
+    background: 'rgba(230, 57, 70, 0.12)',
+    border: '1px solid rgba(230, 57, 70, 0.3)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '18px'
+  },
+  receiptDriverName: {
+    fontSize: '13px',
+    fontWeight: '700',
+    color: '#ffffff',
+    margin: '0 0 2px 0'
+  },
+  receiptDriverPlate: {
+    fontSize: '11px',
+    color: '#999999',
+    margin: 0
+  },
+  receiptDriverPhone: {
+    fontSize: '11px',
+    color: '#10b981',
+    fontWeight: '600',
+    margin: '2px 0 0 0'
+  },
+  receiptCallBtn: {
+    padding: '7px 12px',
+    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    color: '#ffffff',
+    borderRadius: '8px',
+    textDecoration: 'none',
+    fontSize: '12px',
+    fontWeight: '700',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
+  },
+  receiptMetaGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '8px',
+    background: 'rgba(0, 0, 0, 0.3)',
+    padding: '12px',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.05)',
+    marginBottom: '18px'
+  },
+  receiptMetaItem: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  receiptMetaLabel: {
+    fontSize: '9px',
+    color: '#777777',
+    fontWeight: '800',
+    letterSpacing: '0.6px',
+    marginBottom: '2px'
+  },
+  receiptMetaValue: {
+    fontSize: '11.5px',
+    color: '#eeeeee',
+    fontWeight: '600'
+  },
+  receiptActionsRow: {
+    display: 'flex',
+    gap: '10px'
+  },
+  receiptShareBtn: {
+    flex: 1,
+    padding: '12px',
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '800',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
+    boxShadow: '0 4px 16px rgba(230, 57, 70, 0.4)'
+  },
+  receiptDoneBtn: {
+    padding: '12px 20px',
+    background: 'rgba(255, 255, 255, 0.08)',
+    color: '#ffffff',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: '700'
+  },
+  ratingBox: {
         marginTop: '16px',
         padding: '16px',
         background: '#141414',
