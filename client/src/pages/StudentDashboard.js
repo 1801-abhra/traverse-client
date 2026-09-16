@@ -190,6 +190,7 @@ function StudentDashboard() {
       if (ride.status === 'completed') {
         setMessage('✅ Ride completed! Please rate your experience.');
         setCompletedRide(ride);
+        setReceiptRide(ride);
         showToast('✅ Ride completed! Please rate your experience.', 'success');
         setDriverLocation(null);
       }
@@ -487,19 +488,20 @@ function StudentDashboard() {
       setShowCancelPopup(false);
     }
   };
-  const dismissRating = () => {
+    const dismissRating = () => {
     setRated(false);
     setRating(0);
     setActiveRide(null);
     setCompletedRide(null);
+    setShowReceipt(false);
     setMessage('');
   };
 
   const rateRide = async (stars) => {
     try {
-      const rideId = activeRide?._id || completedRide?._id;
-      const currentRideObj = activeRide || completedRide;
+      const currentRideObj = receiptRide || activeRide || completedRide;
       if (currentRideObj) setReceiptRide(currentRideObj);
+      const rideId = currentRideObj?._id;
       if (rideId) {
         await axios.put(
           `${API}/api/rides/rate/${rideId}`,
@@ -509,19 +511,11 @@ function StudentDashboard() {
       }
       setRating(stars);
       setRated(true);
-      setActiveRide(null);
-      setCompletedRide(null);
       showToast(`⭐ Rated ${stars} stars! Thank you.`, 'success');
       setMessage('');
-
-      setTimeout(() => {
-        setRated(false);
-        setRating(0);
-      }, 2500);
     } catch (err) {
       console.log('Rating error:', err);
       showToast('Rating submission failed', 'warning');
-      dismissRating();
     }
   };
 
@@ -668,7 +662,7 @@ function StudentDashboard() {
 
       {/* RIDE RECEIPT MODAL */}
       {showReceipt && (
-        <div style={styles.receiptOverlay} onClick={() => { setShowReceipt(false); dismissRating(); }}>
+        <div style={styles.receiptOverlay} onClick={() => { dismissRating(); }}>
           <div style={styles.receiptSheet} onClick={(e) => e.stopPropagation()}>
             <div style={styles.receiptDragBar} />
             
@@ -684,7 +678,7 @@ function StudentDashboard() {
                 </div>
               </div>
               <button 
-                onClick={() => { setShowReceipt(false); dismissRating(); }} 
+                onClick={() => { dismissRating(); }} 
                 style={styles.receiptCloseBtn}
                 title="Close"
               >
@@ -697,17 +691,19 @@ function StudentDashboard() {
               const r = receiptRide || activeRide || completedRide || {};
               const fare = r.fare || r.totalFare || 0;
               const isShared = r.rideType === 'shared';
-              const vehicleTypeStr = r.vehicleType || (r.vehicleDetails ? (r.vehicleDetails.model || r.vehicleDetails.make) : 'Sedan (4+1)');
-              const displayVehicleType = (vehicleTypeStr && (vehicleTypeStr.toLowerCase().includes('suv') || vehicleTypeStr.includes('6+1'))) ? 'SUV (6+1)' : 'Sedan (4+1)';
-              const driver = r.driver || (r.vehicleDetails ? { name: r.driverName, phone: r.driverPhone, vehicleNumber: r.vehicleNumber } : {});
+              const rawVehicleType = r.vehicleType || (r.vehicleDetails ? (r.vehicleDetails.model || r.vehicleDetails.make) : '') || '';
+              const displayVehicleType = (rawVehicleType.toLowerCase().includes('suv') || rawVehicleType.includes('6+1')) ? 'SUV (6+1)' : 'Sedan (4+1)';
+              const driver = r.driver || (r.vehicleDetails ? { name: r.driverName, phone: r.driverPhone, vehicleNumber: r.vehicleNumber } : {}) || {};
               const driverName = driver.name || r.driverName || 'Traverse Driver';
               const vehicleNumber = driver.vehicleNumber || r.vehicleNumber || (driver.vehicleDetails && driver.vehicleDetails.licensePlate) || 'HP-01-XXXX';
-              const carDetails = (driver.vehicleDetails && (driver.vehicleDetails.make || driver.vehicleDetails.model)) 
-                ? `${driver.vehicleDetails.make || ''} ${driver.vehicleDetails.model || ''}`.trim() 
-                : (displayVehicleType);
+              const carDetails = (driver.carName || driver.carModel) 
+                ? `${driver.carName || ''} ${driver.carModel || ''}`.trim() 
+                : ((driver.vehicleDetails && (driver.vehicleDetails.make || driver.vehicleDetails.model))
+                  ? `${driver.vehicleDetails.make || ''} ${driver.vehicleDetails.model || ''}`.trim()
+                  : displayVehicleType);
               const driverPhone = driver.phone || r.driverPhone || '';
-              const pickup = r.pickupLocation?.address || r.pickupLocation || 'Pickup Point';
-              const dropoff = r.dropoffLocation?.address || r.dropoffLocation || 'Dropoff Point';
+              const pickup = r.pickup || r.pickupLocation?.address || r.pickupLocation || 'Pickup Point';
+              const dropoff = r.dropoff || r.dropoffLocation?.address || r.dropoffLocation || 'Dropoff Point';
               const rideDate = r.createdAt ? new Date(r.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
               const currentRating = rating || r.rating || (r.feedback && r.feedback.rating) || 5;
 
@@ -827,7 +823,7 @@ function StudentDashboard() {
                       <span>📤</span> Share Receipt
                     </button>
                     <button 
-                      onClick={() => { setShowReceipt(false); dismissRating(); }} 
+                      onClick={() => { dismissRating(); }} 
                       style={styles.receiptDoneBtn}
                     >
                       Done ✓
@@ -1110,17 +1106,27 @@ function StudentDashboard() {
                       style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>⭐</span>
                   ))}
                 </div>
-                <button onClick={dismissRating} style={styles.skipRatingBtn}>
-                  Skip Rating
-                </button>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '12px' }}>
+                  <button onClick={dismissRating} style={styles.skipRatingBtn}>
+                    Skip Rating
+                  </button>
+                  <button onClick={() => { if (activeRide || completedRide) setReceiptRide(activeRide || completedRide); setShowReceipt(true); }} style={styles.viewReceiptBtn}>
+                    🧾 View Receipt
+                  </button>
+                </div>
               </div>
             )}
             {rated && (
               <div style={{ textAlign: 'center', margin: '14px 0', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
                 <p style={{ color: '#10b981', fontWeight: '700', margin: '0 0 8px 0', fontSize: '15px' }}>✅ Rated {rating} stars!</p>
-                <button onClick={dismissRating} style={styles.doneRatingBtn}>
-                  Done ✓
-                </button>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '8px' }}>
+                  <button onClick={dismissRating} style={styles.doneRatingBtn}>
+                    Done ✓
+                  </button>
+                  <button onClick={() => { if (activeRide || completedRide) setReceiptRide(activeRide || completedRide); setShowReceipt(true); }} style={styles.viewReceiptBtn}>
+                    🧾 View Receipt
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1136,17 +1142,27 @@ function StudentDashboard() {
                   style={{ fontSize: '32px', cursor: 'pointer', color: star <= rating ? '#e63946' : '#333', transition: 'color 0.2s' }}>⭐</span>
               ))}
             </div>
-            <button onClick={dismissRating} style={styles.skipRatingBtn}>
-              Skip Rating
-            </button>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '12px' }}>
+              <button onClick={dismissRating} style={styles.skipRatingBtn}>
+                Skip Rating
+              </button>
+              <button onClick={() => { if (completedRide) setReceiptRide(completedRide); setShowReceipt(true); }} style={styles.viewReceiptBtn}>
+                🧾 View Receipt
+              </button>
+            </div>
           </div>
         )}
         {!activeRide && rated && (
           <div style={{ textAlign: 'center', margin: '14px 0', padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
             <p style={{ color: '#10b981', fontWeight: '700', margin: '0 0 8px 0', fontSize: '15px' }}>✅ Rated {rating} stars!</p>
-            <button onClick={dismissRating} style={styles.doneRatingBtn}>
-              Done ✓
-            </button>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '8px' }}>
+              <button onClick={dismissRating} style={styles.doneRatingBtn}>
+                Done ✓
+              </button>
+              <button onClick={() => { if (completedRide) setReceiptRide(completedRide); setShowReceipt(true); }} style={styles.viewReceiptBtn}>
+                🧾 View Receipt
+              </button>
+            </div>
           </div>
         )}
         {/* BOOKING INTERFACE */}

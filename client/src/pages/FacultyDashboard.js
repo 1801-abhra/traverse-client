@@ -272,8 +272,9 @@ function FacultyDashboard() {
                 showToast('🚗 Driver is on the way!', 'info');
             }
             if (ride.status === 'completed') {
-                setMessage('✅ Ride completed! Please rate your experience.');
-                setCompletedRide(ride);
+        setMessage('✅ Ride completed! Please rate your experience.');
+        setCompletedRide(ride);
+        setReceiptRide(ride);
                 setReceiptRide(ride);
                 showToast('✅ Ride completed! Please rate your experience.', 'success');
                 setDriverLocation(null);
@@ -372,19 +373,20 @@ function FacultyDashboard() {
         }
     };
 
-    const dismissRating = () => {
+      const dismissRating = () => {
     setRated(false);
     setRating(0);
     setActiveRide(null);
     setCompletedRide(null);
+    setShowReceipt(false);
     setMessage('');
   };
 
   const rateRide = async (stars) => {
     try {
-      const rideId = activeRide?._id || completedRide?._id;
-      const currentRideObj = activeRide || completedRide;
+      const currentRideObj = receiptRide || activeRide || completedRide;
       if (currentRideObj) setReceiptRide(currentRideObj);
+      const rideId = currentRideObj?._id;
       if (rideId) {
         await axios.put(
           `${API}/api/rides/rate/${rideId}`,
@@ -394,19 +396,11 @@ function FacultyDashboard() {
       }
       setRating(stars);
       setRated(true);
-      setActiveRide(null);
-      setCompletedRide(null);
       showToast(`⭐ Rated ${stars} stars! Thank you.`, 'success');
       setMessage('');
-
-      setTimeout(() => {
-        setRated(false);
-        setRating(0);
-      }, 2500);
     } catch (err) {
       console.log('Rating error:', err);
       showToast('Rating submission failed', 'warning');
-      dismissRating();
     }
   };
 
@@ -546,7 +540,7 @@ function FacultyDashboard() {
 
       {/* RIDE RECEIPT MODAL */}
       {showReceipt && (
-        <div style={styles.receiptOverlay} onClick={() => { setShowReceipt(false); dismissRating(); }}>
+        <div style={styles.receiptOverlay} onClick={() => { dismissRating(); }}>
           <div style={styles.receiptSheet} onClick={(e) => e.stopPropagation()}>
             <div style={styles.receiptDragBar} />
             
@@ -562,7 +556,7 @@ function FacultyDashboard() {
                 </div>
               </div>
               <button 
-                onClick={() => { setShowReceipt(false); dismissRating(); }} 
+                onClick={() => { dismissRating(); }} 
                 style={styles.receiptCloseBtn}
                 title="Close"
               >
@@ -575,17 +569,19 @@ function FacultyDashboard() {
               const r = receiptRide || activeRide || completedRide || {};
               const fare = r.fare || r.totalFare || 0;
               const isShared = r.rideType === 'shared';
-              const vehicleTypeStr = r.vehicleType || (r.vehicleDetails ? (r.vehicleDetails.model || r.vehicleDetails.make) : 'Sedan (4+1)');
-              const displayVehicleType = (vehicleTypeStr && (vehicleTypeStr.toLowerCase().includes('suv') || vehicleTypeStr.includes('6+1'))) ? 'SUV (6+1)' : 'Sedan (4+1)';
-              const driver = r.driver || (r.vehicleDetails ? { name: r.driverName, phone: r.driverPhone, vehicleNumber: r.vehicleNumber } : {});
+              const rawVehicleType = r.vehicleType || (r.vehicleDetails ? (r.vehicleDetails.model || r.vehicleDetails.make) : '') || '';
+              const displayVehicleType = (rawVehicleType.toLowerCase().includes('suv') || rawVehicleType.includes('6+1')) ? 'SUV (6+1)' : 'Sedan (4+1)';
+              const driver = r.driver || (r.vehicleDetails ? { name: r.driverName, phone: r.driverPhone, vehicleNumber: r.vehicleNumber } : {}) || {};
               const driverName = driver.name || r.driverName || 'Traverse Driver';
               const vehicleNumber = driver.vehicleNumber || r.vehicleNumber || (driver.vehicleDetails && driver.vehicleDetails.licensePlate) || 'HP-01-XXXX';
-              const carDetails = (driver.vehicleDetails && (driver.vehicleDetails.make || driver.vehicleDetails.model)) 
-                ? `${driver.vehicleDetails.make || ''} ${driver.vehicleDetails.model || ''}`.trim() 
-                : (displayVehicleType);
+              const carDetails = (driver.carName || driver.carModel) 
+                ? `${driver.carName || ''} ${driver.carModel || ''}`.trim() 
+                : ((driver.vehicleDetails && (driver.vehicleDetails.make || driver.vehicleDetails.model))
+                  ? `${driver.vehicleDetails.make || ''} ${driver.vehicleDetails.model || ''}`.trim()
+                  : displayVehicleType);
               const driverPhone = driver.phone || r.driverPhone || '';
-              const pickup = r.pickupLocation?.address || r.pickupLocation || 'Pickup Point';
-              const dropoff = r.dropoffLocation?.address || r.dropoffLocation || 'Dropoff Point';
+              const pickup = r.pickup || r.pickupLocation?.address || r.pickupLocation || 'Pickup Point';
+              const dropoff = r.dropoff || r.dropoffLocation?.address || r.dropoffLocation || 'Dropoff Point';
               const rideDate = r.createdAt ? new Date(r.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
               const currentRating = rating || r.rating || (r.feedback && r.feedback.rating) || 5;
 
@@ -705,7 +701,7 @@ function FacultyDashboard() {
                       <span>📤</span> Share Receipt
                     </button>
                     <button 
-                      onClick={() => { setShowReceipt(false); dismissRating(); }} 
+                      onClick={() => { dismissRating(); }} 
                       style={styles.receiptDoneBtn}
                     >
                       Done ✓
