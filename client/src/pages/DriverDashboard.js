@@ -563,6 +563,9 @@ function DriverDashboard() {
             </span>
           </button>
 
+          <button onClick={() => navigate('/driver-earnings')} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="Driver Earnings">
+            <span>💰</span><span className="nav-text-desktop"> Earnings</span>
+          </button>
           <button onClick={() => navigate('/history')} className="nav-btn-hover nav-btn-mobile" style={styles.navBtn} title="Ride History">
             <span>📋</span><span className="nav-text-desktop"> History</span>
           </button>

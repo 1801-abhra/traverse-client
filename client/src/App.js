@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import FacultyDashboard from './pages/FacultyDashboard';
+import DriverEarnings from './pages/DriverEarnings';
 
 const PrivateRoute = ({ children, role }) => {
   const user = JSON.parse(localStorage.getItem('user'));
