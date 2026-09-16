@@ -12,8 +12,13 @@ import FacultyDashboard from './pages/FacultyDashboard';
 import DriverEarnings from './pages/DriverEarnings';
 
 const PrivateRoute = ({ children, role }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  let user = null;
   const token = localStorage.getItem('token');
+  try {
+    user = JSON.parse(localStorage.getItem('user'));
+  } catch (e) {
+    user = null;
+  }
   if (!user || !token) return <Navigate to='/login' />;
 
   if (role && user.role !== role) {
@@ -25,8 +30,13 @@ const PrivateRoute = ({ children, role }) => {
 };
 
 const AutoRedirect = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  let user = null;
   const token = localStorage.getItem('token');
+  try {
+    user = JSON.parse(localStorage.getItem('user'));
+  } catch (e) {
+    user = null;
+  }
   if (!user || !token) return <Navigate to='/login' />;
   if (user.role === 'faculty') return <Navigate to='/faculty' />;
   if (user.role === 'student') return <Navigate to='/student' />;
@@ -51,6 +61,11 @@ function App() {
             <DriverDashboard />
           </PrivateRoute>
         } />
+        <Route path='/driver-earnings' element={
+          <PrivateRoute role='driver'>
+            <DriverEarnings />
+          </PrivateRoute>
+        } />
         <Route path='/history' element={
           <PrivateRoute>
             <RideHistory />
@@ -64,6 +79,7 @@ function App() {
         <Route path='/admin' element={<AdminDashboard />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/reset-password/:token' element={<ResetPassword />} />
+        <Route path='*' element={<AutoRedirect />} />
       </Routes>
     </Router>
   );

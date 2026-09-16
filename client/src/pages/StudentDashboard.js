@@ -875,7 +875,7 @@ function StudentDashboard() {
                   </div>
                 )}
               </div>
-            )}}
+            )}
 
             {/* Fare Summary */}
             {activeRide.fare > 0 && (

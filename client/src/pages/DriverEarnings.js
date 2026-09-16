@@ -11,7 +11,12 @@ function DriverEarnings() {
   const [filter, setFilter] = useState('all'); // 'all' | 'month' | 'week'
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem('user')) || {};
+  let user = {};
+  try {
+    user = JSON.parse(localStorage.getItem('user')) || {};
+  } catch (e) {
+    user = {};
+  }
   const token = localStorage.getItem('token');
 
   useEffect(() => {
