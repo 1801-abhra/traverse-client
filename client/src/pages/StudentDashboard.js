@@ -1378,7 +1378,7 @@ function StudentDashboard() {
                       }}
                     >
                       <div style={styles.vehicleIcon}>
-                        <svg width="86" height="38" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="76" height="34" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <ellipse cx="60" cy="46" rx="52" ry="3" fill="black" opacity="0.6" />
                           <path d="M12,38 C8,38 6,36 6,32 C6,27 10,25 18,24 L34,22 L48,11 C51,9 56,8 64,8 L84,8 C91,8 96,11 100,16 L108,22 C114,23 118,26 118,30 C118,34 116,38 112,38 C110,38 108,34 103,34 C97,34 94,38 90,38 L42,38 C38,38 35,34 29,34 C24,34 21,38 12,38 Z" fill="url(#sedanGrad)" />
                           <path d="M37,21 L49,12 C52,10 55,9.5 62,9.5 L68,9.5 L68,21 Z" fill="#141c24" stroke="#222" strokeWidth="0.8" />
@@ -1408,9 +1408,9 @@ function StudentDashboard() {
                         </svg>
                       </div>
                       <div style={styles.vehicleInfo}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <p style={styles.vehicleTypeTxt}>Sedan (4+1)</p>
-                          <span style={styles.capacityBadge}>👤 4 seats</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', marginBottom: '2px' }}>
+                          <span style={styles.vehicleTypeTxt}>Sedan (4+1)</span>
+                          <span style={styles.capacityBadge}>👥 4 seats</span>
                         </div>
                         <p style={styles.vehicleSeats}>Sporty & fast campus ride</p>
                       </div>
@@ -1489,8 +1489,8 @@ function StudentDashboard() {
                         </svg>
                       </div>
                       <div style={styles.vehicleInfo}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <p style={styles.vehicleTypeTxt}>SUV (6+1)</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', marginBottom: '2px' }}>
+                          <span style={styles.vehicleTypeTxt}>SUV (6+1)</span>
                           <span style={styles.capacityBadge}>👥 6 seats</span>
                         </div>
                         <p style={styles.vehicleSeats}>Tall & spacious for groups</p>
@@ -2449,12 +2449,12 @@ const styles = {
   vehicleCard: {
     background: 'linear-gradient(145deg, #181818 0%, #121212 100%)',
     border: '1.5px solid #282828',
-    padding: '14px 16px',
+    padding: '12px 14px',
     borderRadius: '14px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: '10px',
     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     position: 'relative'
   },
@@ -2467,24 +2467,32 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '88px',
+    width: '76px',
     flexShrink: 0
   },
   vehicleInfo: {
-    flex: 1
+    flex: 1,
+    minWidth: 0
   },
   vehicleTypeTxt: {
     fontWeight: '800',
     margin: 0,
-    fontSize: '15px',
-    color: '#ffffff'
+    fontSize: '14px',
+    color: '#ffffff',
+    whiteSpace: 'nowrap',
+    letterSpacing: '-0.2px'
   },
   capacityBadge: {
-    fontSize: '11px',
+    fontSize: '10.5px',
     color: '#999999',
-    background: 'rgba(255,255,255,0.06)',
+    background: 'rgba(255, 255, 255, 0.06)',
     padding: '2px 6px',
-    borderRadius: '4px'
+    borderRadius: '4px',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '3px'
   },
   vehicleSeats: {
     color: '#777777',
