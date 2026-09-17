@@ -8,7 +8,7 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCarAnimation, setShowCarAnimation] = useState(true);
-  const [aboutTab, setAboutTab] = useState('about');
+  const [modalContent, setModalContent] = useState(null);
   const animTimerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -59,445 +59,247 @@ function Login() {
     }
   };
 
+  // Content catalog for interactive footer items
+  const openModal = (type) => {
+    switch (type) {
+      case 'about':
+        setModalContent({
+          title: '📖 About Traverse-Unicab',
+          badge: 'CAMPUS MOBILITY',
+          body: (
+            <div>
+              <p style={{ color: '#e0e0e0', lineHeight: '1.6', marginBottom: '14px' }}>
+                <b>Traverse-Unicab</b> is the dedicated student and faculty cab platform built specifically for <b>Jaypee University of Information Technology (JUIT), Waknaghat</b>.
+              </p>
+              <p style={{ color: '#aaa', lineHeight: '1.6', marginBottom: '14px' }}>
+                Traverse connects university students and faculty directly with authorized, background-verified local drivers on hill routes, ensuring fixed transparent fares with zero surge exploitation.
+              </p>
+              <div style={{ background: 'rgba(230, 57, 70, 0.1)', border: '1px solid rgba(230, 57, 70, 0.3)', borderRadius: '10px', padding: '12px 14px', color: '#ffb3b8', fontSize: '13px' }}>
+                🌟 <b>Mission:</b> Reliable, secure, and affordable transportation on mountain terrain for the entire university community.
+              </div>
+            </div>
+          )
+        });
+        break;
+      case 'how_it_works':
+        setModalContent({
+          title: '⚡ How It Works',
+          badge: 'STEP BY STEP',
+          body: (
+            <div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <b style={{ color: '#e63946' }}>1. Select Route & Vehicle:</b>
+                  <p style={{ color: '#bbb', margin: '4px 0 0', fontSize: '13px' }}>Pick from popular campus destinations (Waknaghat, Solan, Shimla, Chandigarh) and choose 4+1 Sedan or 6+1 SUV.</p>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <b style={{ color: '#e63946' }}>2. Smart FIFO Queue Dispatch:</b>
+                  <p style={{ color: '#bbb', margin: '4px 0 0', fontSize: '13px' }}>Ride requests are queued and dispatched fairly to online drivers without overwhelming them.</p>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <b style={{ color: '#e63946' }}>3. Live Ride & Driver Details:</b>
+                  <p style={{ color: '#bbb', margin: '4px 0 0', fontSize: '13px' }}>Get driver phone, vehicle number, model, direct call button, and post-ride digital receipt with ratings.</p>
+                </div>
+              </div>
+            </div>
+          )
+        });
+        break;
+      case 'terms':
+        setModalContent({
+          title: '📜 Terms of Service & Campus Rules',
+          badge: 'POLICY',
+          body: (
+            <div>
+              <ul style={{ color: '#bbb', lineHeight: '1.7', paddingLeft: '20px', margin: 0, fontSize: '13px' }}>
+                <li><b>Eligibility:</b> Registration requires a valid university email (<code>@juitsolan.in</code>).</li>
+                <li><b>Fixed Fares:</b> Fares are predetermined by university destination guidelines without surge pricing.</li>
+                <li><b>5-Strike Fair Cancellation Policy:</b> Repeatedly cancelling after driver acceptance will result in account restriction.</li>
+                <li><b>Driver Verification:</b> Drivers must be authorized by campus dispatch administration.</li>
+              </ul>
+            </div>
+          )
+        });
+        break;
+      case 'cancellation_policy':
+        setModalContent({
+          title: '⚠️ 5-Strike Cancellation Fair Policy',
+          badge: 'SAFETY & DISCIPLINE',
+          body: (
+            <div>
+              <p style={{ color: '#bbb', lineHeight: '1.6', fontSize: '13px', marginBottom: '12px' }}>
+                To protect driver fuel, time, and maintain fair dispatch availability:
+              </p>
+              <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '12px 14px', color: '#fca5a5', fontSize: '13px', lineHeight: '1.6' }}>
+                • Free cancellations while searching for a driver.<br/>
+                • Warning issued after 3 cancellations post-driver acceptance.<br/>
+                • Reaching 5 cancellations triggers automated dispatch suspension pending admin review.
+              </div>
+            </div>
+          )
+        });
+        break;
+      case 'safety':
+        setModalContent({
+          title: '🛡️ Mountain Safety Standards',
+          badge: 'SECURITY',
+          body: (
+            <div>
+              <p style={{ color: '#bbb', lineHeight: '1.6', fontSize: '13px', marginBottom: '12px' }}>
+                Your safety on mountain roads is our highest priority:
+              </p>
+              <ul style={{ color: '#ccc', lineHeight: '1.7', paddingLeft: '20px', margin: 0, fontSize: '13px' }}>
+                <li>100% verified local drivers experienced with Waknaghat & Solan hill terrain.</li>
+                <li>Instant driver direct calling and digital receipt generation.</li>
+                <li>Night travel standards & verified vehicle registrations.</li>
+              </ul>
+            </div>
+          )
+        });
+        break;
+      case 'support':
+        setModalContent({
+          title: '💬 Help & Support Desk',
+          badge: '24/7 ASSISTANCE',
+          body: (
+            <div>
+              <p style={{ color: '#bbb', lineHeight: '1.6', fontSize: '13px', marginBottom: '14px' }}>
+                Need help with your account, a previous ride, or lost items?
+              </p>
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '14px', color: '#fff', fontSize: '13px' }}>
+                <p style={{ margin: '0 0 8px 0' }}>📧 <b>Email:</b> <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', textDecoration: 'none' }}>traverseuni@gmail.com</a></p>
+                <p style={{ margin: '0 0 8px 0' }}>📍 <b>Location:</b> JUIT Campus, Waknaghat, HP - 173234</p>
+                <p style={{ margin: 0 }}>⏱️ <b>Dispatch Support:</b> Active across all campus operating hours</p>
+              </div>
+            </div>
+          )
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div style={styles.pageWrapper}>
       <style>{`
         @keyframes bgGradientMove {
-          0% {
-            background-position: 0% 0%;
-          }
-          50% {
-            background-position: 100% 100%;
-          }
-          100% {
-            background-position: 0% 0%;
-          }
+          0% { background-position: 0% 0%; }
+          50% { background-position: 100% 100%; }
+          100% { background-position: 0% 0%; }
         }
         @keyframes floatTaxi {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-7px) rotate(-3deg);
-          }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-7px) rotate(-3deg); }
         }
         @keyframes slideUpIn {
-          0% {
-            opacity: 0;
-            transform: translateY(32px) scale(0.98);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
+          0% { opacity: 0; transform: translateY(32px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
         }
         @keyframes pulseGlow {
-          0%, 100% {
-            opacity: 0.4;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.7;
-            transform: scale(1.08);
-          }
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.08); }
         }
-        @keyframes driveAcross3D {
-          0% {
-            transform: translateX(-340px) perspective(600px) rotateY(-8deg) rotateX(4deg);
-            opacity: 0;
-          }
-          8% {
-            opacity: 1;
-          }
-          85% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(calc(100vw + 340px)) perspective(600px) rotateY(-3deg) rotateX(2deg);
-            opacity: 0;
-          }
+        @keyframes carDriveAcross {
+          0% { left: -140px; transform: scale(0.75) translateY(0); }
+          50% { transform: scale(0.85) translateY(-3px); }
+          100% { left: 105%; transform: scale(0.75) translateY(0); }
         }
-        @keyframes fadeOutRoadScene {
-          0% {
-            opacity: 1;
-          }
-          75% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-          }
-        }
-        @keyframes wheelSpinAnim {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
+        @keyframes roadDashes {
+          0% { background-position: 0 0; }
+          100% { background-position: -200px 0; }
         }
         .traverse-input:focus {
           border-color: #e63946 !important;
-          box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.25), 0 0 16px rgba(230, 57, 70, 0.4) !important;
-          background: #202020 !important;
-          outline: none !important;
+          box-shadow: 0 0 14px rgba(230, 57, 70, 0.45) !important;
+          background: #242424 !important;
         }
-        .traverse-btn-primary:hover:not(:disabled) {
-          box-shadow: 0 8px 24px rgba(230, 57, 70, 0.6) !important;
-          filter: brightness(1.08);
-        }
-        .traverse-btn-primary:active:not(:disabled) {
-          transform: scale(0.97) translateY(1px) !important;
-          box-shadow: 0 3px 10px rgba(230, 57, 70, 0.4) !important;
+        .traverse-btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(230, 57, 70, 0.6) !important;
         }
         .traverse-btn-outline:hover {
           background: rgba(230, 57, 70, 0.15) !important;
           border-color: #e63946 !important;
-          color: #ffffff !important;
-          transform: translateY(-1px);
         }
-        .traverse-btn-outline:active {
-          transform: scale(0.98);
+        .footer-link-item {
+          color: #8e95a5;
+          text-decoration: none;
+          font-size: 13px;
+          line-height: 1.8;
+          display: block;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          background: none;
+          border: none;
+          padding: 0;
+          text-align: left;
+          font-family: inherit;
+        }
+        .footer-link-item:hover {
+          color: #ffffff;
+          transform: translateX(3px);
+        }
+        .footer-link-item:focus {
+          outline: none;
+        }
+        @media (max-width: 768px) {
+          .footer-grid-container {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 24px 16px !important;
+          }
+          .footer-bottom-bar {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 14px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .footer-grid-container {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 20px 12px !important;
+          }
         }
       `}</style>
 
-      {/* 3D Car Driving Animation Scene (One-time on page load, passes behind login portal card) */}
+      {/* Floating Ambient Light Spots */}
+      <div style={styles.glowSpot1} />
+      <div style={styles.glowSpot2} />
+
+      {/* Car Drive Animation on First Load */}
       {showCarAnimation && (
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: '290px',
-            height: '150px',
-            pointerEvents: 'none',
-            zIndex: 0,
-            overflow: 'hidden',
-            animation: 'fadeOutRoadScene 4.6s ease-out forwards'
-          }}
-        >
-          {/* Glowing Cyber Highway Track passing behind the login card */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '92px',
-              left: '-10%',
-              width: '120%',
-              height: '3px',
-              background: 'linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.3) 15%, #e63946 50%, rgba(230, 57, 70, 0.3) 85%, transparent 100%)',
-              boxShadow: '0 0 16px rgba(230, 57, 70, 0.7), 0 0 32px rgba(230, 57, 70, 0.35)'
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              top: '74px',
-              left: '-10%',
-              width: '120%',
-              height: '24px',
-              background: 'linear-gradient(180deg, rgba(230, 57, 70, 0.06) 0%, rgba(230, 57, 70, 0) 100%)',
-              borderBottom: '1px dashed rgba(230, 57, 70, 0.25)'
-            }}
-          />
-
-          {/* 3D Moving Car Track - crosses behind the login card from left to right */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '36px',
-              left: 0,
-              width: '100%',
-              animation: 'driveAcross3D 3.6s cubic-bezier(0.22, 0.45, 0.35, 0.98) forwards'
-            }}
-          >
-            <div
-              style={{
-                position: 'relative',
-                width: '190px',
-                height: '65px',
-                transformStyle: 'preserve-3d',
-                filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.95))'
-              }}
-            >
-              {/* Blurred Underbody Shadow */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '-10px',
-                  left: '-10px',
-                  width: '210px',
-                  height: '20px',
-                  background: 'rgba(0, 0, 0, 0.8)',
-                  borderRadius: '50%',
-                  filter: 'blur(9px)'
-                }}
-              />
-
-              {/* Headlight Beam Projecting Forward */}
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '-160px',
-                  bottom: '8px',
-                  width: '160px',
-                  height: '42px',
-                  background: 'linear-gradient(90deg, rgba(255, 255, 230, 0.55) 0%, rgba(255, 240, 180, 0.18) 60%, rgba(255, 240, 180, 0) 100%)',
-                  clipPath: 'polygon(0% 40%, 100% 0%, 100% 100%, 0% 60%)',
-                  filter: 'blur(2px)'
-                }}
-              />
-
-              {/* Speed Lines Behind Car */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-120px',
-                  top: '18px',
-                  width: '110px',
-                  height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 75%, transparent 100%)',
-                  borderRadius: '2px',
-                  filter: 'blur(0.5px)'
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-150px',
-                  top: '28px',
-                  width: '140px',
-                  height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(230,57,70,0.6) 80%, transparent 100%)',
-                  borderRadius: '2px',
-                  filter: 'blur(0.5px)'
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-95px',
-                  top: '38px',
-                  width: '85px',
-                  height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 70%, transparent 100%)',
-                  borderRadius: '2px',
-                  filter: 'blur(0.5px)'
-                }}
-              />
-
-              {/* Main 3D Car Body */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: 0,
-                  width: '175px',
-                  height: '34px',
-                  background: 'linear-gradient(180deg, #ff4d5a 0%, #e63946 45%, #9e1522 100%)',
-                  borderRadius: '14px 30px 6px 8px',
-                  boxShadow: 'inset 0 2.5px 5px rgba(255,255,255,0.45), inset 0 -3px 6px rgba(0,0,0,0.55), 0 0 16px rgba(230,57,70,0.4)',
-                  border: '1px solid rgba(255,255,255,0.2)'
-                }}
-              >
-                {/* Subtle Reflection Highlight Stripe */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '2px',
-                    left: '8px',
-                    width: '140px',
-                    height: '4px',
-                    background: 'linear-gradient(90deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 100%)',
-                    borderRadius: '2px'
-                  }}
-                />
-
-                {/* Chrome Side Trim Accent */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '8px',
-                    left: '42px',
-                    width: '80px',
-                    height: '2px',
-                    background: 'linear-gradient(90deg, # silver, #ffffff, #888888)',
-                    boxShadow: '0 0 4px rgba(255,255,255,0.5)'
-                  }}
-                />
-
-                {/* Front Headlight */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '3px',
-                    top: '8px',
-                    width: '9px',
-                    height: '9px',
-                    background: '#ffffff',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 12px #ffffff, 0 0 24px #ffd166, 0 0 35px #e63946'
-                  }}
-                />
-
-                {/* Rear Glowing Taillight */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '0px',
-                    top: '6px',
-                    width: '6px',
-                    height: '12px',
-                    background: '#ff2a3b',
-                    borderRadius: '3px 0 0 3px',
-                    boxShadow: '-4px 0 12px #ff2a3b, -10px 0 24px rgba(255,42,59,0.7)'
-                  }}
-                />
-
-                {/* Front Bumper Air Vent */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '8px',
-                    bottom: '4px',
-                    width: '16px',
-                    height: '5px',
-                    background: '#111111',
-                    borderRadius: '2px',
-                    border: '0.5px solid #333333'
-                  }}
-                />
-              </div>
-
-              {/* 3D Car Cabin & Roof */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-1px',
-                  left: '46px',
-                  width: '78px',
-                  height: '26px',
-                  background: 'linear-gradient(180deg, #b81d2c 0%, #87121e 100%)',
-                  borderRadius: '14px 24px 0 0',
-                  transform: 'perspective(300px) rotateX(6deg) skewX(-11deg)',
-                  boxShadow: 'inset 0 2px 3px rgba(255,255,255,0.35)',
-                  borderTop: '1px solid rgba(255,255,255,0.25)'
-                }}
-              >
-                {/* Windshield */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '-2px',
-                    top: '3px',
-                    width: '24px',
-                    height: '19px',
-                    background: 'rgba(17, 21, 28, 0.85)',
-                    borderRadius: '2px 9px 0 0',
-                    border: '1px solid rgba(255,255,255,0.25)',
-                    backdropFilter: 'blur(2px)',
-                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)'
-                  }}
-                />
-                {/* Side Windows */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '6px',
-                    top: '3px',
-                    width: '46px',
-                    height: '19px',
-                    background: 'rgba(17, 21, 28, 0.85)',
-                    borderRadius: '7px 2px 0 0',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    backdropFilter: 'blur(2px)',
-                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)'
-                  }}
-                />
-              </div>
-
-              {/* Front Wheel */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '2px',
-                  right: '18px',
-                  width: '28px',
-                  height: '28px',
-                  background: 'radial-gradient(circle, #252525 35%, #111111 65%, #000000 100%)',
-                  borderRadius: '50%',
-                  border: '2px solid #2e2e2e',
-                  boxShadow: '0 5px 10px rgba(0,0,0,0.85), inset 0 0 6px rgba(230,57,70,0.5)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2
-                }}
-              >
-                {/* 3D Chrome Rim */}
-                <div
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle, #ffffff 15%, #c0c0c0 50%, #444444 100%)',
-                    border: '1px solid #ffffff',
-                    animation: 'wheelSpinAnim 0.3s linear infinite'
-                  }}
-                />
-              </div>
-
-              {/* Rear Wheel */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '2px',
-                  left: '22px',
-                  width: '28px',
-                  height: '28px',
-                  background: 'radial-gradient(circle, #252525 35%, #111111 65%, #000000 100%)',
-                  borderRadius: '50%',
-                  border: '2px solid #2e2e2e',
-                  boxShadow: '0 5px 10px rgba(0,0,0,0.85), inset 0 0 6px rgba(230,57,70,0.5)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2
-                }}
-              >
-                {/* 3D Chrome Rim */}
-                <div
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle, #ffffff 15%, #c0c0c0 50%, #444444 100%)',
-                    border: '1px solid #ffffff',
-                    animation: 'wheelSpinAnim 0.3s linear infinite'
-                  }}
-                />
-              </div>
-            </div>
+        <div style={styles.carDriveTrack}>
+          <div style={styles.carRoadDash} />
+          <div style={styles.drivingCarWrapper}>
+            <svg width="60" height="28" viewBox="0 0 120 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="60" cy="50" rx="54" ry="3.5" fill="black" opacity="0.6" />
+              <path d="M12,38 C8,38 6,36 6,32 C6,27 10,25 18,24 L34,22 L48,11 C51,9 56,8 64,8 L84,8 C91,8 96,11 100,16 L108,22 C114,23 118,26 118,30 C118,34 116,38 112,38 C110,38 108,34 103,34 C97,34 94,38 90,38 L42,38 C38,38 35,34 29,34 C24,34 21,38 12,38 Z" fill="url(#loginTaxiGrad)" />
+              <circle cx="26" cy="38" r="9" fill="#111111" stroke="#333" strokeWidth="1.5" />
+              <circle cx="26" cy="38" r="6" fill="#e63946" strokeWidth="0.8" />
+              <circle cx="98" cy="38" r="9" fill="#111111" stroke="#333" strokeWidth="1.5" />
+              <circle cx="98" cy="38" r="6" fill="#e63946" strokeWidth="0.8" />
+              <defs>
+                <linearGradient id="loginTaxiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ff4d5a" />
+                  <stop offset="40%" stopColor="#e63946" />
+                  <stop offset="100%" stopColor="#9e1522" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
         </div>
       )}
 
-      {/* Subtle Ambient Red Glow Behind Login Card */}
-      <div style={styles.ambientGlow} />
-
-      {/* Main Login Card Container */}
-      <div style={styles.mobileContainer}>
-        {/* Header with floating Taxi and glow */}
+      {/* Main Content Container */}
+      <div style={styles.contentContainer}>
+        {/* Top Floating Logo & Brand Header */}
         <div style={styles.header}>
           <div style={styles.logoBadge}>
-            <img
-              src="/3d-taxi.webp"
-              alt="Traverse 3D Taxi"
-              style={styles.floatingTaxiImg}
-            />
+            <img src="/3d-taxi.webp" alt="Traverse Logo" style={styles.floatingTaxiImg} />
           </div>
           <h1 style={styles.brandTitle}>TRAVERSE</h1>
           <p style={styles.brandTagline}>
-            University Cab Service <span style={styles.redText}>•</span> JUIT Solan
+            JUIT SOLAN <span style={styles.redText}>•</span> UNIVERSITY CAB NETWORK
           </p>
 
           {/* Feature Badge Pills */}
@@ -598,292 +400,120 @@ function Login() {
         <div style={styles.taglineBanner}>
           <div style={styles.taglineGlowLine} />
           <div style={styles.taglineContent}>
-            <div style={styles.tagline3dCarWrap}><img src="/3d-taxi.webp" alt="3D Taxi" style={styles.tagline3dCarImg} /></div>
+            <div style={styles.tagline3dCarWrap}>
+              <img src="/3d-taxi.webp" alt="3D Taxi" style={styles.tagline3dCarImg} />
+            </div>
             <span style={styles.taglineText}>
               TRAVERSE YOURSELF FROM YOUR PICKUP TO DROP LOCATION
             </span>
           </div>
           <div style={styles.taglineGlowLine} />
         </div>
+      </div>
 
-        {/* Bottom About & Terms & Conditions Section */}
-        <section style={styles.aboutSection}>
-          <div style={styles.aboutHeader}>
-            <div style={styles.aboutBrandRow}>
-              <div style={styles.aboutLogoBox}>
-                <img src="/3d-taxi.webp" alt="Traverse" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '7px' }} />
+      {/* MODERN ENTERPRISE SAAS-STYLE FOOTER (Heroku / GitHub Inspired) */}
+      <footer style={styles.footerWrapper}>
+        <div style={styles.footerInner}>
+          {/* 4-Column Responsive Grid */}
+          <div className="footer-grid-container" style={styles.footerGrid}>
+            {/* Column 1: Products */}
+            <div style={styles.footerCol}>
+              <h4 style={styles.colTitle}>PRODUCTS</h4>
+              <button onClick={() => openModal('how_it_works')} className="footer-link-item">Sedan Cabs (4+1)</button>
+              <button onClick={() => openModal('how_it_works')} className="footer-link-item">SUV Cabs (6+1)</button>
+              <button onClick={() => openModal('how_it_works')} className="footer-link-item">Smart Ride Sharing</button>
+              <button onClick={() => openModal('how_it_works')} className="footer-link-item">48h Advance Booking</button>
+              <button onClick={() => openModal('how_it_works')} className="footer-link-item">Fair Queue Dispatch</button>
+              <button onClick={() => openModal('about')} className="footer-link-item">Fixed Campus Rates</button>
+            </div>
+
+            {/* Column 2: Resources & Routes */}
+            <div style={styles.footerCol}>
+              <h4 style={styles.colTitle}>RESOURCES</h4>
+              <button onClick={() => openModal('about')} className="footer-link-item">JUIT Waknaghat</button>
+              <button onClick={() => openModal('about')} className="footer-link-item">Solan Bus Stands</button>
+              <button onClick={() => openModal('about')} className="footer-link-item">Shimla ISBT Routes</button>
+              <button onClick={() => openModal('about')} className="footer-link-item">Kalka Railway Hub</button>
+              <button onClick={() => openModal('how_it_works')} className="footer-link-item">How Dispatch Works</button>
+              <button onClick={() => openModal('support')} className="footer-link-item">Lost & Found Desk</button>
+            </div>
+
+            {/* Column 3: About & Policies */}
+            <div style={styles.footerCol}>
+              <h4 style={styles.colTitle}>ABOUT</h4>
+              <button onClick={() => openModal('about')} className="footer-link-item">About Traverse</button>
+              <button onClick={() => openModal('terms')} className="footer-link-item">Terms of Service</button>
+              <button onClick={() => openModal('cancellation_policy')} className="footer-link-item">Cancellation Policy</button>
+              <button onClick={() => openModal('safety')} className="footer-link-item">Safety Standards</button>
+              <button onClick={() => openModal('safety')} className="footer-link-item">Driver Guidelines</button>
+              <Link to="/register" className="footer-link-item">Register Account</Link>
+            </div>
+
+            {/* Column 4: Support & Contact */}
+            <div style={styles.footerCol}>
+              <h4 style={styles.colTitle}>SUPPORT</h4>
+              <button onClick={() => openModal('support')} className="footer-link-item">Help Center & FAQs</button>
+              <button onClick={() => openModal('support')} className="footer-link-item">Contact Support</button>
+              <a href="mailto:traverseuni@gmail.com" className="footer-link-item">Email Dispatch</a>
+              <Link to="/admin" className="footer-link-item">Admin Access</Link>
+              <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                <span style={{ color: '#10b981', fontSize: '11px', fontWeight: '600' }}>System Operational</span>
               </div>
-              <span style={styles.aboutTitle}>TRAVERSE UNI CAB</span>
             </div>
           </div>
 
-          {/* Interactive Nav Tabs */}
-          <div style={styles.aboutTabsContainer}>
-            <button
-              onClick={() => setAboutTab('about')}
-              style={aboutTab === 'about' ? styles.aboutTabActive : styles.aboutTabInactive}
-              type="button"
-            >
-              📖 About Us
-            </button>
-            <button
-              onClick={() => setAboutTab('how')}
-              style={aboutTab === 'how' ? styles.aboutTabActive : styles.aboutTabInactive}
-              type="button"
-            >
-              ⚡ How It Works
-            </button>
-            <button
-              onClick={() => setAboutTab('terms')}
-              style={aboutTab === 'terms' ? styles.aboutTabActive : styles.aboutTabInactive}
-              type="button"
-            >
-              📜 Terms & Rules
-            </button>
-            <button
-              onClick={() => setAboutTab('help')}
-              style={aboutTab === 'help' ? styles.aboutTabActive : styles.aboutTabInactive}
-              type="button"
-            >
-              💬 Help & FAQs
-            </button>
+          {/* Sub-Footer Line & Copyright */}
+          <div className="footer-bottom-bar" style={styles.footerBottomBar}>
+            <div style={styles.footerBrandBlock}>
+              <div style={styles.footerLogoWrap}>
+                <img src="/3d-taxi.webp" alt="Traverse" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              <div>
+                <span style={styles.footerBrandName}>TRAVERSE UNICAB</span>
+                <p style={styles.footerCopyright}>
+                  © 2026 Jaypee University of Information Technology. Built for JUIT students & faculty.
+                </p>
+              </div>
+            </div>
+
+            <div style={styles.footerQuickLinks}>
+              <button onClick={() => openModal('terms')} style={styles.footerSubLink}>Terms</button>
+              <span style={{ color: '#444' }}>•</span>
+              <button onClick={() => openModal('safety')} style={styles.footerSubLink}>Privacy</button>
+              <span style={{ color: '#444' }}>•</span>
+              <button onClick={() => openModal('support')} style={styles.footerSubLink}>Contact</button>
+              <span style={{ color: '#444' }}>•</span>
+              <Link to="/admin" style={styles.footerSubLink}>Admin</Link>
+            </div>
           </div>
+        </div>
+      </footer>
 
-          {/* Scrollable Tab Content Container */}
-          <div style={styles.aboutContentBox}>
-            {/* ABOUT TAB */}
-            {aboutTab === 'about' && (
+      {/* Interactive Detail Modal Dialog */}
+      {modalContent && (
+        <div style={styles.modalOverlay} onClick={() => setModalContent(null)}>
+          <div style={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+            <div style={styles.modalHeader}>
               <div>
-                <div style={styles.missionCard}>
-                  <span style={styles.missionQuoteMark}>“</span>
-                  <p style={styles.missionText}>
-                    Safe, Affordable & Direct campus mobility — Connecting JUIT university students with trusted local drivers on mountain roads.
-                  </p>
-                </div>
-
-                <h3 style={styles.sectionTitle}>
-                  <span style={styles.titleAccent}>|</span> Our Story
-                </h3>
-                <div style={styles.storyCard}>
-                  <p style={styles.text}>
-                    Traverse-Unicab was born out of a real problem faced by students in the hill regions of Himachal Pradesh.
-                    Getting a taxi in mountain areas is not just expensive — it's unreliable. Students at JUIT often struggled
-                    to find safe and affordable transport, especially during odd hours.
-                  </p>
-                  <p style={styles.text}>
-                    At the same time, local drivers were frustrated with high commissions charged by commercial aggregators,
-                    leaving them with minimal earnings despite long hours on tough terrain.
-                  </p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>
-                    Traverse bridges this gap — connecting university students and faculty directly with verified local drivers at
-                    fixed student-friendly union rates, with <b>zero commission cuts</b> eating into driver earnings.
-                  </p>
-                </div>
-
-                <h3 style={styles.sectionTitle}>
-                  <span style={styles.titleAccent}>|</span> Why Traverse?
-                </h3>
-                <div style={styles.featureList}>
-                  <div style={styles.feature}>
-                    <div style={styles.featureIconBox}>🔒</div>
-                    <div>
-                      <p style={styles.featureTitle}>Safety First</p>
-                      <p style={styles.featureDesc}>All rides logged in real time. Driver credentials stored. Special focus on student safety.</p>
-                    </div>
-                  </div>
-                  <div style={styles.feature}>
-                    <div style={styles.featureIconBox}>🏷️</div>
-                    <div>
-                      <p style={styles.featureTitle}>Student-Friendly Rates</p>
-                      <p style={styles.featureDesc}>Pre-negotiated fixed rates agreed with the campus taxi union exclusively for JUIT.</p>
-                    </div>
-                  </div>
-                  <div style={styles.feature}>
-                    <div style={styles.featureIconBox}><img src="/3d-taxi.webp" alt="Taxi" style={{ width: '20px', height: '20px', objectFit: 'contain' }} /></div>
-                    <div>
-                      <p style={styles.featureTitle}>Verified Drivers</p>
-                      <p style={styles.featureDesc}>All drivers are registered with verified vehicle numbers and license credentials on record.</p>
-                    </div>
-                  </div>
-                  <div style={styles.feature}>
-                    <div style={styles.featureIconBox}>📡</div>
-                    <div>
-                      <p style={styles.featureTitle}>Live GPS Tracking</p>
-                      <p style={styles.featureDesc}>High-frequency live location sharing, pickup and destination pins, and arrival alerts.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={styles.contactCard}>
-                  <div style={styles.contactHeader}>
-                    <span style={{ fontSize: '18px' }}>✉️</span>
-                    <span style={styles.contactTitle}>Official Support Desk</span>
-                  </div>
-                  <a href="mailto:traverseuni@gmail.com" style={styles.contactEmail}>traverseuni@gmail.com</a>
-                  <p style={styles.contactDesc}>Direct assistance for queries, verification appeals, or general feedback</p>
-                </div>
+                <span style={styles.modalBadge}>{modalContent.badge}</span>
+                <h3 style={styles.modalTitle}>{modalContent.title}</h3>
               </div>
-            )}
-
-            {/* HOW IT WORKS TAB */}
-            {aboutTab === 'how' && (
-              <div>
-                <div style={styles.userRoleHeader}>
-                  <span style={{ fontSize: '16px' }}>🎓</span>
-                  <h3 style={{ ...styles.sectionTitle, margin: 0 }}>For Students & Riders</h3>
-                </div>
-                <div style={styles.steps}>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>1</div>
-                    <div>
-                      <p style={styles.stepTitle}>Register with JUIT Email</p>
-                      <p style={styles.stepDesc}>Sign up using your verified @juitsolan.in email and student ID</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>2</div>
-                    <div>
-                      <p style={styles.stepTitle}>Choose Destination & Vehicle</p>
-                      <p style={styles.stepDesc}>Select destination and vehicle type — Sedan (4+1) or SUV (6+1)</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>3</div>
-                    <div>
-                      <p style={styles.stepTitle}>Instant or Scheduled Booking</p>
-                      <p style={styles.stepDesc}>Book an immediate cab or schedule in advance for trains, flights, or night trips</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>4</div>
-                    <div>
-                      <p style={styles.stepTitle}>Live Driver Tracking</p>
-                      <p style={styles.stepDesc}>Track your driver live on the map as they approach your pickup point</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>5</div>
-                    <div>
-                      <p style={styles.stepTitle}>Rate & Review</p>
-                      <p style={styles.stepDesc}>Leave feedback after trip completion to maintain top service quality</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ ...styles.userRoleHeader, marginTop: '24px' }}>
-                  <img src="/3d-taxi.webp" alt="Driver" style={{ width: '22px', height: '22px', objectFit: 'contain', marginRight: '6px', verticalAlign: 'middle' }} />
-                  <h3 style={{ ...styles.sectionTitle, margin: 0 }}>For Campus Drivers & Captains</h3>
-                </div>
-                <div style={styles.steps}>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>1</div>
-                    <div>
-                      <p style={styles.stepTitle}>Register Vehicle Profile</p>
-                      <p style={styles.stepDesc}>Sign up with your personal email, phone number, vehicle number, and vehicle type</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>2</div>
-                    <div>
-                      <p style={styles.stepTitle}>Admin Approval</p>
-                      <p style={styles.stepDesc}>Traverse administrators verify and activate your driver account</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>3</div>
-                    <div>
-                      <p style={styles.stepTitle}>Go Online</p>
-                      <p style={styles.stepDesc}>Toggle Online to start receiving instant matching requests and scheduled pre-bookings</p>
-                    </div>
-                  </div>
-                  <div style={styles.step}>
-                    <div style={styles.stepNum}>4</div>
-                    <div>
-                      <p style={styles.stepTitle}>Accept & Complete Trips</p>
-                      <p style={styles.stepDesc}>Accept ride dispatches, navigate with live GPS, and collect full fare directly</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TERMS & CONDITIONS TAB */}
-            {aboutTab === 'terms' && (
-              <div>
-                <div style={styles.warningCard}>
-                  <span style={{ fontSize: '18px' }}>⚠️</span>
-                  <span style={{ fontSize: '13px', lineHeight: '1.4' }}>
-                    Traverse is a university community platform. Please review the service terms and cancellation policies.
-                  </span>
-                </div>
-
-                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Eligibility</h3>
-                <div style={styles.termsBox}>
-                  <p style={styles.text}>• Only students and faculty with a valid <b>@juitsolan.in</b> email can register as riders</p>
-                  <p style={styles.text}>• Drivers must provide authentic vehicle registration and license details</p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>• All users must provide genuine contact information</p>
-                </div>
-
-                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Booking & Cancellation Policy</h3>
-                <div style={styles.termsBox}>
-                  <p style={styles.text}>• Students can cancel rides <b>free of charge</b> before a driver accepts</p>
-                  <p style={styles.text}>• Cancelling after driver acceptance counts as a cancellation strike</p>
-                  <p style={styles.text}>• <b>5 cancellations after acceptance = automatic review / account blacklist</b></p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>• Blacklisted users must contact <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', fontWeight: '700' }}>traverseuni@gmail.com</a> to appeal</p>
-                </div>
-
-                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Fixed Pricing & Night Surge</h3>
-                <div style={styles.termsBox}>
-                  <p style={styles.text}>• Standard fares are fixed as per campus taxi union agreements</p>
-                  <p style={styles.text}>• Night surge applies on JUIT ↔ Waknaghat route between <b>9:00 PM - 7:00 AM</b></p>
-                  <p style={styles.text}>• Shared rides automatically split the total fare equally between confirmed passengers</p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>• Scheduled ride fares reflect the selected timing and vehicle type</p>
-                </div>
-
-                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Safety & Privacy</h3>
-                <div style={styles.termsBox}>
-                  <p style={styles.text}>• All rides and live coordinates are logged for passenger security</p>
-                  <p style={styles.text}>• Driver details including phone and vehicle number are shared with riders upon acceptance</p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>• Women's safety is our top priority — drivers are verified university-associated operators</p>
-                </div>
-              </div>
-            )}
-
-            {/* HELP & FAQS TAB */}
-            {aboutTab === 'help' && (
-              <div>
-                <div style={styles.warningCard}>
-                  <span style={{ fontSize: '18px' }}>📬</span>
-                  <span style={{ fontSize: '13px', lineHeight: '1.4' }}>
-                    Verification emails may land in your <b>Spam / Junk</b> folder — please check there first!
-                  </span>
-                </div>
-
-                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Email & Verification</h3>
-                <div style={styles.termsBox}>
-                  <p style={styles.text}>• Verification email not in inbox? Check your <b>Spam/Junk</b> folder</p>
-                  <p style={styles.text}>• Mark our email as <b>"Not Spam"</b> to receive future trip confirmations</p>
-                  <p style={styles.text}>• Verification links expire in 24 hours — request a new link if needed</p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>• Ensure your email is spelled correctly (@juitsolan.in)</p>
-                </div>
-
-                <h3 style={styles.sectionTitle}><span style={styles.titleAccent}>|</span> Account Access & Support</h3>
-                <div style={styles.termsBox}>
-                  <p style={styles.text}>• Students and faculty must use <b>@juitsolan.in</b> institutional email</p>
-                  <p style={styles.text}>• Drivers must use their personal email address</p>
-                  <p style={{ ...styles.text, marginBottom: 0 }}>• For password reset or account recovery, contact <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', fontWeight: '700' }}>traverseuni@gmail.com</a></p>
-                </div>
-
-                <div style={styles.contactCard}>
-                  <p style={styles.contactTitle}>📞 Need Urgent Assistance?</p>
-                  <a href="mailto:traverseuni@gmail.com" style={styles.contactEmail}>traverseuni@gmail.com</a>
-                  <p style={styles.contactDesc}>We respond promptly to student and driver inquiries</p>
-                </div>
-              </div>
-            )}
+              <button onClick={() => setModalContent(null)} style={styles.modalCloseBtn} title="Close">
+                ✕
+              </button>
+            </div>
+            <div style={styles.modalBody}>
+              {modalContent.body}
+            </div>
+            <div style={styles.modalFooter}>
+              <button onClick={() => setModalContent(null)} style={styles.modalDoneBtn}>
+                Close
+              </button>
+            </div>
           </div>
-        </section>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -891,378 +521,76 @@ function Login() {
 const styles = {
   pageWrapper: {
     minHeight: '100vh',
-    width: '100%',
-    backgroundColor: '#0a0a0a',
+    background: '#0a0a0a',
     backgroundImage: `
-      radial-gradient(circle at 50% 15%, rgba(230, 57, 70, 0.28) 0%, rgba(18, 5, 8, 0.85) 45%, #0a0a0a 85%),
-      linear-gradient(135deg, rgba(230, 57, 70, 0.08) 0%, transparent 50%, rgba(230, 57, 70, 0.08) 100%)
+      radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.18) 0%, rgba(10, 10, 10, 0.95) 45%, #080808 100%),
+      linear-gradient(180deg, #0e0507 0%, #0a0a0a 100%)
     `,
-    backgroundSize: '200% 200%',
-    animation: 'bgGradientMove 14s ease infinite',
+    backgroundSize: '100% 100%',
     color: '#ffffff',
     fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: '24px 16px 60px 16px',
-    boxSizing: 'border-box',
     position: 'relative',
     overflowX: 'hidden'
   },
-  tagline3dCarWrap: {
-    width: '32px',
-    height: '32px',
-    borderRadius: '9px',
-    background: 'radial-gradient(circle, rgba(230, 57, 70, 0.3) 0%, rgba(25, 12, 14, 0.9) 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.5)',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 0 12px rgba(230, 57, 70, 0.4)',
-    flexShrink: 0,
-    marginRight: '8px'
-  },
-  tagline3dCarImg: {
-    width: '26px',
-    height: '26px',
-    objectFit: 'contain',
-    filter: 'drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6))'
-  },
-  taglineBanner: {
-    margin: '36px 0 24px 0',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '10px',
-    textAlign: 'center'
-  },
-  taglineGlowLine: {
-    width: '100%',
-    height: '1.5px',
-    background: 'linear-gradient(90deg, transparent 0%, #e63946 50%, transparent 100%)',
-    opacity: 0.7,
-    boxShadow: '0 0 10px rgba(230, 57, 70, 0.5)'
-  },
-  taglineContent: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px',
-    padding: '4px 8px'
-  },
-  taglineText: {
-    fontSize: '12px',
-    fontWeight: '900',
-    letterSpacing: '1.8px',
-    color: '#ffffff',
-    textTransform: 'uppercase',
-    margin: 0,
-    textShadow: '0 0 16px rgba(230, 57, 70, 0.85), 0 0 32px rgba(230, 57, 70, 0.45)'
-  },
-  aboutSection: {
-    width: '100%',
-    background: 'rgba(18, 18, 18, 0.88)',
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '20px',
-    overflow: 'hidden',
-    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(230, 57, 70, 0.08)',
-    boxSizing: 'border-box'
-  },
-  aboutHeader: {
-    padding: '16px 18px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-    background: 'linear-gradient(135deg, rgba(32, 8, 10, 0.6) 0%, rgba(18, 18, 18, 0.9) 100%)'
-  },
-  aboutBrandRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '10px'
-  },
-  aboutLogoBox: {
-    width: '34px',
-    height: '34px',
-    borderRadius: '9px',
-    background: 'linear-gradient(135deg, #1c1c1c 0%, #2a1114 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.4)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 0 10px rgba(230, 57, 70, 0.3)',
-    overflow: 'hidden'
-  },
-  aboutTitle: {
-    fontSize: '15px',
-    fontWeight: '900',
-    letterSpacing: '1.8px',
-    color: '#e63946',
-    display: 'block',
-    lineHeight: '1.1',
-    textShadow: '0 0 12px rgba(230, 57, 70, 0.45)',
-    textAlign: 'center'
-  },
-  aboutSubtitle: {
-    fontSize: '8px',
-    fontWeight: '800',
-    letterSpacing: '0.8px',
-    color: '#888888',
-    display: 'block'
-  },
-  aboutTabsContainer: {
-    display: 'flex',
-    gap: '6px',
-    padding: '10px 14px',
-    background: 'rgba(0, 0, 0, 0.35)',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-    overflowX: 'auto',
-    WebkitOverflowScrolling: 'touch'
-  },
-  aboutTabActive: {
-    padding: '7px 12px',
-    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
-    color: '#ffffff',
-    border: 'none',
-    borderRadius: '9px',
-    cursor: 'pointer',
-    fontSize: '11px',
-    fontWeight: '700',
-    whiteSpace: 'nowrap',
-    boxShadow: '0 2px 10px rgba(230, 57, 70, 0.4)',
-    flexShrink: 0
-  },
-  aboutTabInactive: {
-    padding: '7px 12px',
-    background: 'rgba(255, 255, 255, 0.04)',
-    color: '#888888',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    borderRadius: '9px',
-    cursor: 'pointer',
-    fontSize: '11px',
-    fontWeight: '600',
-    whiteSpace: 'nowrap',
-    flexShrink: 0
-  },
-  aboutContentBox: {
-    padding: '16px 18px 24px',
-    color: '#d0d0d0',
-    fontSize: '13px'
-  },
-  missionCard: {
-    background: 'linear-gradient(135deg, #20080a 0%, #151112 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.35)',
-    padding: '14px 16px',
-    borderRadius: '12px',
-    marginBottom: '18px',
-    position: 'relative',
-    boxShadow: '0 4px 16px rgba(230, 57, 70, 0.12)'
-  },
-  missionQuoteMark: {
+  glowSpot1: {
     position: 'absolute',
-    top: '4px',
-    left: '10px',
-    fontSize: '24px',
-    color: 'rgba(230, 57, 70, 0.3)',
-    fontFamily: 'serif',
-    lineHeight: 1
-  },
-  missionText: {
-    color: '#ffb3b8',
-    fontSize: '13px',
-    fontStyle: 'italic',
-    margin: 0,
-    textAlign: 'center',
-    fontWeight: '600',
-    lineHeight: '1.5'
-  },
-  sectionTitle: {
-    color: '#ffffff',
-    fontSize: '14px',
-    fontWeight: '800',
-    margin: '18px 0 10px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px'
-  },
-  titleAccent: {
-    color: '#e63946',
-    fontWeight: '900'
-  },
-  storyCard: {
-    background: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    padding: '12px 14px',
-    borderRadius: '11px',
-    marginBottom: '14px'
-  },
-  text: {
-    color: '#a0a0a0',
-    fontSize: '12.5px',
-    lineHeight: '1.6',
-    marginBottom: '8px'
-  },
-  featureList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    marginBottom: '18px'
-  },
-  feature: {
-    display: 'flex',
-    gap: '10px',
-    alignItems: 'flex-start',
-    background: 'rgba(255, 255, 255, 0.02)',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    padding: '10px 12px',
-    borderRadius: '10px'
-  },
-  featureIconBox: {
-    width: '30px',
-    height: '30px',
-    borderRadius: '8px',
-    background: 'rgba(230, 57, 70, 0.1)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '15px',
-    flexShrink: 0
-  },
-  featureTitle: {
-    color: '#ffffff',
-    fontWeight: '700',
-    fontSize: '12.5px',
-    margin: '0 0 2px 0'
-  },
-  featureDesc: {
-    color: '#888888',
-    fontSize: '11.5px',
-    margin: 0,
-    lineHeight: '1.4'
-  },
-  contactCard: {
-    background: 'linear-gradient(135deg, #181415 0%, #121212 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.25)',
-    padding: '14px',
-    borderRadius: '12px',
-    textAlign: 'center',
-    marginTop: '18px'
-  },
-  contactHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px',
-    marginBottom: '4px'
-  },
-  contactTitle: {
-    color: '#ffffff',
-    fontWeight: '700',
-    fontSize: '12px',
-    margin: 0
-  },
-  contactEmail: {
-    color: '#e63946',
-    fontSize: '14px',
-    fontWeight: '800',
-    display: 'block',
-    marginBottom: '3px',
-    textDecoration: 'none'
-  },
-  contactDesc: {
-    color: '#777777',
-    fontSize: '11px',
-    margin: 0
-  },
-  userRoleHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    marginBottom: '10px'
-  },
-  steps: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    marginBottom: '14px'
-  },
-  step: {
-    display: 'flex',
-    gap: '10px',
-    alignItems: 'flex-start',
-    background: 'rgba(255, 255, 255, 0.02)',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    padding: '10px 12px',
-    borderRadius: '10px'
-  },
-  stepNum: {
-    width: '24px',
-    height: '24px',
-    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#ffffff',
-    fontSize: '11px',
-    fontWeight: '800',
-    flexShrink: 0,
-    boxShadow: '0 2px 8px rgba(230, 57, 70, 0.4)'
-  },
-  stepTitle: {
-    color: '#ffffff',
-    fontWeight: '700',
-    fontSize: '12.5px',
-    margin: '0 0 2px 0'
-  },
-  stepDesc: {
-    color: '#888888',
-    fontSize: '11.5px',
-    margin: 0,
-    lineHeight: '1.4'
-  },
-  warningCard: {
-    background: 'rgba(245, 158, 11, 0.1)',
-    border: '1px solid rgba(245, 158, 11, 0.3)',
-    color: '#f59e0b',
-    padding: '10px 12px',
-    borderRadius: '10px',
-    marginBottom: '14px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px'
-  },
-  termsBox: {
-    background: 'rgba(255, 255, 255, 0.02)',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    padding: '10px 12px',
-    borderRadius: '10px',
-    marginBottom: '12px'
-  },
-  ambientGlow: {
-    position: 'absolute',
-    top: '5%',
+    top: '-80px',
     left: '50%',
     transform: 'translateX(-50%)',
-    width: '320px',
-    height: '240px',
-    background: 'radial-gradient(ellipse, rgba(230, 57, 70, 0.35) 0%, rgba(230, 57, 70, 0) 70%)',
-    filter: 'blur(50px)',
+    width: '450px',
+    height: '250px',
+    background: 'radial-gradient(circle, rgba(230, 57, 70, 0.28) 0%, rgba(0, 0, 0, 0) 70%)',
     pointerEvents: 'none',
     zIndex: 0,
-    animation: 'pulseGlow 6s ease-in-out infinite'
+    animation: 'pulseGlow 4s ease-in-out infinite'
   },
-  mobileContainer: {
+  glowSpot2: {
+    position: 'absolute',
+    bottom: '80px',
+    right: '-100px',
+    width: '400px',
+    height: '400px',
+    background: 'radial-gradient(circle, rgba(230, 57, 70, 0.12) 0%, rgba(0, 0, 0, 0) 70%)',
+    pointerEvents: 'none',
+    zIndex: 0
+  },
+  carDriveTrack: {
+    position: 'fixed',
+    top: '14px',
+    left: 0,
     width: '100%',
-    maxWidth: '420px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
+    height: '40px',
+    pointerEvents: 'none',
+    zIndex: 99,
+    overflow: 'hidden'
+  },
+  carRoadDash: {
+    position: 'absolute',
+    bottom: '2px',
+    left: 0,
+    width: '100%',
+    height: '2px',
+    backgroundImage: 'linear-gradient(to right, rgba(230, 57, 70, 0.6) 50%, rgba(0, 0, 0, 0) 0%)',
+    backgroundSize: '24px 2px',
+    animation: 'roadDashes 0.6s linear infinite'
+  },
+  drivingCarWrapper: {
+    position: 'absolute',
+    bottom: '4px',
+    animation: 'carDriveAcross 4.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards'
+  },
+  contentContainer: {
+    width: '100%',
+    maxWidth: '440px',
+    padding: '30px 16px 20px',
+    boxSizing: 'border-box',
     position: 'relative',
     zIndex: 1,
-    margin: '0 auto'
+    margin: '0 auto',
+    flex: '1 0 auto'
   },
   header: {
     textAlign: 'center',
@@ -1369,12 +697,6 @@ const styles = {
   },
   errorText: {
     wordBreak: 'break-word'
-  },
-  errorLink: {
-    color: '#e63946',
-    fontSize: '13px',
-    textDecoration: 'none',
-    fontWeight: '600'
   },
   verifyBtn: {
     display: 'block',
@@ -1506,6 +828,225 @@ const styles = {
     color: '#e63946',
     textDecoration: 'none',
     fontWeight: '600'
+  },
+  taglineBanner: {
+    marginTop: '28px',
+    marginBottom: '20px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  taglineGlowLine: {
+    width: '90%',
+    height: '1px',
+    background: 'linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.6) 50%, transparent 100%)'
+  },
+  taglineContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    padding: '4px 0'
+  },
+  tagline3dCarWrap: {
+    width: '28px',
+    height: '28px',
+    borderRadius: '7px',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    background: 'rgba(230, 57, 70, 0.1)'
+  },
+  tagline3dCarImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
+  },
+  taglineText: {
+    fontSize: '11px',
+    fontWeight: '800',
+    color: '#fca5a5',
+    letterSpacing: '1px',
+    textShadow: '0 0 12px rgba(230, 57, 70, 0.5)'
+  },
+
+  /* ENTERPRISE FOOTER STYLES */
+  footerWrapper: {
+    width: '100%',
+    background: 'linear-gradient(180deg, rgba(14, 14, 16, 0.95) 0%, #070709 100%)',
+    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: '0 -10px 30px rgba(0,0,0,0.6)',
+    padding: '40px 20px 24px',
+    boxSizing: 'border-box',
+    marginTop: 'auto',
+    zIndex: 2
+  },
+  footerInner: {
+    maxWidth: '1000px',
+    margin: '0 auto',
+    width: '100%'
+  },
+  footerGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '32px 24px',
+    marginBottom: '36px'
+  },
+  footerCol: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+  colTitle: {
+    fontSize: '11px',
+    fontWeight: '800',
+    letterSpacing: '1.4px',
+    color: '#e63946',
+    margin: '0 0 10px 0',
+    textTransform: 'uppercase'
+  },
+  footerBottomBar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: '20px',
+    borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+    flexWrap: 'wrap',
+    gap: '16px'
+  },
+  footerBrandBlock: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px'
+  },
+  footerLogoWrap: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    border: '1px solid rgba(230, 57, 70, 0.4)',
+    background: '#181818',
+    flexShrink: 0
+  },
+  footerBrandName: {
+    fontSize: '13px',
+    fontWeight: '800',
+    letterSpacing: '1px',
+    color: '#ffffff',
+    display: 'block'
+  },
+  footerCopyright: {
+    fontSize: '11px',
+    color: '#666666',
+    margin: '2px 0 0 0'
+  },
+  footerQuickLinks: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  footerSubLink: {
+    background: 'none',
+    border: 'none',
+    color: '#8e95a5',
+    fontSize: '12px',
+    cursor: 'pointer',
+    padding: 0,
+    textDecoration: 'none',
+    transition: 'color 0.2s',
+    fontFamily: 'inherit'
+  },
+
+  /* MODAL STYLES */
+  modalOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0, 0, 0, 0.82)',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '16px',
+    zIndex: 1000
+  },
+  modalCard: {
+    background: 'linear-gradient(165deg, #18181c 0%, #0d0d10 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.35)',
+    borderRadius: '16px',
+    maxWidth: '520px',
+    width: '100%',
+    maxHeight: '85vh',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(230, 57, 70, 0.15)',
+    overflow: 'hidden',
+    animation: 'slideUpIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+  },
+  modalHeader: {
+    padding: '18px 20px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    background: 'rgba(230, 57, 70, 0.06)'
+  },
+  modalBadge: {
+    fontSize: '9px',
+    fontWeight: '800',
+    letterSpacing: '1px',
+    color: '#e63946',
+    textTransform: 'uppercase',
+    display: 'block',
+    marginBottom: '2px'
+  },
+  modalTitle: {
+    margin: 0,
+    fontSize: '17px',
+    fontWeight: '700',
+    color: '#ffffff'
+  },
+  modalCloseBtn: {
+    background: 'rgba(255, 255, 255, 0.06)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#bbb',
+    borderRadius: '50%',
+    width: '28px',
+    height: '28px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px'
+  },
+  modalBody: {
+    padding: '20px',
+    overflowY: 'auto',
+    color: '#d0d0d0',
+    fontSize: '13px'
+  },
+  modalFooter: {
+    padding: '12px 20px',
+    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    background: 'rgba(0, 0, 0, 0.2)'
+  },
+  modalDoneBtn: {
+    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
+    color: 'white',
+    border: 'none',
+    padding: '8px 18px',
+    borderRadius: '8px',
+    fontWeight: '600',
+    fontSize: '13px',
+    cursor: 'pointer'
   }
 };
 
