@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-function AboutModal({ onClose }) {
-    const [activeTab, setActiveTab] = useState('about');
+function AboutModal({ onClose, initialTab = "about" }) {
+    const [activeTab, setActiveTab] = useState(initialTab);
 
     return (
         <div style={styles.overlay} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>

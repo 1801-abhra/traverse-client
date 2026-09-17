@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import AboutModal from '../components/AboutModal';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -8,7 +9,8 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCarAnimation, setShowCarAnimation] = useState(true);
-  const [modalContent, setModalContent] = useState(null);
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  const [aboutModalTab, setAboutModalTab] = useState('about');
   const animTimerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -59,125 +61,9 @@ function Login() {
     }
   };
 
-  // Content catalog for interactive footer items
-  const openModal = (type) => {
-    switch (type) {
-      case 'about':
-        setModalContent({
-          title: '📖 About Traverse-Unicab',
-          badge: 'CAMPUS MOBILITY',
-          body: (
-            <div>
-              <p style={{ color: '#e0e0e0', lineHeight: '1.6', marginBottom: '14px' }}>
-                <b>Traverse-Unicab</b> is the dedicated student and faculty cab platform built specifically for <b>Jaypee University of Information Technology (JUIT), Waknaghat</b>.
-              </p>
-              <p style={{ color: '#aaa', lineHeight: '1.6', marginBottom: '14px' }}>
-                Traverse connects university students and faculty directly with authorized, background-verified local drivers on hill routes, ensuring fixed transparent fares with zero surge exploitation.
-              </p>
-              <div style={{ background: 'rgba(230, 57, 70, 0.1)', border: '1px solid rgba(230, 57, 70, 0.3)', borderRadius: '10px', padding: '12px 14px', color: '#ffb3b8', fontSize: '13px' }}>
-                🌟 <b>Mission:</b> Reliable, secure, and affordable transportation on mountain terrain for the entire university community.
-              </div>
-            </div>
-          )
-        });
-        break;
-      case 'how_it_works':
-        setModalContent({
-          title: '⚡ How It Works',
-          badge: 'STEP BY STEP',
-          body: (
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <b style={{ color: '#e63946' }}>1. Select Route & Vehicle:</b>
-                  <p style={{ color: '#bbb', margin: '4px 0 0', fontSize: '13px' }}>Pick from popular campus destinations (Waknaghat, Solan, Shimla, Chandigarh) and choose 4+1 Sedan or 6+1 SUV.</p>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <b style={{ color: '#e63946' }}>2. Smart FIFO Queue Dispatch:</b>
-                  <p style={{ color: '#bbb', margin: '4px 0 0', fontSize: '13px' }}>Ride requests are queued and dispatched fairly to online drivers without overwhelming them.</p>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <b style={{ color: '#e63946' }}>3. Live Ride & Driver Details:</b>
-                  <p style={{ color: '#bbb', margin: '4px 0 0', fontSize: '13px' }}>Get driver phone, vehicle number, model, direct call button, and post-ride digital receipt with ratings.</p>
-                </div>
-              </div>
-            </div>
-          )
-        });
-        break;
-      case 'terms':
-        setModalContent({
-          title: '📜 Terms of Service & Campus Rules',
-          badge: 'POLICY',
-          body: (
-            <div>
-              <ul style={{ color: '#bbb', lineHeight: '1.7', paddingLeft: '20px', margin: 0, fontSize: '13px' }}>
-                <li><b>Eligibility:</b> Registration requires a valid university email (<code>@juitsolan.in</code>).</li>
-                <li><b>Fixed Fares:</b> Fares are predetermined by university destination guidelines without surge pricing.</li>
-                <li><b>5-Strike Fair Cancellation Policy:</b> Repeatedly cancelling after driver acceptance will result in account restriction.</li>
-                <li><b>Driver Verification:</b> Drivers must be authorized by campus dispatch administration.</li>
-              </ul>
-            </div>
-          )
-        });
-        break;
-      case 'cancellation_policy':
-        setModalContent({
-          title: '⚠️ 5-Strike Cancellation Fair Policy',
-          badge: 'SAFETY & DISCIPLINE',
-          body: (
-            <div>
-              <p style={{ color: '#bbb', lineHeight: '1.6', fontSize: '13px', marginBottom: '12px' }}>
-                To protect driver fuel, time, and maintain fair dispatch availability:
-              </p>
-              <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '10px', padding: '12px 14px', color: '#fca5a5', fontSize: '13px', lineHeight: '1.6' }}>
-                • Free cancellations while searching for a driver.<br/>
-                • Warning issued after 3 cancellations post-driver acceptance.<br/>
-                • Reaching 5 cancellations triggers automated dispatch suspension pending admin review.
-              </div>
-            </div>
-          )
-        });
-        break;
-      case 'safety':
-        setModalContent({
-          title: '🛡️ Mountain Safety Standards',
-          badge: 'SECURITY',
-          body: (
-            <div>
-              <p style={{ color: '#bbb', lineHeight: '1.6', fontSize: '13px', marginBottom: '12px' }}>
-                Your safety on mountain roads is our highest priority:
-              </p>
-              <ul style={{ color: '#ccc', lineHeight: '1.7', paddingLeft: '20px', margin: 0, fontSize: '13px' }}>
-                <li>100% verified local drivers experienced with Waknaghat & Solan hill terrain.</li>
-                <li>Instant driver direct calling and digital receipt generation.</li>
-                <li>Night travel standards & verified vehicle registrations.</li>
-              </ul>
-            </div>
-          )
-        });
-        break;
-      case 'support':
-        setModalContent({
-          title: '💬 Help & Support Desk',
-          badge: '24/7 ASSISTANCE',
-          body: (
-            <div>
-              <p style={{ color: '#bbb', lineHeight: '1.6', fontSize: '13px', marginBottom: '14px' }}>
-                Need help with your account, a previous ride, or lost items?
-              </p>
-              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '14px', color: '#fff', fontSize: '13px' }}>
-                <p style={{ margin: '0 0 8px 0' }}>📧 <b>Email:</b> <a href="mailto:traverseuni@gmail.com" style={{ color: '#e63946', textDecoration: 'none' }}>traverseuni@gmail.com</a></p>
-                <p style={{ margin: '0 0 8px 0' }}>📍 <b>Location:</b> JUIT Campus, Waknaghat, HP - 173234</p>
-                <p style={{ margin: 0 }}>⏱️ <b>Dispatch Support:</b> Active across all campus operating hours</p>
-              </div>
-            </div>
-          )
-        });
-        break;
-      default:
-        break;
-    }
+  const openAbout = (tabName) => {
+    setAboutModalTab(tabName);
+    setShowAboutModal(true);
   };
 
   return (
@@ -200,27 +86,53 @@ function Login() {
           0%, 100% { opacity: 0.4; transform: scale(1); }
           50% { opacity: 0.7; transform: scale(1.08); }
         }
-        @keyframes carDriveAcross {
-          0% { left: -140px; transform: scale(0.75) translateY(0); }
-          50% { transform: scale(0.85) translateY(-3px); }
-          100% { left: 105%; transform: scale(0.75) translateY(0); }
+        @keyframes driveAcross3D {
+          0% {
+            transform: translateX(-340px) perspective(600px) rotateY(-8deg) rotateX(4deg);
+            opacity: 0;
+          }
+          8% {
+            opacity: 1;
+          }
+          85% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(calc(100vw + 340px)) perspective(600px) rotateY(-3deg) rotateX(2deg);
+            opacity: 0;
+          }
         }
-        @keyframes roadDashes {
-          0% { background-position: 0 0; }
-          100% { background-position: -200px 0; }
+        @keyframes fadeOutRoadScene {
+          0% { opacity: 1; }
+          75% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        @keyframes wheelSpinAnim {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
         .traverse-input:focus {
           border-color: #e63946 !important;
-          box-shadow: 0 0 14px rgba(230, 57, 70, 0.45) !important;
-          background: #242424 !important;
+          box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.25), 0 0 16px rgba(230, 57, 70, 0.4) !important;
+          background: #202020 !important;
+          outline: none !important;
         }
-        .traverse-btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px rgba(230, 57, 70, 0.6) !important;
+        .traverse-btn-primary:hover:not(:disabled) {
+          box-shadow: 0 8px 24px rgba(230, 57, 70, 0.6) !important;
+          filter: brightness(1.08);
+        }
+        .traverse-btn-primary:active:not(:disabled) {
+          transform: scale(0.97) translateY(1px) !important;
+          box-shadow: 0 3px 10px rgba(230, 57, 70, 0.4) !important;
         }
         .traverse-btn-outline:hover {
           background: rgba(230, 57, 70, 0.15) !important;
           border-color: #e63946 !important;
+          color: #ffffff !important;
+          transform: translateY(-1px);
+        }
+        .traverse-btn-outline:active {
+          transform: scale(0.98);
         }
         .footer-link-item {
           color: #8e95a5;
@@ -246,7 +158,7 @@ function Login() {
         @media (max-width: 768px) {
           .footer-grid-container {
             grid-template-columns: repeat(2, 1fr) !important;
-            gap: 24px 16px !important;
+            gap: 28px 16px !important;
           }
           .footer-bottom-bar {
             flex-direction: column !important;
@@ -257,7 +169,7 @@ function Login() {
         @media (max-width: 480px) {
           .footer-grid-container {
             grid-template-columns: 1fr 1fr !important;
-            gap: 20px 12px !important;
+            gap: 22px 12px !important;
           }
         }
       `}</style>
@@ -266,31 +178,327 @@ function Login() {
       <div style={styles.glowSpot1} />
       <div style={styles.glowSpot2} />
 
-      {/* Car Drive Animation on First Load */}
+      {/* 3D Car Driving Animation Scene (Passes seamlessly behind login portal card) */}
       {showCarAnimation && (
-        <div style={styles.carDriveTrack}>
-          <div style={styles.carRoadDash} />
-          <div style={styles.drivingCarWrapper}>
-            <svg width="60" height="28" viewBox="0 0 120 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="60" cy="50" rx="54" ry="3.5" fill="black" opacity="0.6" />
-              <path d="M12,38 C8,38 6,36 6,32 C6,27 10,25 18,24 L34,22 L48,11 C51,9 56,8 64,8 L84,8 C91,8 96,11 100,16 L108,22 C114,23 118,26 118,30 C118,34 116,38 112,38 C110,38 108,34 103,34 C97,34 94,38 90,38 L42,38 C38,38 35,34 29,34 C24,34 21,38 12,38 Z" fill="url(#loginTaxiGrad)" />
-              <circle cx="26" cy="38" r="9" fill="#111111" stroke="#333" strokeWidth="1.5" />
-              <circle cx="26" cy="38" r="6" fill="#e63946" strokeWidth="0.8" />
-              <circle cx="98" cy="38" r="9" fill="#111111" stroke="#333" strokeWidth="1.5" />
-              <circle cx="98" cy="38" r="6" fill="#e63946" strokeWidth="0.8" />
-              <defs>
-                <linearGradient id="loginTaxiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ff4d5a" />
-                  <stop offset="40%" stopColor="#e63946" />
-                  <stop offset="100%" stopColor="#9e1522" />
-                </linearGradient>
-              </defs>
-            </svg>
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: '290px',
+            height: '150px',
+            pointerEvents: 'none',
+            zIndex: 0,
+            overflow: 'hidden',
+            animation: 'fadeOutRoadScene 4.6s ease-out forwards'
+          }}
+        >
+          {/* Glowing Cyber Highway Track passing behind the login card */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '92px',
+              left: '-10%',
+              width: '120%',
+              height: '3px',
+              background: 'linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.3) 15%, #e63946 50%, rgba(230, 57, 70, 0.3) 85%, transparent 100%)',
+              boxShadow: '0 0 16px rgba(230, 57, 70, 0.7), 0 0 32px rgba(230, 57, 70, 0.35)'
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '74px',
+              left: '-10%',
+              width: '120%',
+              height: '24px',
+              background: 'linear-gradient(180deg, rgba(230, 57, 70, 0.06) 0%, rgba(230, 57, 70, 0) 100%)',
+              borderBottom: '1px dashed rgba(230, 57, 70, 0.25)'
+            }}
+          />
+
+          {/* 3D Moving Car Track */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '36px',
+              left: 0,
+              width: '100%',
+              animation: 'driveAcross3D 3.6s cubic-bezier(0.22, 0.45, 0.35, 0.98) forwards'
+            }}
+          >
+            <div
+              style={{
+                position: 'relative',
+                width: '190px',
+                height: '65px',
+                transformStyle: 'preserve-3d',
+                filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.95))'
+              }}
+            >
+              {/* Blurred Underbody Shadow */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-10px',
+                  left: '-10px',
+                  width: '210px',
+                  height: '20px',
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  borderRadius: '50%',
+                  filter: 'blur(9px)'
+                }}
+              />
+
+              {/* Headlight Beam Projecting Forward */}
+              <div
+                style={{
+                  position: 'absolute',
+                  right: '-160px',
+                  bottom: '8px',
+                  width: '160px',
+                  height: '42px',
+                  background: 'linear-gradient(90deg, rgba(255, 255, 230, 0.55) 0%, rgba(255, 240, 180, 0.18) 60%, rgba(255, 240, 180, 0) 100%)',
+                  clipPath: 'polygon(0% 40%, 100% 0%, 100% 100%, 0% 60%)',
+                  filter: 'blur(2px)'
+                }}
+              />
+
+              {/* Speed Lines Behind Car */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '-120px',
+                  top: '18px',
+                  width: '110px',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 75%, transparent 100%)',
+                  borderRadius: '2px',
+                  filter: 'blur(0.5px)'
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '-150px',
+                  top: '28px',
+                  width: '140px',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(230,57,70,0.6) 80%, transparent 100%)',
+                  borderRadius: '2px',
+                  filter: 'blur(0.5px)'
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '-95px',
+                  top: '38px',
+                  width: '85px',
+                  height: '2px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 70%, transparent 100%)',
+                  borderRadius: '2px',
+                  filter: 'blur(0.5px)'
+                }}
+              />
+
+              {/* Main 3D Car Body */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '10px',
+                  left: 0,
+                  width: '175px',
+                  height: '34px',
+                  background: 'linear-gradient(180deg, #ff4d5a 0%, #e63946 45%, #9e1522 100%)',
+                  borderRadius: '14px 30px 6px 8px',
+                  boxShadow: 'inset 0 2.5px 5px rgba(255,255,255,0.45), inset 0 -3px 6px rgba(0,0,0,0.55), 0 0 16px rgba(230,57,70,0.4)',
+                  border: '1px solid rgba(255,255,255,0.2)'
+                }}
+              >
+                {/* Subtle Reflection Highlight Stripe */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '2px',
+                    left: '8px',
+                    width: '140px',
+                    height: '4px',
+                    background: 'linear-gradient(90deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 100%)',
+                    borderRadius: '2px'
+                  }}
+                />
+
+                {/* Chrome Side Trim Accent */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '8px',
+                    left: '42px',
+                    width: '80px',
+                    height: '2px',
+                    background: 'linear-gradient(90deg, #aaaaaa, #ffffff, #888888)',
+                    boxShadow: '0 0 4px rgba(255,255,255,0.5)'
+                  }}
+                />
+
+                {/* Front Headlight */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: '3px',
+                    top: '8px',
+                    width: '9px',
+                    height: '9px',
+                    background: '#ffffff',
+                    borderRadius: '50%',
+                    boxShadow: '0 0 12px #ffffff, 0 0 24px #ffd166, 0 0 35px #e63946'
+                  }}
+                />
+
+                {/* Rear Glowing Taillight */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '0px',
+                    top: '6px',
+                    width: '6px',
+                    height: '12px',
+                    background: '#ff2a3b',
+                    borderRadius: '3px 0 0 3px',
+                    boxShadow: '-4px 0 12px #ff2a3b, -10px 0 24px rgba(255,42,59,0.7)'
+                  }}
+                />
+
+                {/* Front Bumper Air Vent */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: '8px',
+                    bottom: '4px',
+                    width: '16px',
+                    height: '5px',
+                    background: '#111111',
+                    borderRadius: '2px',
+                    border: '0.5px solid #333333'
+                  }}
+                />
+              </div>
+
+              {/* 3D Car Cabin & Roof */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-1px',
+                  left: '46px',
+                  width: '78px',
+                  height: '26px',
+                  background: 'linear-gradient(180deg, #b81d2c 0%, #87121e 100%)',
+                  borderRadius: '14px 24px 0 0',
+                  transform: 'perspective(300px) rotateX(6deg) skewX(-11deg)',
+                  boxShadow: 'inset 0 2px 3px rgba(255,255,255,0.35)',
+                  borderTop: '1px solid rgba(255,255,255,0.25)'
+                }}
+              >
+                {/* Windshield */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: '-2px',
+                    top: '3px',
+                    width: '24px',
+                    height: '19px',
+                    background: 'rgba(17, 21, 28, 0.85)',
+                    borderRadius: '2px 9px 0 0',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                    backdropFilter: 'blur(2px)',
+                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)'
+                  }}
+                />
+                {/* Side Windows */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '6px',
+                    top: '3px',
+                    width: '46px',
+                    height: '19px',
+                    background: 'rgba(17, 21, 28, 0.85)',
+                    borderRadius: '7px 2px 0 0',
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    backdropFilter: 'blur(2px)',
+                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)'
+                  }}
+                />
+              </div>
+
+              {/* Front Wheel */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '2px',
+                  right: '18px',
+                  width: '28px',
+                  height: '28px',
+                  background: 'radial-gradient(circle, #252525 35%, #111111 65%, #000000 100%)',
+                  borderRadius: '50%',
+                  border: '2px solid #2e2e2e',
+                  boxShadow: '0 5px 10px rgba(0,0,0,0.85), inset 0 0 6px rgba(230,57,70,0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2
+                }}
+              >
+                {/* 3D Chrome Rim */}
+                <div
+                  style={{
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, #ffffff 15%, #c0c0c0 50%, #444444 100%)',
+                    border: '1px solid #ffffff',
+                    animation: 'wheelSpinAnim 0.3s linear infinite'
+                  }}
+                />
+              </div>
+
+              {/* Rear Wheel */}
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '2px',
+                  left: '22px',
+                  width: '28px',
+                  height: '28px',
+                  background: 'radial-gradient(circle, #252525 35%, #111111 65%, #000000 100%)',
+                  borderRadius: '50%',
+                  border: '2px solid #2e2e2e',
+                  boxShadow: '0 5px 10px rgba(0,0,0,0.85), inset 0 0 6px rgba(230,57,70,0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2
+                }}
+              >
+                {/* 3D Chrome Rim */}
+                <div
+                  style={{
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, #ffffff 15%, #c0c0c0 50%, #444444 100%)',
+                    border: '1px solid #ffffff',
+                    animation: 'wheelSpinAnim 0.3s linear infinite'
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Main Content Container */}
+      {/* Main Content Container (Higher z-index so car drives smoothly behind the portal) */}
       <div style={styles.contentContainer}>
         {/* Top Floating Logo & Brand Header */}
         <div style={styles.header}>
@@ -411,52 +619,46 @@ function Login() {
         </div>
       </div>
 
-      {/* MODERN ENTERPRISE SAAS-STYLE FOOTER (Heroku / GitHub Inspired) */}
+      {/* MODERN ENTERPRISE SAAS-STYLE FOOTER — Strictly derived from AboutModal.js */}
       <footer style={styles.footerWrapper}>
         <div style={styles.footerInner}>
-          {/* 4-Column Responsive Grid */}
+          {/* 4-Column Clean Responsive Grid */}
           <div className="footer-grid-container" style={styles.footerGrid}>
-            {/* Column 1: Products */}
+            {/* Column 1: About Us */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>PRODUCTS</h4>
-              <button onClick={() => openModal('how_it_works')} className="footer-link-item">Sedan Cabs (4+1)</button>
-              <button onClick={() => openModal('how_it_works')} className="footer-link-item">SUV Cabs (6+1)</button>
-              <button onClick={() => openModal('how_it_works')} className="footer-link-item">Smart Ride Sharing</button>
-              <button onClick={() => openModal('how_it_works')} className="footer-link-item">48h Advance Booking</button>
-              <button onClick={() => openModal('how_it_works')} className="footer-link-item">Fair Queue Dispatch</button>
-              <button onClick={() => openModal('about')} className="footer-link-item">Fixed Campus Rates</button>
+              <h4 style={styles.colTitle}>ABOUT US</h4>
+              <button onClick={() => openAbout('about')} className="footer-link-item">📖 Mission & Story</button>
+              <button onClick={() => openAbout('about')} className="footer-link-item">🛡️ Why Traverse?</button>
+              <button onClick={() => openAbout('about')} className="footer-link-item">⛰️ JUIT Hill Routes</button>
+              <button onClick={() => openAbout('about')} className="footer-link-item">✉️ Contact Dispatch</button>
             </div>
 
-            {/* Column 2: Resources & Routes */}
+            {/* Column 2: How It Works */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>RESOURCES</h4>
-              <button onClick={() => openModal('about')} className="footer-link-item">JUIT Waknaghat</button>
-              <button onClick={() => openModal('about')} className="footer-link-item">Solan Bus Stands</button>
-              <button onClick={() => openModal('about')} className="footer-link-item">Shimla ISBT Routes</button>
-              <button onClick={() => openModal('about')} className="footer-link-item">Kalka Railway Hub</button>
-              <button onClick={() => openModal('how_it_works')} className="footer-link-item">How Dispatch Works</button>
-              <button onClick={() => openModal('support')} className="footer-link-item">Lost & Found Desk</button>
+              <h4 style={styles.colTitle}>HOW IT WORKS</h4>
+              <button onClick={() => openAbout('how')} className="footer-link-item">👤 Student & Rider Flow</button>
+              <button onClick={() => openAbout('how')} className="footer-link-item">🚖 Campus Drivers & Captains</button>
+              <button onClick={() => openAbout('how')} className="footer-link-item">👥 Shared Rides & Fare Split</button>
+              <button onClick={() => openAbout('how')} className="footer-link-item">🧾 Digital Post-Ride Receipts</button>
             </div>
 
-            {/* Column 3: About & Policies */}
+            {/* Column 3: Terms & Rules */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>ABOUT</h4>
-              <button onClick={() => openModal('about')} className="footer-link-item">About Traverse</button>
-              <button onClick={() => openModal('terms')} className="footer-link-item">Terms of Service</button>
-              <button onClick={() => openModal('cancellation_policy')} className="footer-link-item">Cancellation Policy</button>
-              <button onClick={() => openModal('safety')} className="footer-link-item">Safety Standards</button>
-              <button onClick={() => openModal('safety')} className="footer-link-item">Driver Guidelines</button>
-              <Link to="/register" className="footer-link-item">Register Account</Link>
+              <h4 style={styles.colTitle}>TERMS & RULES</h4>
+              <button onClick={() => openAbout('terms')} className="footer-link-item">🎓 University Eligibility</button>
+              <button onClick={() => openAbout('terms')} className="footer-link-item">⚠️ 5-Strike Cancellation Rule</button>
+              <button onClick={() => openAbout('terms')} className="footer-link-item">💰 Fixed Pricing & Fares</button>
+              <button onClick={() => openAbout('terms')} className="footer-link-item">🔒 Safety & Privacy</button>
             </div>
 
-            {/* Column 4: Support & Contact */}
+            {/* Column 4: Help & FAQs */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>SUPPORT</h4>
-              <button onClick={() => openModal('support')} className="footer-link-item">Help Center & FAQs</button>
-              <button onClick={() => openModal('support')} className="footer-link-item">Contact Support</button>
-              <a href="mailto:traverseuni@gmail.com" className="footer-link-item">Email Dispatch</a>
-              <Link to="/admin" className="footer-link-item">Admin Access</Link>
-              <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <h4 style={styles.colTitle}>HELP & FAQS</h4>
+              <button onClick={() => openAbout('help')} className="footer-link-item">💬 Rider FAQs</button>
+              <button onClick={() => openAbout('help')} className="footer-link-item">📧 Email Verification Help</button>
+              <button onClick={() => openAbout('help')} className="footer-link-item">📞 Finding Driver Phone</button>
+              <button onClick={() => openAbout('help')} className="footer-link-item">🚨 Campus Emergency Desk</button>
+              <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
                 <span style={{ color: '#10b981', fontSize: '11px', fontWeight: '600' }}>System Operational</span>
               </div>
@@ -472,17 +674,19 @@ function Login() {
               <div>
                 <span style={styles.footerBrandName}>TRAVERSE UNICAB</span>
                 <p style={styles.footerCopyright}>
-                  © 2026 Jaypee University of Information Technology. Built for JUIT students & faculty.
+                  © 2026 Jaypee University of Information Technology. Safe, affordable campus mobility.
                 </p>
               </div>
             </div>
 
             <div style={styles.footerQuickLinks}>
-              <button onClick={() => openModal('terms')} style={styles.footerSubLink}>Terms</button>
+              <button onClick={() => openAbout('about')} style={styles.footerSubLink}>About</button>
               <span style={{ color: '#444' }}>•</span>
-              <button onClick={() => openModal('safety')} style={styles.footerSubLink}>Privacy</button>
+              <button onClick={() => openAbout('how')} style={styles.footerSubLink}>How It Works</button>
               <span style={{ color: '#444' }}>•</span>
-              <button onClick={() => openModal('support')} style={styles.footerSubLink}>Contact</button>
+              <button onClick={() => openAbout('terms')} style={styles.footerSubLink}>Terms</button>
+              <span style={{ color: '#444' }}>•</span>
+              <button onClick={() => openAbout('help')} style={styles.footerSubLink}>Help</button>
               <span style={{ color: '#444' }}>•</span>
               <Link to="/admin" style={styles.footerSubLink}>Admin</Link>
             </div>
@@ -490,29 +694,12 @@ function Login() {
         </div>
       </footer>
 
-      {/* Interactive Detail Modal Dialog */}
-      {modalContent && (
-        <div style={styles.modalOverlay} onClick={() => setModalContent(null)}>
-          <div style={styles.modalCard} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.modalHeader}>
-              <div>
-                <span style={styles.modalBadge}>{modalContent.badge}</span>
-                <h3 style={styles.modalTitle}>{modalContent.title}</h3>
-              </div>
-              <button onClick={() => setModalContent(null)} style={styles.modalCloseBtn} title="Close">
-                ✕
-              </button>
-            </div>
-            <div style={styles.modalBody}>
-              {modalContent.body}
-            </div>
-            <div style={styles.modalFooter}>
-              <button onClick={() => setModalContent(null)} style={styles.modalDoneBtn}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Official About Modal Component with full rich details */}
+      {showAboutModal && (
+        <AboutModal
+          onClose={() => setShowAboutModal(false)}
+          initialTab={aboutModalTab}
+        />
       )}
     </div>
   );
@@ -557,38 +744,13 @@ const styles = {
     pointerEvents: 'none',
     zIndex: 0
   },
-  carDriveTrack: {
-    position: 'fixed',
-    top: '14px',
-    left: 0,
-    width: '100%',
-    height: '40px',
-    pointerEvents: 'none',
-    zIndex: 99,
-    overflow: 'hidden'
-  },
-  carRoadDash: {
-    position: 'absolute',
-    bottom: '2px',
-    left: 0,
-    width: '100%',
-    height: '2px',
-    backgroundImage: 'linear-gradient(to right, rgba(230, 57, 70, 0.6) 50%, rgba(0, 0, 0, 0) 0%)',
-    backgroundSize: '24px 2px',
-    animation: 'roadDashes 0.6s linear infinite'
-  },
-  drivingCarWrapper: {
-    position: 'absolute',
-    bottom: '4px',
-    animation: 'carDriveAcross 4.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards'
-  },
   contentContainer: {
     width: '100%',
     maxWidth: '440px',
     padding: '30px 16px 20px',
     boxSizing: 'border-box',
     position: 'relative',
-    zIndex: 1,
+    zIndex: 10,
     margin: '0 auto',
     flex: '1 0 auto'
   },
@@ -874,7 +1036,7 @@ const styles = {
     textShadow: '0 0 12px rgba(230, 57, 70, 0.5)'
   },
 
-  /* ENTERPRISE FOOTER STYLES */
+  /* ENTERPRISE SAAS FOOTER STYLES */
   footerWrapper: {
     width: '100%',
     background: 'linear-gradient(180deg, rgba(14, 14, 16, 0.95) 0%, #070709 100%)',
@@ -959,94 +1121,6 @@ const styles = {
     textDecoration: 'none',
     transition: 'color 0.2s',
     fontFamily: 'inherit'
-  },
-
-  /* MODAL STYLES */
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0, 0, 0, 0.82)',
-    backdropFilter: 'blur(8px)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '16px',
-    zIndex: 1000
-  },
-  modalCard: {
-    background: 'linear-gradient(165deg, #18181c 0%, #0d0d10 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.35)',
-    borderRadius: '16px',
-    maxWidth: '520px',
-    width: '100%',
-    maxHeight: '85vh',
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(230, 57, 70, 0.15)',
-    overflow: 'hidden',
-    animation: 'slideUpIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-  },
-  modalHeader: {
-    padding: '18px 20px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    background: 'rgba(230, 57, 70, 0.06)'
-  },
-  modalBadge: {
-    fontSize: '9px',
-    fontWeight: '800',
-    letterSpacing: '1px',
-    color: '#e63946',
-    textTransform: 'uppercase',
-    display: 'block',
-    marginBottom: '2px'
-  },
-  modalTitle: {
-    margin: 0,
-    fontSize: '17px',
-    fontWeight: '700',
-    color: '#ffffff'
-  },
-  modalCloseBtn: {
-    background: 'rgba(255, 255, 255, 0.06)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: '#bbb',
-    borderRadius: '50%',
-    width: '28px',
-    height: '28px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '12px'
-  },
-  modalBody: {
-    padding: '20px',
-    overflowY: 'auto',
-    color: '#d0d0d0',
-    fontSize: '13px'
-  },
-  modalFooter: {
-    padding: '12px 20px',
-    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-    display: 'flex',
-    justifyContent: 'flex-end',
-    background: 'rgba(0, 0, 0, 0.2)'
-  },
-  modalDoneBtn: {
-    background: 'linear-gradient(135deg, #e63946 0%, #c1121f 100%)',
-    color: 'white',
-    border: 'none',
-    padding: '8px 18px',
-    borderRadius: '8px',
-    fontWeight: '600',
-    fontSize: '13px',
-    cursor: 'pointer'
   }
 };
 
