@@ -173,6 +173,22 @@ function AdminDashboard() {
     }
   };
 
+  // Toggle Driver Online / Offline Status (Admin)
+  const toggleDriverAvailability = async (userId) => {
+    setActionLoadingId(userId);
+    try {
+      await axios.put(`${API}/api/auth/admin/toggle-availability/${userId}`, {}, {
+        headers: { Authorization: `Bearer ${tokenRef.current}` }
+      });
+      fetchTabData(tokenRef.current, tab, debouncedSearch, currentPage, limit, subFilter);
+      fetchStats(tokenRef.current);
+    } catch (err) {
+      console.log('Toggle availability error:', err);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
   // Verify driver
   const verifyDriver = async (userId) => {
     setActionLoadingId(userId);
@@ -984,6 +1000,14 @@ function AdminDashboard() {
                     )}
                     <span style={{
                       ...styles.statusPill,
+                      background: u.isAvailable ? 'rgba(16, 185, 129, 0.15)' : 'rgba(107, 114, 128, 0.15)',
+                      color: u.isAvailable ? '#10b981' : '#9ca3af',
+                      border: `1px solid ${u.isAvailable ? 'rgba(16, 185, 129, 0.4)' : 'rgba(107, 114, 128, 0.4)'}`
+                    }}>
+                      {u.isAvailable ? '🟢 ONLINE' : '⚫ OFFLINE'}
+                    </span>
+                    <span style={{
+                      ...styles.statusPill,
                       background: u.isBlocked ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                       color: u.isBlocked ? '#ef4444' : '#10b981',
                       border: `1px solid ${u.isBlocked ? 'rgba(239, 68, 68, 0.4)' : 'rgba(16, 185, 129, 0.4)'}`
@@ -1021,6 +1045,26 @@ function AdminDashboard() {
                 )}
 
                 <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
+                  {/* Admin Online / Offline Toggle Button */}
+                  <button
+                    onClick={() => toggleDriverAvailability(u._id)}
+                    disabled={actionLoadingId === u._id || u.isBlocked}
+                    className="action-btn-hover"
+                    style={{
+                      ...styles.blockBtn,
+                      flex: 1,
+                      background: u.isAvailable
+                        ? 'linear-gradient(135deg, #374151 0%, #1f2937 100%)'
+                        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      border: u.isAvailable ? '1px solid #4b5563' : '1px solid #34d399',
+                      opacity: u.isBlocked ? 0.5 : 1,
+                      cursor: u.isBlocked ? 'not-allowed' : 'pointer'
+                    }}
+                    title={u.isAvailable ? 'Force switch driver to Offline' : 'Force switch driver to Online'}
+                  >
+                    {actionLoadingId === u._id ? 'Updating...' : u.isAvailable ? '🔴 Set Offline' : '🟢 Set Online'}
+                  </button>
+
                   <button
                     onClick={() => blockUser(u._id)}
                     disabled={actionLoadingId === u._id}
