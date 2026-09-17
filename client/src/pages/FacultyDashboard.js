@@ -78,6 +78,9 @@ function FacultyDashboard() {
     const [showAbout, setShowAbout] = useState(false);
     const [showCancelPopup, setShowCancelPopup] = useState(false);
     const [driversAvailable, setDriversAvailable] = useState(true);
+    const [availabilityInfo, setAvailabilityInfo] = useState(null);
+    const [searchTimeout, setSearchTimeout] = useState(null);
+    const [searchExpired, setSearchExpired] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
     const [mapCenter, setMapCenter] = useState(JUIT_COORDS);
     const [destCoords, setDestCoords] = useState(null);
@@ -100,6 +103,34 @@ function FacultyDashboard() {
     const arrivalNotifiedRef = React.useRef(false);
     const activeRideRef = React.useRef(null);
     const studentLocationRef = React.useRef(null);
+
+    React.useEffect(() => {
+        if (activeRide && activeRide.status === 'searching') {
+            const rideCreated = activeRide.createdAt ? new Date(activeRide.createdAt).getTime() : Date.now();
+            const elapsed = Date.now() - rideCreated;
+            const timeoutMs = 5 * 60 * 1000;
+            const remaining = Math.max(0, timeoutMs - elapsed);
+
+            if (remaining === 0) {
+                setSearchExpired(true);
+            } else {
+                setSearchExpired(false);
+                const timer = setTimeout(() => {
+                    setSearchExpired(true);
+                }, remaining);
+                setSearchTimeout(timer);
+                return () => {
+                    clearTimeout(timer);
+                };
+            }
+        } else {
+            setSearchExpired(false);
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+                setSearchTimeout(null);
+            }
+        }
+    }, [activeRide?.status, activeRide?._id, activeRide?.createdAt]);
 
     React.useEffect(() => {
         activeRideRef.current = activeRide;
@@ -432,6 +463,19 @@ function FacultyDashboard() {
       showToast('Rating submission failed', 'warning');
     }
   };
+
+    const checkDriversAvailable = async (vehicleType) => {
+        try {
+            const res = await axios.get(
+                `${API}/api/rides/drivers-available?vehicleType=${encodeURIComponent(vehicleType)}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setDriversAvailable(res.data.available);
+            setAvailabilityInfo(res.data);
+        } catch (err) {
+            console.log('Failed to check drivers');
+        }
+    };
 
     const logout = async () => {
         try {
@@ -939,7 +983,28 @@ function FacultyDashboard() {
 
                         {/* Ride Cancellation Actions */}
                         {activeRide.status === 'searching' && (
-                            <button onClick={cancelRide} style={styles.cancelBtn}>Cancel Ride</button>
+                            <>
+                                {searchExpired && (
+                                    <div style={{
+                                        background: 'rgba(239, 68, 68, 0.12)',
+                                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                                        borderRadius: '8px',
+                                        padding: '12px 14px',
+                                        marginBottom: '12px',
+                                        textAlign: 'center'
+                                    }}>
+                                        <p style={{ color: '#f87171', fontSize: '13px', fontWeight: '700', margin: '0 0 4px 0' }}>
+                                            ⏳ Search Timeout
+                                        </p>
+                                        <p style={{ color: '#d1d5db', fontSize: '12px', margin: 0 }}>
+                                            No drivers available right now. Please cancel and try again later.
+                                        </p>
+                                    </div>
+                                )}
+                                <button onClick={cancelRide} style={{ ...styles.cancelBtn, ...(searchExpired ? { background: '#e63946', borderColor: '#e63946' } : {}) }}>
+                                    {searchExpired ? 'Cancel & Try Again' : 'Cancel Ride'}
+                                </button>
+                            </>
                         )}
                         {activeRide.status === 'accepted' && (
                             <button onClick={() => setShowCancelPopup(true)} style={styles.cancelBtn}>
@@ -1154,6 +1219,7 @@ function FacultyDashboard() {
                                         <div
                                             onClick={() => {
                                                 setSelectedVehicle('4+1');
+                                                checkDriversAvailable('4+1');
                                                 if (selectedRoute.destination === 'Waknaghat') {
                                                     const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
                                                     const hour = checkTime.getHours();
@@ -1230,6 +1296,7 @@ function FacultyDashboard() {
                                         <div
                                             onClick={() => {
                                                 setSelectedVehicle('6+1');
+                                                checkDriversAvailable('6+1');
                                                 if (selectedRoute.destination === 'Waknaghat') {
                                                     const checkTime = isScheduled && scheduledTime ? new Date(scheduledTime) : new Date();
                                                     const hour = checkTime.getHours();
@@ -1338,13 +1405,45 @@ function FacultyDashboard() {
                                 </div>
                             )}
 
+                            {/* Dynamic Availability Status Indicator */}
+                            {selectedVehicle && availabilityInfo && (
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '10px 14px',
+                                    borderRadius: '8px',
+                                    marginBottom: '14px',
+                                    fontSize: '13px',
+                                    fontWeight: '600',
+                                    background: availabilityInfo.reason === 'no_drivers' ? 'rgba(239, 68, 68, 0.12)' :
+                                                availabilityInfo.reason === 'all_busy' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                                    border: `1px solid ${availabilityInfo.reason === 'no_drivers' ? 'rgba(239, 68, 68, 0.4)' :
+                                                         availabilityInfo.reason === 'all_busy' ? 'rgba(245, 158, 11, 0.4)' : 'rgba(16, 185, 129, 0.4)'}`,
+                                    color: availabilityInfo.reason === 'no_drivers' ? '#f87171' :
+                                           availabilityInfo.reason === 'all_busy' ? '#fbbf24' : '#34d399'
+                                }}>
+                                    <span>
+                                        {availabilityInfo.reason === 'no_drivers' ? '🔴' :
+                                         availabilityInfo.reason === 'all_busy' ? '🟠' : '🟢'}
+                                    </span>
+                                    <span>{availabilityInfo.message}</span>
+                                </div>
+                            )}
+
                             {/* Large Bold Red Gradient Button */}
                             <button
-                                style={selectedVehicle && !booking ? styles.bookBtn : styles.bookBtnDisabled}
+                                className={selectedVehicle && driversAvailable && !booking ? "traverse-btn-primary" : ""}
+                                style={selectedVehicle && driversAvailable && !booking ? styles.bookBtn : styles.bookBtnDisabled}
                                 type='submit'
-                                disabled={!selectedVehicle || booking}>
-                                {booking ? '⏳ Booking...' :
-                                    !selectedVehicle ? 'Select vehicle to continue' :
+                                disabled={!selectedVehicle || !driversAvailable || booking}>
+                                {booking ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                        <div style={{ width: '16px', height: '16px', border: '2px solid white', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                                        Booking...
+                                    </div>
+                                ) : !selectedVehicle ? 'Select vehicle to continue' :
+                                    !driversAvailable ? (availabilityInfo?.reason === 'all_busy' ? 'All Drivers Busy' : 'No Drivers Online') :
                                         `🚖 Request ${selectedVehicle} Ride — ₹${fare}`}
                             </button>
                         </form>
