@@ -134,26 +134,50 @@ function Login() {
         .traverse-btn-outline:active {
           transform: scale(0.98);
         }
-        .footer-link-item {
-          color: #8e95a5;
-          text-decoration: none;
-          font-size: 13px;
-          line-height: 1.8;
-          display: block;
-          cursor: pointer;
-          transition: all 0.2s ease;
+        .footer-header-btn {
+          color: #e63946;
           background: none;
           border: none;
           padding: 0;
-          text-align: left;
+          font-size: 11.5px;
+          font-weight: 800;
+          letter-spacing: 1.4px;
+          text-transform: uppercase;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          transition: all 0.2s ease;
           font-family: inherit;
+          margin-bottom: 12px;
+          text-align: left;
         }
-        .footer-link-item:hover {
-          color: #ffffff;
+        .footer-header-btn:hover {
+          color: #ff5260 !important;
+          text-shadow: 0 0 14px rgba(230, 57, 70, 0.7);
+          transform: translateX(2px);
+        }
+        .footer-header-btn:active {
+          transform: scale(0.96);
+        }
+        .footer-header-btn .arrow-icon {
+          font-size: 11px;
+          opacity: 0.7;
+          transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .footer-header-btn:hover .arrow-icon {
           transform: translateX(3px);
+          opacity: 1;
         }
-        .footer-link-item:focus {
-          outline: none;
+        .footer-static-item {
+          color: #8e95a5;
+          font-size: 13px;
+          line-height: 1.9;
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          cursor: default;
+          user-select: text;
         }
         @media (max-width: 768px) {
           .footer-grid-container {
@@ -619,45 +643,57 @@ function Login() {
         </div>
       </div>
 
-      {/* MODERN ENTERPRISE SAAS-STYLE FOOTER — Strictly derived from AboutModal.js */}
+      {/* MODERN ENTERPRISE SAAS-STYLE FOOTER */}
       <footer style={styles.footerWrapper}>
         <div style={styles.footerInner}>
           {/* 4-Column Clean Responsive Grid */}
           <div className="footer-grid-container" style={styles.footerGrid}>
-            {/* Column 1: About Us */}
+            {/* Column 1: About Us (Clicking red header opens About section) */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>ABOUT US</h4>
-              <button onClick={() => openAbout('about')} className="footer-link-item">📖 Mission & Story</button>
-              <button onClick={() => openAbout('about')} className="footer-link-item">🛡️ Why Traverse?</button>
-              <button onClick={() => openAbout('about')} className="footer-link-item">⛰️ JUIT Hill Routes</button>
-              <button onClick={() => openAbout('about')} className="footer-link-item">✉️ Contact Dispatch</button>
+              <button onClick={() => openAbout('about')} className="footer-header-btn">
+                <span>ABOUT US</span>
+                <span className="arrow-icon">↗</span>
+              </button>
+              <div className="footer-static-item">📖 Mission & Story</div>
+              <div className="footer-static-item">🛡️ Why Traverse?</div>
+              <div className="footer-static-item">⛰️ JUIT Hill Routes</div>
+              <div className="footer-static-item">✉️ Contact Dispatch</div>
             </div>
 
-            {/* Column 2: How It Works */}
+            {/* Column 2: How It Works (Clicking red header opens How It Works section) */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>HOW IT WORKS</h4>
-              <button onClick={() => openAbout('how')} className="footer-link-item">👤 Student & Rider Flow</button>
-              <button onClick={() => openAbout('how')} className="footer-link-item">🚖 Campus Drivers & Captains</button>
-              <button onClick={() => openAbout('how')} className="footer-link-item">👥 Shared Rides & Fare Split</button>
-              <button onClick={() => openAbout('how')} className="footer-link-item">🧾 Digital Post-Ride Receipts</button>
+              <button onClick={() => openAbout('how')} className="footer-header-btn">
+                <span>HOW IT WORKS</span>
+                <span className="arrow-icon">↗</span>
+              </button>
+              <div className="footer-static-item">👤 Student & Rider Flow</div>
+              <div className="footer-static-item">🚖 Campus Drivers & Captains</div>
+              <div className="footer-static-item">👥 Shared Rides & Fare Split</div>
+              <div className="footer-static-item">🧾 Digital Post-Ride Receipts</div>
             </div>
 
-            {/* Column 3: Terms & Rules */}
+            {/* Column 3: Terms & Rules (Clicking red header opens Terms section) */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>TERMS & RULES</h4>
-              <button onClick={() => openAbout('terms')} className="footer-link-item">🎓 University Eligibility</button>
-              <button onClick={() => openAbout('terms')} className="footer-link-item">⚠️ 5-Strike Cancellation Rule</button>
-              <button onClick={() => openAbout('terms')} className="footer-link-item">💰 Fixed Pricing & Fares</button>
-              <button onClick={() => openAbout('terms')} className="footer-link-item">🔒 Safety & Privacy</button>
+              <button onClick={() => openAbout('terms')} className="footer-header-btn">
+                <span>TERMS & RULES</span>
+                <span className="arrow-icon">↗</span>
+              </button>
+              <div className="footer-static-item">🎓 University Eligibility</div>
+              <div className="footer-static-item">⚠️ 5-Strike Cancellation Rule</div>
+              <div className="footer-static-item">💰 Fixed Pricing & Fares</div>
+              <div className="footer-static-item">🔒 Safety & Privacy</div>
             </div>
 
-            {/* Column 4: Help & FAQs */}
+            {/* Column 4: Help & FAQs (Clicking red header opens Help section) */}
             <div style={styles.footerCol}>
-              <h4 style={styles.colTitle}>HELP & FAQS</h4>
-              <button onClick={() => openAbout('help')} className="footer-link-item">💬 Rider FAQs</button>
-              <button onClick={() => openAbout('help')} className="footer-link-item">📧 Email Verification Help</button>
-              <button onClick={() => openAbout('help')} className="footer-link-item">📞 Finding Driver Phone</button>
-              <button onClick={() => openAbout('help')} className="footer-link-item">🚨 Campus Emergency Desk</button>
+              <button onClick={() => openAbout('help')} className="footer-header-btn">
+                <span>HELP & FAQS</span>
+                <span className="arrow-icon">↗</span>
+              </button>
+              <div className="footer-static-item">💬 Rider FAQs</div>
+              <div className="footer-static-item">📧 Email Verification Help</div>
+              <div className="footer-static-item">📞 Finding Driver Phone</div>
+              <div className="footer-static-item">🚨 Campus Emergency Desk</div>
               <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
                 <span style={{ color: '#10b981', fontSize: '11px', fontWeight: '600' }}>System Operational</span>
@@ -783,9 +819,9 @@ const styles = {
     margin: '0 0 6px 0',
     fontSize: '32px',
     fontWeight: '900',
-    letterSpacing: '5px',
+    letterSpacing: '4px',
     color: '#ffffff',
-    textShadow: '0 0 20px rgba(230, 57, 70, 0.75), 0 0 40px rgba(230, 57, 70, 0.35)'
+    textShadow: '0 0 20px rgba(230, 57, 70, 0.7), 0 0 40px rgba(230, 57, 70, 0.3)'
   },
   brandTagline: {
     margin: '0 0 14px 0',
@@ -881,93 +917,87 @@ const styles = {
   },
   inputGroup: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    gap: '6px'
   },
   label: {
-    color: '#888888',
     fontSize: '11px',
     fontWeight: '700',
-    marginBottom: '7px',
-    letterSpacing: '1.2px'
+    letterSpacing: '1px',
+    color: '#aaaaaa'
   },
   passwordLabelRow: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '7px'
+    alignItems: 'center'
   },
   forgotLink: {
+    fontSize: '11px',
     color: '#e63946',
-    fontSize: '12px',
     textDecoration: 'none',
-    fontWeight: '600',
-    letterSpacing: '0.2px'
+    fontWeight: '600'
   },
   input: {
-    width: '100%',
-    padding: '13px 15px',
-    background: '#1a1a1a',
-    border: '1px solid #2e2e2e',
+    background: '#181818',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: '12px',
+    padding: '12px 14px',
     color: '#ffffff',
     fontSize: '14px',
-    boxSizing: 'border-box',
-    transition: 'all 0.25s ease',
     outline: 'none',
-    fontFamily: 'inherit'
+    transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+    boxSizing: 'border-box',
+    width: '100%'
   },
   btnPrimary: {
-    width: '100%',
-    padding: '14px 16px',
-    background: 'linear-gradient(135deg, #e63946 0%, #b81d2c 100%)',
+    background: 'linear-gradient(135deg, #e63946 0%, #ba181b 100%)',
     color: '#ffffff',
     border: 'none',
     borderRadius: '12px',
+    padding: '13px',
     fontSize: '15px',
     fontWeight: '700',
     cursor: 'pointer',
-    letterSpacing: '0.5px',
-    boxShadow: '0 6px 20px rgba(230, 57, 70, 0.45)',
-    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-    marginTop: '6px',
+    marginTop: '8px',
+    boxShadow: '0 4px 18px rgba(230, 57, 70, 0.45)',
+    transition: 'all 0.2s ease',
+    letterSpacing: '0.3px',
     fontFamily: 'inherit'
   },
   btnLoading: {
-    width: '100%',
-    padding: '14px 16px',
-    background: '#4a1218',
-    color: '#a07075',
+    background: '#3a1215',
+    color: '#999999',
     border: 'none',
     borderRadius: '12px',
+    padding: '13px',
     fontSize: '15px',
-    fontWeight: '600',
+    fontWeight: '700',
     cursor: 'not-allowed',
-    marginTop: '6px',
+    marginTop: '8px',
     fontFamily: 'inherit'
   },
   divider: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
-    margin: '22px 0 16px 0'
+    margin: '20px 0 16px',
+    gap: '12px'
   },
   dividerLine: {
     flex: 1,
     height: '1px',
-    background: 'rgba(255, 255, 255, 0.09)'
+    background: 'rgba(255, 255, 255, 0.08)'
   },
   dividerText: {
+    fontSize: '11px',
     color: '#666666',
-    fontSize: '12px',
-    fontWeight: '500',
-    whiteSpace: 'nowrap'
+    fontWeight: '600'
   },
   btnOutline: {
     display: 'block',
     width: '100%',
-    padding: '12px 14px',
-    background: 'rgba(230, 57, 70, 0.05)',
-    color: '#ffffff',
+    padding: '12px',
+    background: 'rgba(230, 57, 70, 0.06)',
+    color: '#f87171',
     border: '1.5px solid rgba(230, 57, 70, 0.55)',
     borderRadius: '12px',
     fontSize: '14px',
@@ -1061,15 +1091,7 @@ const styles = {
   footerCol: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px'
-  },
-  colTitle: {
-    fontSize: '11px',
-    fontWeight: '800',
-    letterSpacing: '1.4px',
-    color: '#e63946',
-    margin: '0 0 10px 0',
-    textTransform: 'uppercase'
+    gap: '2px'
   },
   footerBottomBar: {
     display: 'flex',
