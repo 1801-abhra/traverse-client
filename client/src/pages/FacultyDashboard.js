@@ -1001,7 +1001,19 @@ function FacultyDashboard() {
                                         </p>
                                     </div>
                                 )}
-                                <button onClick={cancelRide} style={{ ...styles.cancelBtn, ...(searchExpired ? { background: '#e63946', borderColor: '#e63946' } : {}) }}>
+                                <button
+                                    onClick={cancelRide}
+                                    style={{
+                                        ...styles.cancelBtn,
+                                        ...(searchExpired ? {
+                                            background: 'linear-gradient(135deg, #e63946 0%, #b81d2c 100%)',
+                                            borderColor: '#e63946',
+                                            color: '#ffffff',
+                                            boxShadow: '0 4px 16px rgba(230, 57, 70, 0.45)',
+                                            fontWeight: '700'
+                                        } : {})
+                                    }}
+                                >
                                     {searchExpired ? 'Cancel & Try Again' : 'Cancel Ride'}
                                 </button>
                             </>
