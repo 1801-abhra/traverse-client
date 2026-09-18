@@ -7,7 +7,7 @@ import Spinner from '../components/Spinner';
 import AboutModal from '../components/AboutModal';
 
 let socket;
-const API = 'https://traverse-app.onrender.com';
+const API = 'https://traverse-unicab-backend-2df13b58c562.herokuapp.com';
 
 function DriverDashboard() {
   const rideSound = React.useRef(new Audio('/notification.wav'));
@@ -134,7 +134,7 @@ function DriverDashboard() {
       console.log('Driver FCM token:', fcmToken ? 'received' : 'null');
       if (fcmToken) {
         axios.post(
-          `https://traverse-app.onrender.com/api/auth/save-token`,
+          `https://traverse-unicab-backend-2df13b58c562.herokuapp.com/api/auth/save-token`,
           { fcmToken },
           { headers: { Authorization: `Bearer ${token}` } }
         );

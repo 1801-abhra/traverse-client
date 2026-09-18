@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const API = 'https://traverse-app.onrender.com';
+const API = 'https://traverse-unicab-backend-2df13b58c562.herokuapp.com';
 
 function AdminDashboard() {
   const [email, setEmail] = useState('');

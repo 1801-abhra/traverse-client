@@ -146,7 +146,7 @@ function FacultyDashboard() {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
-    const API = 'https://traverse-app.onrender.com';
+    const API = 'https://traverse-unicab-backend-2df13b58c562.herokuapp.com';
 
     const showToast = React.useCallback((message, type = 'info') => {
         setToast({ message, type });

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
 
-const API = 'https://traverse-app.onrender.com';
+const API = 'https://traverse-unicab-backend-2df13b58c562.herokuapp.com';
 
 function DriverEarnings() {
   const [rides, setRides] = useState([]);

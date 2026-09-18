@@ -33,7 +33,7 @@ function Login() {
     setError('');
     try {
       const { data } = await axios.post(
-        'https://traverse-app.onrender.com/api/auth/login',
+        'https://traverse-unicab-backend-2df13b58c562.herokuapp.com/api/auth/login',
         { email, password },
         { withCredentials: false }
       );
@@ -51,7 +51,7 @@ function Login() {
   const resendVerification = async () => {
     try {
       await axios.post(
-        'https://traverse-app.onrender.com/api/auth/resend-verification',
+        'https://traverse-unicab-backend-2df13b58c562.herokuapp.com/api/auth/resend-verification',
         { email },
         { withCredentials: false }
       );

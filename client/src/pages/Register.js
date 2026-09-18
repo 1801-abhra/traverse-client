@@ -25,7 +25,7 @@ function Register() {
     try {
       localStorage.clear();
       await axios.post(
-        'https://traverse-app.onrender.com/api/auth/register',
+        'https://traverse-unicab-backend-2df13b58c562.herokuapp.com/api/auth/register',
         form,
         { withCredentials: false }
       );
