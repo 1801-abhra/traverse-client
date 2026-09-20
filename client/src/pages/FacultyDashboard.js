@@ -103,6 +103,7 @@ function FacultyDashboard() {
     const arrivalNotifiedRef = React.useRef(false);
     const activeRideRef = React.useRef(null);
     const studentLocationRef = React.useRef(null);
+    const selectedVehicleRef = React.useRef(null);
 
     React.useEffect(() => {
         if (activeRide && activeRide.status === 'searching') {
@@ -138,6 +139,10 @@ function FacultyDashboard() {
             arrivalNotifiedRef.current = false;
         }
     }, [activeRide]);
+
+    React.useEffect(() => {
+        selectedVehicleRef.current = selectedVehicle;
+    }, [selectedVehicle]);
 
     React.useEffect(() => {
         studentLocationRef.current = studentLocation;
@@ -343,6 +348,16 @@ function FacultyDashboard() {
             setMessage(message);
             setShowCancelPopup(false);
         });
+        socket.on('driver:availability-changed', ({ vehicleType, isAvailable }) => {
+            const currentVehicle = selectedVehicleRef.current;
+            if (currentVehicle) {
+                const normIncoming = (vehicleType || '').toString().replace(/ /g, '+').trim();
+                const normCurrent = currentVehicle.toString().replace(/ /g, '+').trim();
+                if (normIncoming === normCurrent) {
+                    checkDriversAvailable(currentVehicle);
+                }
+            }
+        });
         return () => socket.disconnect();
     }, []);
 
@@ -463,6 +478,27 @@ function FacultyDashboard() {
       showToast('Rating submission failed', 'warning');
     }
   };
+
+    // Auto recheck driver availability every 30s when on booking form
+    useEffect(() => {
+        if (!activeRide && selectedVehicle) {
+            const interval = setInterval(() => {
+                checkDriversAvailable(selectedVehicle);
+            }, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [activeRide, selectedVehicle]);
+
+    // Recheck driver availability when faculty comes back to app
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible' && !activeRideRef.current && selectedVehicleRef.current) {
+                checkDriversAvailable(selectedVehicleRef.current);
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, []);
 
     const checkDriversAvailable = async (vehicleType) => {
         try {
