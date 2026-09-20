@@ -345,10 +345,18 @@ const preAcceptRide = async (rideId) => {
   };
   const rejectRide = async (rideId) => {
     try {
-      await axios.put(`${API}/api/rides/reject/${rideId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
-      setRides(prev => prev.filter(r => r._id !== rideId));
+      await axios.put(
+        `${API}/api/rides/reject/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // Remove from local state immediately
+      setRides(prev => prev.filter(r => (r._id?.toString() || r._id) !== (rideId?.toString() || rideId)));
       setMessage('Ride rejected');
-    } catch (err) { setMessage('Failed to reject ride'); }
+    } catch (err) {
+      console.log('Reject error:', err);
+      setMessage('Failed to reject ride');
+    }
   };
 
   const acceptRide = async (rideId) => {
