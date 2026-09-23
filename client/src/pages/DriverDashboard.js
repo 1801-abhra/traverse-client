@@ -9,6 +9,21 @@ import AboutModal from '../components/AboutModal';
 let socket;
 const API = 'https://traverse-unicab-backend-2df13b58c562.herokuapp.com';
 
+const calculateDistanceMeters = (lat1, lon1, lat2, lon2) => {
+  if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) return Infinity;
+  const R = 6371e3; // Earth radius in meters
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
 function DriverDashboard() {
   const rideSound = React.useRef(new Audio('/notification.wav'));
   const pendingSoundRef = React.useRef(false);
@@ -32,6 +47,52 @@ function DriverDashboard() {
   const [rides, setRides] = useState([]);
   const [activeRide, setActiveRide] = useState(null);
   const [message, setMessage] = useState('');
+  const lastLocationRef = React.useRef({ lat: null, lng: null, timestamp: 0 });
+  const geoWatchIdRef = React.useRef(null);
+  const activeRideRef = React.useRef(activeRide);
+  React.useEffect(() => {
+    activeRideRef.current = activeRide;
+  }, [activeRide]);
+
+  const GEO_OPTIONS = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 3000
+  };
+
+  const handleGeoError = (err) => {
+    console.warn('Geolocation tracking warning:', err?.message || err);
+    if (err?.code === 1) {
+      setMessage('⚠️ Location permission denied. Please allow GPS access for live tracking.');
+    } else if (err?.code === 2) {
+      setMessage('⚠️ GPS signal unavailable. Please ensure device location is active.');
+    }
+  };
+
+  const sendThrottledLocation = (pos, ride) => {
+    if (!pos?.coords || !ride || !socket) return;
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const now = Date.now();
+    const last = lastLocationRef.current;
+
+    const distMeters = last.lat !== null ? calculateDistanceMeters(last.lat, last.lng, lat, lng) : Infinity;
+    const timeElapsedMs = now - last.timestamp;
+
+    // Send update if first fix, or moved >= 10m, or >= 4s passed
+    if (last.lat === null || distMeters >= 10 || timeElapsedMs >= 4000) {
+      lastLocationRef.current = { lat, lng, timestamp: now };
+      const studentId = ride.student?._id || ride.student;
+      socket.emit('driver:location', {
+        rideId: ride._id,
+        studentId: studentId,
+        sharedWithId: ride.sharedWith || null,
+        passengers: ride.passengers || [],
+        lat: lat,
+        lng: lng
+      });
+    }
+  };
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')) || {};
   const userVehicleTypeRef = React.useRef(user?.vehicleType || '');
@@ -222,65 +283,56 @@ function DriverDashboard() {
       setScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
       setMyScheduledRides(prev => prev.filter(r => r._id.toString() !== rideId.toString()));
     });
-    if (navigator.geolocation) {
-      const watchId = navigator.geolocation.watchPosition((pos) => {
-        socket.emit('driver:location', {
-          rideId: null,
-          studentId: null,
-          sharedWithId: null,
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        });
-      });
-      return () => {
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        navigator.geolocation.clearWatch(watchId);
-        socket.disconnect();
-      };
-    }
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      socket.disconnect();
+      if (geoWatchIdRef.current !== null && navigator.geolocation) {
+        navigator.geolocation.clearWatch(geoWatchIdRef.current);
+        geoWatchIdRef.current = null;
+      }
+      if (socket) socket.disconnect();
     };
   }, []);
 
   useEffect(() => {
-    if (activeRide && socket) {
-      const studentId = activeRide.student?._id || activeRide.student;
+    // Clear any previous GPS watcher
+    if (geoWatchIdRef.current !== null && navigator.geolocation) {
+      navigator.geolocation.clearWatch(geoWatchIdRef.current);
+      geoWatchIdRef.current = null;
+    }
+    lastLocationRef.current = { lat: null, lng: null, timestamp: 0 };
+
+    if (activeRide && isAvailable && socket) {
       socket.emit('join:ride', activeRide._id);
 
-      const sendLocation = (pos) => {
-        if (!pos?.coords) return;
-        socket.emit('driver:location', {
-          rideId: activeRide._id,
-          studentId: studentId,
-          sharedWithId: activeRide.sharedWith || null,
-          passengers: activeRide.passengers || [],
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        });
-      };
-
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(sendLocation, null, { enableHighAccuracy: true });
+        // Immediate initial location snapshot
+        navigator.geolocation.getCurrentPosition(
+          (pos) => sendThrottledLocation(pos, activeRide),
+          handleGeoError,
+          GEO_OPTIONS
+        );
 
-        const watchId = navigator.geolocation.watchPosition(sendLocation, null, {
-          enableHighAccuracy: true,
-          maximumAge: 2000,
-          timeout: 10000
-        });
-
-        const intervalId = setInterval(() => {
-          navigator.geolocation.getCurrentPosition(sendLocation, null, { enableHighAccuracy: true });
-        }, 3000);
+        // High accuracy battery-friendly continuous tracking
+        const watchId = navigator.geolocation.watchPosition(
+          (pos) => sendThrottledLocation(pos, activeRide),
+          handleGeoError,
+          GEO_OPTIONS
+        );
+        geoWatchIdRef.current = watchId;
 
         return () => {
-          navigator.geolocation.clearWatch(watchId);
-          clearInterval(intervalId);
+          if (navigator.geolocation && watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+          }
+          if (geoWatchIdRef.current === watchId) {
+            geoWatchIdRef.current = null;
+          }
         };
+      } else {
+        setMessage('⚠️ Geolocation is not supported by your browser.');
       }
     }
-  }, [activeRide]);
+  }, [activeRide?._id, isAvailable]);
 
   // Auto-poll fallback
   useEffect(() => {
@@ -333,6 +385,11 @@ const preAcceptRide = async (rideId) => {
       setIsAvailable(res.data.isAvailable);
       isAvailableRef.current = res.data.isAvailable;
       if (!res.data.isAvailable) {
+        if (geoWatchIdRef.current !== null && navigator.geolocation) {
+          navigator.geolocation.clearWatch(geoWatchIdRef.current);
+          geoWatchIdRef.current = null;
+        }
+        lastLocationRef.current = { lat: null, lng: null, timestamp: 0 };
         setRides([]);
         setMessage('You are now Offline 🔴');
       } else {
@@ -376,17 +433,11 @@ const preAcceptRide = async (rideId) => {
       if (socket) {
         socket.emit('join:ride', rideData._id);
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition((pos) => {
-            const studentId = rideData.student?._id || rideData.student;
-            socket.emit('driver:location', {
-              rideId: rideData._id,
-              studentId: studentId,
-              sharedWithId: rideData.sharedWith || null,
-              passengers: rideData.passengers || [],
-              lat: pos.coords.latitude,
-              lng: pos.coords.longitude
-            });
-          }, null, { enableHighAccuracy: true });
+          navigator.geolocation.getCurrentPosition(
+            (pos) => sendThrottledLocation(pos, rideData),
+            handleGeoError,
+            GEO_OPTIONS
+          );
         }
       }
     } catch (err) {

@@ -556,6 +556,20 @@ function FacultyDashboard() {
     return (
         <div style={styles.container}>
             <style>{`
+        /* Smooth Uber-like car marker gliding */
+        .driver-live-marker {
+          transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+          will-change: transform;
+        }
+        @keyframes driverRadarPulse {
+          0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.8), 0 0 16px rgba(230, 57, 70, 0.9); }
+          70% { box-shadow: 0 0 0 14px rgba(230, 57, 70, 0), 0 0 16px rgba(230, 57, 70, 0.9); }
+          100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0), 0 0 16px rgba(230, 57, 70, 0.9); }
+        }
+        .driver-marker-pulse {
+          animation: driverRadarPulse 2s infinite ease-out;
+        }
+
         @keyframes bgGradientMove {
           0% { background-position: 0% 0%; }
           50% { background-position: 100% 100%; }
@@ -984,8 +998,8 @@ function FacultyDashboard() {
                                             <Marker
                                                 position={driverLocation}
                                                 icon={L.divIcon({
-                                                    html: `<div style="background:#e63946;color:#ffffff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(230,57,70,0.9);border:2.5px solid #ffffff;font-size:20px;">🚗</div>`,
-                                                    className: '',
+                                                    html: `<div class="driver-marker-pulse" style="background:#e63946;color:#ffffff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2.5px solid #ffffff;font-size:20px;">🚗</div>`,
+                                                    className: 'driver-live-marker',
                                                     iconSize: [40, 40],
                                                     iconAnchor: [20, 20]
                                                 })}
