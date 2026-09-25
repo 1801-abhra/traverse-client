@@ -927,6 +927,28 @@ function FacultyDashboard() {
                                                     Verified
                                                 </span>
                                             )}
+                                                {/* Driver Star Rating Badge (Uber-style) */}
+                                                <span
+                                                    style={{
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '3px',
+                                                        background: 'rgba(245, 158, 11, 0.12)',
+                                                        color: '#f59e0b',
+                                                        border: '1px solid rgba(245, 158, 11, 0.3)',
+                                                        padding: '2px 7px',
+                                                        borderRadius: '12px',
+                                                        fontSize: '11px',
+                                                        fontWeight: '700',
+                                                        lineHeight: '1',
+                                                        marginLeft: '6px',
+                                                        verticalAlign: 'middle'
+                                                    }}
+                                                    title={`Driver Rating: ${(activeRide.driver?.rating || 5.0).toFixed(1)} ★`}
+                                                >
+                                                    <span style={{ color: '#f59e0b', fontSize: '11px' }}>★</span>
+                                                    <span>{(activeRide.driver?.rating || 5.0).toFixed(1)}</span>
+                                                </span>
                                         </p>
                                         <p style={styles.driverDetails}>
                                             {activeRide.driver?.vehicleNumber}
@@ -1197,6 +1219,35 @@ function FacultyDashboard() {
                         <div style={styles.bookCardHeader}>
                             <h3 style={styles.bookTitle}>Book a Ride</h3>
                             <span style={styles.facultyPriorityTag}>👨‍🏫 Faculty Priority</span>
+                        </div>
+
+                        {/* Fleet Confidence Rating Banner */}
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(20, 20, 20, 0.6) 100%)',
+                            border: '1px solid rgba(245, 158, 11, 0.22)',
+                            borderRadius: '10px',
+                            padding: '8px 12px',
+                            marginBottom: '14px'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span style={{ color: '#f59e0b', fontSize: '13px' }}>★</span>
+                                <span style={{ color: '#ffffff', fontSize: '12px', fontWeight: '700' }}>4.9★ Fleet Rating</span>
+                                <span style={{ color: '#888888', fontSize: '11px' }}>• Verified Campus Drivers</span>
+                            </div>
+                            <span style={{
+                                color: '#10b981',
+                                fontSize: '11px',
+                                fontWeight: '600',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
+                            }}>
+                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
+                                Top Quality
+                            </span>
                         </div>
 
                         <form onSubmit={bookRide} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
