@@ -1040,7 +1040,23 @@ function StudentDashboard() {
                 <div style={styles.driverInfo}>
                   <div style={styles.driverAvatar}>🧑</div>
                   <div>
-                    <p style={styles.driverName}>{activeRide.driver?.name}</p>
+                    <p style={styles.driverName}>
+                      {activeRide.driver?.name}
+                      {activeRide.driver?.isVerified && (
+                        <span style={{
+                          background: 'rgba(16, 185, 129, 0.15)',
+                          color: '#10b981',
+                          border: '1px solid #10b981',
+                          padding: '2px 8px',
+                          borderRadius: '20px',
+                          fontSize: '11px',
+                          fontWeight: '700',
+                          marginLeft: '6px'
+                        }}>
+                          ✅ VERIFIED
+                        </span>
+                      )}
+                    </p>
                     <p style={styles.driverDetails}>
                       {activeRide.driver?.vehicleNumber}
                       {activeRide.driver?.carName && ` • ${activeRide.driver.carName} ${activeRide.driver.carModel}`}
