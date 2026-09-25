@@ -1043,17 +1043,29 @@ function StudentDashboard() {
                     <p style={styles.driverName}>
                       {activeRide.driver?.name}
                       {activeRide.driver?.isVerified && (
-                        <span style={{
-                          background: 'rgba(16, 185, 129, 0.15)',
-                          color: '#10b981',
-                          border: '1px solid #10b981',
-                          padding: '2px 8px',
-                          borderRadius: '20px',
-                          fontSize: '11px',
-                          fontWeight: '700',
-                          marginLeft: '6px'
-                        }}>
-                          ✅ VERIFIED
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                            background: 'rgba(16, 185, 129, 0.12)',
+                            color: '#34d399',
+                            border: '1px solid rgba(52, 211, 153, 0.3)',
+                            padding: '2px 7px',
+                            borderRadius: '12px',
+                            fontSize: '10.5px',
+                            fontWeight: '600',
+                            lineHeight: '1',
+                            marginLeft: '6px',
+                            letterSpacing: '0.2px',
+                            verticalAlign: 'middle'
+                          }}
+                          title="Verified Driver"
+                        >
+                          <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor" style={{ flexShrink: 0 }}>
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          Verified
                         </span>
                       )}
                     </p>
