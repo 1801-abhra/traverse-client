@@ -1022,51 +1022,6 @@ function FacultyDashboard() {
                         )}
 
                         
-            {/* SOS Emergency Button */}
-            {(activeRide.status === 'accepted' || activeRide.status === 'ontheway') && (
-              <div style={{ marginBottom: '14px' }}>
-                <button
-                  type="button"
-                  onClick={() => setShowSosModal(true)}
-                  className="sos-emergency-btn"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
-                    color: '#ffffff',
-                    border: '1.5px solid #f87171',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    fontWeight: '800',
-                    fontSize: '14.5px',
-                    letterSpacing: '0.6px',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 20px rgba(239, 68, 68, 0.45)',
-                    textTransform: 'uppercase',
-                    transition: 'all 0.2s ease',
-                    fontFamily: 'inherit'
-                  }}
-                >
-                  <span style={{ fontSize: '18px', display: 'inline-block' }}>🚨</span>
-                  <span>SOS Emergency Button</span>
-                  <span style={{
-                    background: 'rgba(255,255,255,0.25)',
-                    padding: '2px 8px',
-                    borderRadius: '20px',
-                    fontSize: '11px',
-                    fontWeight: '700',
-                    letterSpacing: '0.4px',
-                    marginLeft: 'auto'
-                  }}>
-                    112 / WhatsApp
-                  </span>
-                </button>
-              </div>
-            )}
-
             {/* Live Tracking Map */}
                         {(activeRide.status === 'ontheway' || activeRide.status === 'accepted') && (
                             <div style={{ marginTop: '16px' }}>
@@ -1222,7 +1177,39 @@ function FacultyDashboard() {
                             </button>
                         )}
 
-                        {/* Cancel Popup Modal */}
+                        
+            {/* SOS Emergency Button (Positioned below Cancel Ride) */}
+            {(activeRide.status === 'accepted' || activeRide.status === 'ontheway') && (
+              <button
+                type="button"
+                onClick={() => setShowSosModal(true)}
+                className="sos-emergency-btn"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
+                  color: '#ffffff',
+                  border: '1.5px solid #f87171',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  fontWeight: '700',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 16px rgba(239, 68, 68, 0.4)',
+                  marginTop: '10px',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>🚨</span>
+                <span>SOS Emergency Button</span>
+              </button>
+            )}
+
+            {/* Cancel Popup Modal */}
                         {showCancelPopup && (
                             <div style={styles.popup}>
                                 <div style={styles.popupCard}>
