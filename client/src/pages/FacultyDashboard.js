@@ -70,6 +70,8 @@ function calculateDistance(coord1, coord2) {
 }
 
 function FacultyDashboard() {
+  
+
     const [completedRide, setCompletedRide] = useState(null);
     const [showReceipt, setShowReceipt] = useState(false);
     const [receiptRide, setReceiptRide] = useState(null);
@@ -77,6 +79,7 @@ function FacultyDashboard() {
     const [toast, setToast] = useState(null);
     const [showAbout, setShowAbout] = useState(false);
     const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [showSosModal, setShowSosModal] = useState(false);
     const [driversAvailable, setDriversAvailable] = useState(true);
     const [availabilityInfo, setAvailabilityInfo] = useState(null);
     const [searchTimeout, setSearchTimeout] = useState(null);
@@ -99,6 +102,30 @@ function FacultyDashboard() {
     const [driverDistance, setDriverDistance] = useState(null);
     const [selectedRoute, setSelectedRoute] = useState(null);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  const getSosWhatsAppUrl = () => {
+    if (!activeRide) return '#';
+    const driverName = activeRide.driver?.name || 'Assigned Driver';
+    const vehicleNo = activeRide.driver?.vehicleNumber || 'N/A';
+    const carInfo = activeRide.driver?.carName ? activeRide.driver.carName + ' ' + (activeRide.driver.carModel || '') : '';
+    const pickup = activeRide.pickup || 'Pickup Point';
+    const dropoff = activeRide.dropoff || 'Dropoff Point';
+    const locCoords = driverLocation ? (driverLocation[0] + ',' + driverLocation[1]) : '30.8826,77.1490';
+    const mapsLink = 'https://maps.google.com/?q=' + locCoords;
+
+    const text = 
+      '🚨 *EMERGENCY SOS ALERT - TRAVERSE RIDE* 🚨\n\n' +
+      'I need urgent emergency assistance on my active cab ride!\n\n' +
+      '👤 *Driver Name:* ' + driverName + '\n' +
+      '🚗 *Vehicle No:* ' + vehicleNo + (carInfo ? ' (' + carInfo.trim() + ')' : '') + '\n' +
+      '📍 *Pickup:* ' + pickup + '\n' +
+      '🏁 *Destination:* ' + dropoff + '\n' +
+      '🗺️ *Live Location / Coordinates:* ' + mapsLink + '\n\n' +
+      'Please contact me or emergency authorities (112) immediately!';
+
+    return 'https://wa.me/?text=' + encodeURIComponent(text);
+  };
+
     const [booking, setBooking] = useState(false);
     const arrivalNotifiedRef = React.useRef(false);
     const activeRideRef = React.useRef(null);
@@ -561,6 +588,31 @@ function FacultyDashboard() {
           transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
           will-change: transform;
         }
+        
+        @keyframes sosPulseAnim {
+          0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.75), 0 4px 18px rgba(239, 68, 68, 0.45);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0), 0 6px 24px rgba(239, 68, 68, 0.65);
+            transform: scale(1.01);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 4px 18px rgba(239, 68, 68, 0.45);
+            transform: scale(1);
+          }
+        }
+        .sos-emergency-btn {
+          animation: sosPulseAnim 1.8s infinite ease-in-out;
+        }
+        .sos-emergency-btn:hover {
+          filter: brightness(1.1);
+          transform: translateY(-1px);
+        }
+        .sos-emergency-btn:active {
+          transform: scale(0.98);
+        }
         @keyframes driverRadarPulse {
           0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.8), 0 0 16px rgba(230, 57, 70, 0.9); }
           70% { box-shadow: 0 0 0 14px rgba(230, 57, 70, 0), 0 0 16px rgba(230, 57, 70, 0.9); }
@@ -969,7 +1021,53 @@ function FacultyDashboard() {
                             </div>
                         )}
 
-                        {/* Live Tracking Map */}
+                        
+            {/* SOS Emergency Button */}
+            {(activeRide.status === 'accepted' || activeRide.status === 'ontheway') && (
+              <div style={{ marginBottom: '14px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowSosModal(true)}
+                  className="sos-emergency-btn"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    background: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
+                    color: '#ffffff',
+                    border: '1.5px solid #f87171',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    fontWeight: '800',
+                    fontSize: '14.5px',
+                    letterSpacing: '0.6px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 20px rgba(239, 68, 68, 0.45)',
+                    textTransform: 'uppercase',
+                    transition: 'all 0.2s ease',
+                    fontFamily: 'inherit'
+                  }}
+                >
+                  <span style={{ fontSize: '18px', display: 'inline-block' }}>🚨</span>
+                  <span>SOS Emergency Button</span>
+                  <span style={{
+                    background: 'rgba(255,255,255,0.25)',
+                    padding: '2px 8px',
+                    borderRadius: '20px',
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    letterSpacing: '0.4px',
+                    marginLeft: 'auto'
+                  }}>
+                    112 / WhatsApp
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {/* Live Tracking Map */}
                         {(activeRide.status === 'ontheway' || activeRide.status === 'accepted') && (
                             <div style={{ marginTop: '16px' }}>
                                 <div style={styles.trackingHeader}>
@@ -1144,7 +1242,155 @@ function FacultyDashboard() {
                             </div>
                         )}
 
-                        {/* Post-ride Rating */}
+                        
+            {/* SOS Emergency Modal */}
+            {showSosModal && (
+              <div style={styles.popup}>
+                <div style={{
+                  ...styles.popupCard,
+                  maxWidth: '380px',
+                  border: '2px solid #ef4444',
+                  boxShadow: '0 0 35px rgba(239, 68, 68, 0.45), 0 25px 60px rgba(0,0,0,0.95)',
+                  background: 'linear-gradient(170deg, #1f1113 0%, #121212 100%)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                    <div style={{
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '50%',
+                      background: 'rgba(239, 68, 68, 0.2)',
+                      border: '1.5px solid #ef4444',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '22px',
+                      flexShrink: 0
+                    }}>
+                      🚨
+                    </div>
+                    <div>
+                      <h3 style={{ color: '#ef4444', margin: 0, fontSize: '18px', fontWeight: '800', letterSpacing: '0.4px' }}>
+                        EMERGENCY SOS
+                      </h3>
+                      <p style={{ color: '#9ca3af', margin: '2px 0 0 0', fontSize: '11.5px' }}>
+                        Safety Alert & Emergency Assistance
+                      </p>
+                    </div>
+                  </div>
+
+                  <p style={{ color: '#e5e7eb', fontSize: '13px', lineHeight: '1.5', margin: '0 0 14px 0' }}>
+                    If you feel unsafe or in danger, call emergency services immediately or share your live ride coordinates with trusted contacts.
+                  </p>
+
+                  {/* Ride Details Summary */}
+                  {activeRide && (
+                    <div style={{
+                      background: 'rgba(0, 0, 0, 0.5)',
+                      border: '1px solid rgba(239, 68, 68, 0.25)',
+                      borderRadius: '10px',
+                      padding: '10px 12px',
+                      marginBottom: '16px',
+                      fontSize: '12px'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span style={{ color: '#9ca3af' }}>Driver:</span>
+                        <span style={{ color: '#ffffff', fontWeight: '600' }}>{activeRide.driver?.name || 'Assigned Driver'}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span style={{ color: '#9ca3af' }}>Vehicle:</span>
+                        <span style={{ color: '#ffffff', fontWeight: '600' }}>
+                          {activeRide.driver?.vehicleNumber || 'N/A'} {activeRide.driver?.carName ? '(' + activeRide.driver.carName + ')' : ''}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span style={{ color: '#9ca3af' }}>Pickup:</span>
+                        <span style={{ color: '#ffffff', fontWeight: '500', maxWidth: '180px', textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {activeRide.pickup}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#9ca3af' }}>Destination:</span>
+                        <span style={{ color: '#ffffff', fontWeight: '500', maxWidth: '180px', textAlign: 'right', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {activeRide.dropoff}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {/* Call 112 Button */}
+                    <a
+                      href="tel:112"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                        color: '#ffffff',
+                        padding: '13px',
+                        borderRadius: '12px',
+                        textDecoration: 'none',
+                        fontSize: '15px',
+                        fontWeight: '800',
+                        textAlign: 'center',
+                        boxShadow: '0 4px 16px rgba(239, 68, 68, 0.45)',
+                        letterSpacing: '0.3px'
+                      }}
+                    >
+                      <span>📞</span> Call 112 (National Emergency)
+                    </a>
+
+                    {/* WhatsApp Share Button */}
+                    <a
+                      href={getSosWhatsAppUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
+                        color: '#ffffff',
+                        padding: '13px',
+                        borderRadius: '12px',
+                        textDecoration: 'none',
+                        fontSize: '14.5px',
+                        fontWeight: '700',
+                        textAlign: 'center',
+                        boxShadow: '0 4px 16px rgba(37, 211, 102, 0.35)',
+                        letterSpacing: '0.2px'
+                      }}
+                    >
+                      <span>💬</span> Share Ride on WhatsApp
+                    </a>
+
+                    {/* Cancel / Dismiss Button */}
+                    <button
+                      type="button"
+                      onClick={() => setShowSosModal(false)}
+                      style={{
+                        marginTop: '4px',
+                        padding: '11px',
+                        background: '#222222',
+                        color: '#d1d5db',
+                        border: '1px solid #374151',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        fontSize: '13.5px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      ✕ Dismiss / I'm Safe
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Post-ride Rating */}
             {activeRide && activeRide.status === 'completed' && !rated && (
               <div style={styles.ratingBox}>
                 <p style={{ color: '#ffffff', fontWeight: '600', margin: '0 0 10px 0' }}>Rate your ride experience</p>
