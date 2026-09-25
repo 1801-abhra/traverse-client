@@ -1399,35 +1399,6 @@ function StudentDashboard() {
               )}
             </div>
 
-            {/* Fleet Confidence Rating Banner */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(20, 20, 20, 0.6) 100%)',
-              border: '1px solid rgba(245, 158, 11, 0.22)',
-              borderRadius: '10px',
-              padding: '8px 12px',
-              marginBottom: '14px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ color: '#f59e0b', fontSize: '13px' }}>★</span>
-                <span style={{ color: '#ffffff', fontSize: '12px', fontWeight: '700' }}>4.9★ Fleet Rating</span>
-                <span style={{ color: '#888888', fontSize: '11px' }}>• Verified Campus Drivers</span>
-              </div>
-              <span style={{
-                color: '#10b981',
-                fontSize: '11px',
-                fontWeight: '600',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
-                Top Quality
-              </span>
-            </div>
-
             {/* Shared Available Rides List */}
             {rideType === 'shared' && sharedRides.length > 0 && (
               <div style={styles.sharedList}>
