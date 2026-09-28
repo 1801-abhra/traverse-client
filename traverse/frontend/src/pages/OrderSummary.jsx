@@ -1,30 +1,46 @@
 import { useNavigate } from 'react-router-dom'
 import {
-    MapPin, Car, Train, ArrowRight, ChevronRight,
-    CheckCircle, Lock, Edit, Info, PartyPopper
+    MapPin, Car, Train, Bus, Plane, ArrowRight,
+    ChevronRight, CheckCircle, Lock, Edit, Info
 } from 'lucide-react'
+import { useJourney } from '../context/JourneyContext'
 
 function OrderSummary() {
     const navigate = useNavigate()
+    const { journey, totalCost } = useJourney()
 
     const legs = [
         {
-            icon: Car, mode: 'Cab',
-            route: 'JUIT → Chandigarh Station',
-            time: '08:30 AM → 09:45 AM · 1h 15m',
-            price: 200, confirmed: false
+            icon: journey.leg1.key === 'walk' ? Car : Car,
+            mode: journey.leg1.label,
+            route: journey.leg1.desc,
+            time: '08:30 AM → 09:00 AM · 30m',
+            price: journey.leg1.price,
+            confirmed: false
         },
         {
-            icon: Train, mode: 'Train',
-            route: 'Chandigarh → New Delhi',
-            time: '10:10 AM → 2:40 PM · 4h 30m',
-            price: 450, confirmed: true
+            icon: journey.leg2.key === 'bus' ? Bus : Car,
+            mode: journey.leg2.label,
+            route: journey.leg2.desc,
+            time: '09:15 AM → 11:00 AM · 1h 45m',
+            price: journey.leg2.price,
+            confirmed: false
         },
         {
-            icon: Car, mode: 'Cab',
-            route: 'Delhi Station → Destination',
-            time: '2:55 PM → 3:40 PM · 45m',
-            price: 300, confirmed: false
+            icon: journey.leg3.key === 'flight' ? Plane : Train,
+            mode: journey.leg3.label,
+            route: journey.leg3.desc,
+            time: '11:30 AM → 5:00 PM · 5h 30m',
+            price: journey.leg3.price,
+            confirmed: journey.leg3.key !== 'flight'
+        },
+        {
+            icon: Car,
+            mode: journey.leg4.label,
+            route: journey.leg4.desc,
+            time: '5:15 PM → 5:45 PM · 30m',
+            price: journey.leg4.price,
+            confirmed: false
         },
     ]
 
@@ -105,6 +121,7 @@ function OrderSummary() {
                         }}>
                             <div style={{
                                 display: 'flex',
+                                justifyItems: 'space-between',
                                 justifyContent: 'space-between',
                                 alignItems: 'center', marginBottom: '16px'
                             }}>
@@ -160,20 +177,24 @@ function OrderSummary() {
                                         JUIT Waknaghat
                                     </span>
                                 </div>
-                                {['Cab', 'Train', 'Cab'].map((mode, i) => (
-                                    <>
-                                        <div key={`line-${i}`} style={{
+                                {[journey.leg1.label, journey.leg2.label, journey.leg3.label, journey.leg4.label].map((mode, i) => (
+                                    <div key={`mode-wrap-${i}`} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <div style={{
                                             height: '2px',
-                                            width: '20px', backgroundColor: '#CBD5E1',
+                                            width: '16px', backgroundColor: '#CBD5E1',
                                             borderRadius: '2px'
                                         }} />
-                                        <div key={`mode-${i}`} style={{
+                                        <div style={{
                                             display: 'flex', alignItems: 'center',
                                             gap: '4px', backgroundColor: '#E2E8F0',
                                             padding: '3px 8px', borderRadius: '999px'
                                         }}>
-                                            {mode === 'Train'
+                                            {mode.toLowerCase().includes('train')
                                                 ? <Train size={12} color="#1A56DB" />
+                                                : mode.toLowerCase().includes('bus')
+                                                ? <Bus size={12} color="#1A56DB" />
+                                                : mode.toLowerCase().includes('flight')
+                                                ? <Plane size={12} color="#1A56DB" />
                                                 : <Car size={12} color="#1A56DB" />}
                                             <span style={{
                                                 fontSize: '11px',
@@ -182,12 +203,12 @@ function OrderSummary() {
                                                 {mode}
                                             </span>
                                         </div>
-                                        <div key={`line2-${i}`} style={{
+                                        <div style={{
                                             height: '2px',
-                                            width: '20px', backgroundColor: '#CBD5E1',
+                                            width: '16px', backgroundColor: '#CBD5E1',
                                             borderRadius: '2px'
                                         }} />
-                                    </>
+                                    </div>
                                 ))}
                                 <div style={{
                                     display: 'flex',
@@ -208,11 +229,11 @@ function OrderSummary() {
                                 display: 'flex', gap: '16px',
                                 fontSize: '13px', color: '#94A3B8'
                             }}>
-                                <span>3 legs</span>
+                                <span>4 legs</span>
                                 <span>·</span>
                                 <span>6h 30m</span>
                                 <span>·</span>
-                                <span>2 transfers</span>
+                                <span>3 transfers</span>
                             </div>
                         </div>
 
@@ -483,16 +504,20 @@ function OrderSummary() {
                             }}>
                                 {[
                                     {
-                                        label: 'Cab (JUIT → Chandigarh)',
-                                        value: '₹200'
+                                        label: `${journey.leg1.label} (${journey.leg1.desc})`,
+                                        value: `₹${journey.leg1.price}`
                                     },
                                     {
-                                        label: 'Train (Chandigarh → Delhi)',
-                                        value: '₹450'
+                                        label: `${journey.leg2.label} (${journey.leg2.desc})`,
+                                        value: `₹${journey.leg2.price}`
                                     },
                                     {
-                                        label: 'Cab (Delhi → Destination)',
-                                        value: '₹300'
+                                        label: `${journey.leg3.label} (${journey.leg3.desc})`,
+                                        value: `₹${journey.leg3.price}`
+                                    },
+                                    {
+                                        label: `${journey.leg4.label} (${journey.leg4.desc})`,
+                                        value: `₹${journey.leg4.price}`
                                     },
                                 ].map(({ label, value }) => (
                                     <div key={label} style={{
@@ -533,7 +558,7 @@ function OrderSummary() {
                                         fontSize: '14px',
                                         fontWeight: '700', color: '#0F172A'
                                     }}>
-                                        ₹950
+                                        ₹{totalCost}
                                     </span>
                                 </div>
                                 <div style={{
@@ -579,7 +604,7 @@ function OrderSummary() {
                                     fontWeight: '900', color: '#0EA5E9',
                                     letterSpacing: '-1px'
                                 }}>
-                                    ₹979
+                                    ₹{totalCost + 29}
                                 </span>
                             </div>
 
