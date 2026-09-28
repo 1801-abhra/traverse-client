@@ -1,4 +1,764 @@
+import { useNavigate } from 'react-router-dom'
+import {
+    MapPin, Calendar, Clock, Edit,
+    Car, Train, Bus, Landmark, Plane,
+    Clock3, ArrowRight, SlidersHorizontal,
+    CheckCircle
+} from 'lucide-react'
+
 function SearchResults() {
-    return <div className="p-8 text-2xl font-bold text-[#0F172A]">Search Results</div>
+    const navigate = useNavigate()
+
+    const journeys = [
+        {
+            id: 1,
+            badge: 'Recommended',
+            badgeColor: '#1A56DB',
+            badgeBg: '#EFF6FF',
+            tag: 'Cheapest',
+            tagColor: '#059669',
+            tagBg: '#ECFDF5',
+            legs: [
+                {
+                    from: 'JUIT', fromSub: 'Waknaghat', mode: 'Cab',
+                    time: '1h 15m', price: '₹200', color: '#0EA5E9',
+                    bg: '#F0F9FF'
+                },
+                {
+                    from: 'Chandigarh', fromSub: 'Railway Stn',
+                    mode: 'Vande Bharat', time: '4h 30m', price: '₹450',
+                    color: '#1A56DB', bg: '#EFF6FF'
+                },
+                {
+                    from: 'New Delhi', fromSub: 'Station (NDLS)',
+                    mode: 'City Cab', time: '45m', price: '₹300',
+                    color: '#0D9488', bg: '#F0FDFA'
+                },
+            ],
+            dest: 'Delhi Campus',
+            destSub: 'South Campus',
+            total: '₹950',
+            duration: '6h 30m',
+            transfers: '2 transfers · 25m buffer',
+        },
+        {
+            id: 2,
+            badge: 'Faster Option',
+            badgeColor: '#D97706',
+            badgeBg: '#FFFBEB',
+            tag: 'Great Value',
+            tagColor: '#64748B',
+            tagBg: '#F1F5F9',
+            legs: [
+                {
+                    from: 'JUIT', fromSub: 'Waknaghat',
+                    mode: 'Intercity Bus', time: '1h 40m', price: '₹120',
+                    color: '#D97706', bg: '#FFFBEB'
+                },
+                {
+                    from: 'Chandigarh', fromSub: 'ISBT-43',
+                    mode: 'Shatabdi Exp', time: '3h 50m', price: '₹520',
+                    color: '#1A56DB', bg: '#EFF6FF'
+                },
+                {
+                    from: 'NDLS', fromSub: 'Main Concourse',
+                    mode: 'Metro Yellow', time: '35m', price: '₹50',
+                    color: '#7C3AED', bg: '#F5F3FF'
+                },
+            ],
+            dest: 'New Delhi',
+            destSub: 'City Center',
+            total: '₹780',
+            duration: '7h 10m',
+            transfers: '3 transfers · Guaranteed',
+        },
+        {
+            id: 3,
+            badge: 'Most Comfortable',
+            badgeColor: '#7C3AED',
+            badgeBg: '#F5F3FF',
+            tag: 'Luxury',
+            tagColor: '#64748B',
+            tagBg: '#F1F5F9',
+            legs: [
+                {
+                    from: 'JUIT', fromSub: 'Waknaghat',
+                    mode: 'Prime Sedan', time: '1h 10m', price: '₹450',
+                    color: '#1A56DB', bg: '#EFF6FF'
+                },
+                {
+                    from: 'Chandigarh Jn', fromSub: 'Platform 1',
+                    mode: 'Vande Exec.', time: '3h 30m', price: '₹850',
+                    color: '#4F46E5', bg: '#EEF2FF'
+                },
+                {
+                    from: 'New Delhi', fromSub: 'Ajmeri Gate',
+                    mode: 'Pre-booked Cab', time: '35m', price: '₹220',
+                    color: '#1A56DB', bg: '#EFF6FF'
+                },
+            ],
+            dest: 'Destination',
+            destSub: 'Doorstep',
+            total: '₹1,400',
+            duration: '6h 20m',
+            transfers: '2 transfers · Priority boarding',
+        },
+        {
+            id: 4,
+            badge: 'Fastest',
+            badgeColor: '#DC2626',
+            badgeBg: '#FEF2F2',
+            tag: 'Save 4h 10m',
+            tagColor: '#059669',
+            tagBg: '#ECFDF5',
+            legs: [
+                {
+                    from: 'JUIT', fromSub: 'Waknaghat',
+                    mode: 'Airport Cab', time: '1h 05m', price: '₹700',
+                    color: '#1A56DB', bg: '#EFF6FF'
+                },
+                {
+                    from: 'Chandigarh', fromSub: 'Airport (IXC)',
+                    mode: 'IndiGo Flight', time: '50m', price: '₹3,100',
+                    color: '#0EA5E9', bg: '#F0F9FF'
+                },
+                {
+                    from: 'IGI T3', fromSub: 'Delhi Airport',
+                    mode: 'Airport Cab', time: '35m', price: '₹400',
+                    color: '#0D9488', bg: '#F0FDFA'
+                },
+            ],
+            dest: 'Destination',
+            destSub: 'South Delhi',
+            total: '₹4,200',
+            duration: '2h 30m',
+            transfers: '2 transfers · Express',
+        },
+    ]
+
+    return (
+        <div style={{
+            fontFamily: 'Inter, sans-serif',
+            backgroundColor: '#ffffff', minHeight: '100vh'
+        }}>
+
+            {/* TOP SEARCH BAR */}
+            <section style={{
+                backgroundColor: '#F8FAFC',
+                borderBottom: '1px solid #E2E8F0',
+                padding: '16px 24px'
+            }}>
+                <div style={{
+                    maxWidth: '1200px', margin: '0 auto',
+                    display: 'flex', flexDirection: 'column', gap: '12px'
+                }}>
+
+                    {/* Route strip */}
+                    <div style={{
+                        backgroundColor: '#fff', borderRadius: '12px',
+                        padding: '14px 20px', border: '1px solid #E2E8F0',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                        display: 'flex', alignItems: 'center',
+                        justifyContent: 'space-between', flexWrap: 'wrap',
+                        gap: '12px'
+                    }}>
+                        <div style={{
+                            display: 'flex', alignItems: 'center',
+                            gap: '20px', flexWrap: 'wrap'
+                        }}>
+                            <div style={{
+                                display: 'flex', alignItems: 'center',
+                                gap: '8px'
+                            }}>
+                                <MapPin size={18} color="#1A56DB" />
+                                <span style={{
+                                    fontWeight: '800', fontSize: '16px',
+                                    color: '#0F172A'
+                                }}>
+                                    JUIT Waknaghat
+                                </span>
+                                <ArrowRight size={16} color="#94A3B8" />
+                                <span style={{
+                                    fontWeight: '800', fontSize: '16px',
+                                    color: '#0F172A'
+                                }}>
+                                    New Delhi
+                                </span>
+                            </div>
+                            <div style={{
+                                display: 'flex', alignItems: 'center',
+                                gap: '6px'
+                            }}>
+                                <Calendar size={16} color="#1A56DB" />
+                                <span style={{
+                                    fontSize: '14px', fontWeight: '600',
+                                    color: '#0F172A'
+                                }}>Thu, 24 Oct</span>
+                            </div>
+                            <div style={{
+                                display: 'flex', alignItems: 'center',
+                                gap: '6px'
+                            }}>
+                                <Clock size={16} color="#1A56DB" />
+                                <span style={{
+                                    fontSize: '14px', fontWeight: '600',
+                                    color: '#0F172A'
+                                }}>08:30 AM</span>
+                            </div>
+                        </div>
+                        <button style={{
+                            display: 'flex', alignItems: 'center', gap: '6px',
+                            color: '#1A56DB', fontWeight: '600', fontSize: '14px',
+                            background: 'none', border: 'none', cursor: 'pointer'
+                        }}>
+                            <Edit size={16} /> Edit Search
+                        </button>
+                    </div>
+
+                    {/* Preference pills + count */}
+                    <div style={{
+                        display: 'flex', alignItems: 'center',
+                        justifyContent: 'space-between', flexWrap: 'wrap',
+                        gap: '8px'
+                    }}>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            {[
+                                { label: 'Cheapest', selected: true },
+                                { label: 'Fastest', selected: false },
+                                { label: 'Comfortable', selected: false },
+                            ].map(({ label, selected }) => (
+                                <button key={label} style={{
+                                    padding: '8px 16px', borderRadius: '999px',
+                                    fontSize: '13px', fontWeight: '700',
+                                    border: selected
+                                        ? 'none' : '1px solid #E2E8F0',
+                                    backgroundColor: selected ? '#1A56DB' : '#fff',
+                                    color: selected ? '#fff' : '#64748B',
+                                    cursor: 'pointer'
+                                }}>
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                        <div style={{
+                            display: 'flex', alignItems: 'center', gap: '6px',
+                            backgroundColor: '#F1F5F9', padding: '6px 12px',
+                            borderRadius: '999px'
+                        }}>
+                            <div style={{
+                                width: '8px', height: '8px',
+                                borderRadius: '999px', backgroundColor: '#22C55E'
+                            }}
+                            />
+                            <span style={{
+                                fontSize: '12px', fontWeight: '700',
+                                color: '#0F172A'
+                            }}>
+                                4 multi-modal routes found
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* MAIN CONTENT */}
+            <div style={{
+                maxWidth: '1200px', margin: '0 auto',
+                padding: '32px 24px',
+                display: 'grid', gridTemplateColumns: '280px 1fr',
+                gap: '32px', alignItems: 'start'
+            }}>
+
+                {/* LEFT SIDEBAR */}
+                <aside style={{
+                    backgroundColor: '#fff', borderRadius: '16px',
+                    border: '1px solid #E2E8F0', padding: '24px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                    position: 'sticky', top: '80px'
+                }}>
+                    <div style={{
+                        display: 'flex', justifyContent: 'space-between',
+                        alignItems: 'center', marginBottom: '20px',
+                        paddingBottom: '16px',
+                        borderBottom: '1px solid #F1F5F9'
+                    }}>
+                        <div style={{
+                            display: 'flex', alignItems: 'center',
+                            gap: '8px'
+                        }}>
+                            <SlidersHorizontal size={18} color="#1A56DB" />
+                            <span style={{
+                                fontWeight: '800', fontSize: '16px',
+                                color: '#0F172A'
+                            }}>Filters</span>
+                        </div>
+                        <button style={{
+                            color: '#1A56DB', fontWeight: '600',
+                            fontSize: '13px', background: 'none', border: 'none',
+                            cursor: 'pointer'
+                        }}>Reset all</button>
+                    </div>
+
+                    {/* Transport Modes */}
+                    <div style={{ marginBottom: '20px' }}>
+                        <span style={{
+                            fontSize: '11px', fontWeight: '700',
+                            color: '#475569', textTransform: 'uppercase',
+                            letterSpacing: '0.08em'
+                        }}>Transport Modes</span>
+                        <div style={{
+                            display: 'flex', flexDirection: 'column',
+                            gap: '10px', marginTop: '12px'
+                        }}>
+                            {[
+                                { icon: Car, label: 'Cab' },
+                                { icon: Train, label: 'Train' },
+                                { icon: Bus, label: 'Bus' },
+                                { icon: Landmark, label: 'Metro' },
+                                { icon: Plane, label: 'Flight' },
+                            ].map(({ icon: Icon, label }) => (
+                                <label key={label} style={{
+                                    display: 'flex', alignItems: 'center',
+                                    gap: '10px', cursor: 'pointer'
+                                }}>
+                                    <input type="checkbox" defaultChecked
+                                        style={{
+                                            accentColor: '#1A56DB', width: '16px',
+                                            height: '16px'
+                                        }} />
+                                    <Icon size={16} color="#1A56DB" />
+                                    <span style={{
+                                        fontSize: '14px', fontWeight: '500',
+                                        color: '#0F172A'
+                                    }}>{label}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{
+                        height: '1px', backgroundColor: '#F1F5F9',
+                        margin: '16px 0'
+                    }} />
+
+                    {/* Max Transfers */}
+                    <div style={{ marginBottom: '20px' }}>
+                        <span style={{
+                            fontSize: '11px', fontWeight: '700',
+                            color: '#475569', textTransform: 'uppercase',
+                            letterSpacing: '0.08em'
+                        }}>Max Transfers</span>
+                        <div style={{
+                            display: 'grid', gridTemplateColumns:
+                                'repeat(3,1fr)', gap: '8px', marginTop: '12px'
+                        }}>
+                            {['Any', '1-2', 'Direct'].map((t, i) => (
+                                <button key={t} style={{
+                                    padding: '8px', textAlign: 'center',
+                                    borderRadius: '8px', fontSize: '13px',
+                                    fontWeight: '600', cursor: 'pointer',
+                                    border: i === 0
+                                        ? 'none' : '1px solid #E2E8F0',
+                                    backgroundColor: i === 0 ? '#1A56DB' : '#fff',
+                                    color: i === 0 ? '#fff' : '#64748B'
+                                }}>{t}</button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{
+                        height: '1px', backgroundColor: '#F1F5F9',
+                        margin: '16px 0'
+                    }} />
+
+                    {/* Departure Time */}
+                    <div style={{ marginBottom: '20px' }}>
+                        <span style={{
+                            fontSize: '11px', fontWeight: '700',
+                            color: '#475569', textTransform: 'uppercase',
+                            letterSpacing: '0.08em'
+                        }}>Departure Time</span>
+                        <div style={{
+                            display: 'grid', gridTemplateColumns:
+                                '1fr 1fr', gap: '8px', marginTop: '12px'
+                        }}>
+                            {[
+                                {
+                                    label: 'Early Morning', sub: 'Before 6 AM',
+                                    active: false
+                                },
+                                {
+                                    label: 'Morning', sub: '6 AM - 12 PM',
+                                    active: true
+                                },
+                                {
+                                    label: 'Afternoon', sub: '12 PM - 6 PM',
+                                    active: false
+                                },
+                                {
+                                    label: 'Evening', sub: 'After 6 PM',
+                                    active: false
+                                },
+                            ].map(({ label, sub, active }) => (
+                                <div key={label} style={{
+                                    padding: '10px', borderRadius: '8px',
+                                    border: active
+                                        ? '2px solid #1A56DB'
+                                        : '1px solid #E2E8F0',
+                                    backgroundColor: active ? '#EFF6FF' : '#fff',
+                                    cursor: 'pointer'
+                                }}>
+                                    <div style={{
+                                        fontSize: '12px', fontWeight: '700',
+                                        color: active ? '#1A56DB' : '#0F172A'
+                                    }}>
+                                        {label}
+                                    </div>
+                                    <div style={{
+                                        fontSize: '11px',
+                                        color: active ? '#1A56DB' : '#94A3B8'
+                                    }}>
+                                        {sub}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div style={{
+                        height: '1px', backgroundColor: '#F1F5F9',
+                        margin: '16px 0'
+                    }} />
+
+                    {/* Price Range */}
+                    <div style={{ marginBottom: '20px' }}>
+                        <span style={{
+                            fontSize: '11px', fontWeight: '700',
+                            color: '#475569', textTransform: 'uppercase',
+                            letterSpacing: '0.08em'
+                        }}>Price Range</span>
+                        <div style={{ marginTop: '16px', padding: '0 4px' }}>
+                            <div style={{
+                                position: 'relative', height: '6px',
+                                backgroundColor: '#E2E8F0', borderRadius: '999px'
+                            }}>
+                                <div style={{
+                                    position: 'absolute', left: '10%',
+                                    right: '40%', height: '100%',
+                                    backgroundColor: '#0EA5E9',
+                                    borderRadius: '999px'
+                                }} />
+                            </div>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between', marginTop: '10px'
+                            }}>
+                                <span style={{
+                                    fontSize: '13px', fontWeight: '700',
+                                    color: '#1A56DB'
+                                }}>₹500</span>
+                                <span style={{
+                                    fontSize: '13px', fontWeight: '700',
+                                    color: '#1A56DB'
+                                }}>₹2,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Student Pass */}
+                    <div style={{
+                        background: 'linear-gradient(135deg, #EFF6FF, #EEF2FF)',
+                        borderRadius: '12px', padding: '16px',
+                        border: '1px solid #BFDBFE', marginTop: '8px'
+                    }}>
+                        <div style={{
+                            fontWeight: '700', fontSize: '13px',
+                            color: '#1A56DB', marginBottom: '4px'
+                        }}>
+                            Student Pass Active
+                        </div>
+                        <div style={{
+                            fontSize: '12px', color: '#475569',
+                            lineHeight: '1.5'
+                        }}>
+                            Extra 15-25% off IRCTC & Metro legs auto-applied.
+                        </div>
+                    </div>
+                </aside>
+
+                {/* RESULTS */}
+                <main>
+                    {/* Header */}
+                    <div style={{
+                        display: 'flex', alignItems: 'center',
+                        justifyContent: 'space-between', marginBottom: '24px',
+                        flexWrap: 'wrap', gap: '12px'
+                    }}>
+                        <div>
+                            <h1 style={{
+                                fontSize: '22px', fontWeight: '800',
+                                color: '#0F172A', margin: '0 0 4px'
+                            }}>
+                                4 journeys found for JUIT → Delhi
+                            </h1>
+                            <div style={{
+                                display: 'flex', alignItems: 'center',
+                                gap: '6px'
+                            }}>
+                                <CheckCircle size={14} color="#22C55E" />
+                                <span style={{ fontSize: '13px', color: '#64748B' }}>
+                                    All connecting legs guaranteed
+                                </span>
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '4px' }}>
+                                Routes shown are illustrative. Real routes updating soon.
+                            </div>
+                        </div>
+                        <select style={{
+                            padding: '10px 16px', borderRadius: '10px',
+                            border: '1px solid #E2E8F0', fontSize: '13px',
+                            fontWeight: '600', color: '#0F172A',
+                            backgroundColor: '#fff', cursor: 'pointer',
+                            outline: 'none'
+                        }}>
+                            <option>Sort: Recommended</option>
+                            <option>Cheapest First</option>
+                            <option>Fastest First</option>
+                        </select>
+                    </div>
+
+                    {/* Journey Cards */}
+                    <div style={{
+                        display: 'flex', flexDirection: 'column',
+                        gap: '20px'
+                    }}>
+                        {journeys.map((journey) => (
+                            <article key={journey.id} style={{
+                                backgroundColor: '#fff', borderRadius: '16px',
+                                padding: '24px',
+                                border: '1px solid #E2E8F0',
+                                borderLeft: '4px solid #1A56DB',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.06)'
+                            }}>
+                                {/* Badges */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center', marginBottom: '20px',
+                                    flexWrap: 'wrap', gap: '8px'
+                                }}>
+                                    <div style={{
+                                        display: 'flex', gap: '8px',
+                                        alignItems: 'center'
+                                    }}>
+                                        <span style={{
+                                            padding: '4px 10px', borderRadius: '6px',
+                                            fontSize: '12px', fontWeight: '700',
+                                            backgroundColor: journey.badgeBg,
+                                            color: journey.badgeColor
+                                        }}>
+                                            {journey.badge}
+                                        </span>
+                                    </div>
+                                    <span style={{
+                                        padding: '4px 10px', borderRadius: '6px',
+                                        fontSize: '12px', fontWeight: '700',
+                                        backgroundColor: journey.tagBg,
+                                        color: journey.tagColor
+                                    }}>
+                                        {journey.tag}
+                                    </span>
+                                </div>
+
+                                {/* Journey Path */}
+                                <div style={{
+                                    overflowX: 'auto',
+                                    paddingBottom: '8px', marginBottom: '20px'
+                                }}>
+                                    <div style={{
+                                        minWidth: '600px', display: 'flex',
+                                        alignItems: 'center', justifyContent: 'space-between',
+                                        position: 'relative', padding: '8px 0'
+                                    }}>
+
+                                        {/* Origin node */}
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column', alignItems: 'center',
+                                            textAlign: 'center', width: '80px',
+                                            zIndex: 1
+                                        }}>
+                                            <div style={{
+                                                width: '40px', height: '40px',
+                                                borderRadius: '999px', backgroundColor: '#F1F5F9',
+                                                border: '1px solid #E2E8F0', display: 'flex',
+                                                alignItems: 'center', justifyContent: 'center'
+                                            }}>
+                                                <MapPin size={18} color="#1A56DB" />
+                                            </div>
+                                            <span style={{
+                                                fontSize: '12px', fontWeight: '800',
+                                                color: '#0F172A', marginTop: '6px'
+                                            }}>JUIT</span>
+                                            <span style={{
+                                                fontSize: '11px',
+                                                color: '#94A3B8'
+                                            }}>Campus Gate</span>
+                                        </div>
+
+                                        {journey.legs.map((leg, i) => (
+                                            <>
+                                                {/* Leg connector */}
+                                                <div key={`leg-${i}`} style={{
+                                                    flex: 1,
+                                                    display: 'flex', flexDirection: 'column',
+                                                    alignItems: 'center', position: 'relative',
+                                                    padding: '0 4px'
+                                                }}>
+                                                    <div style={{
+                                                        position: 'absolute',
+                                                        top: '20px', left: 0, right: 0,
+                                                        height: '2px', borderTop: `2px dashed ${leg.color}`,
+                                                        zIndex: 0
+                                                    }} />
+                                                    <div style={{
+                                                        zIndex: 1, backgroundColor: leg.bg,
+                                                        border: `1px solid ${leg.color}30`,
+                                                        color: leg.color, padding: '3px 8px',
+                                                        borderRadius: '999px', fontSize: '11px',
+                                                        fontWeight: '700', marginBottom: '4px',
+                                                        whiteSpace: 'nowrap'
+                                                    }}>
+                                                        {leg.mode}
+                                                    </div>
+                                                    <div style={{
+                                                        fontSize: '11px',
+                                                        color: '#64748B', fontWeight: '600',
+                                                        backgroundColor: '#fff', padding: '2px 6px',
+                                                        borderRadius: '4px', zIndex: 1,
+                                                        whiteSpace: 'nowrap'
+                                                    }}>
+                                                        {leg.time} · {leg.price}
+                                                    </div>
+                                                </div>
+
+                                                {/* Stop node */}
+                                                <div key={`node-${i}`} style={{
+                                                    display: 'flex', flexDirection: 'column',
+                                                    alignItems: 'center', textAlign: 'center',
+                                                    width: '80px', zIndex: 1
+                                                }}>
+                                                    <div style={{
+                                                        width: '40px', height: '40px',
+                                                        borderRadius: '999px',
+                                                        backgroundColor: '#F1F5F9',
+                                                        border: '1px solid #E2E8F0',
+                                                        display: 'flex', alignItems: 'center',
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        {i === journey.legs.length - 1 ? (
+                                                            <MapPin size={18} color="#1A56DB" />
+                                                        ) : (
+                                                            <Train size={18} color="#64748B" />
+                                                        )}
+                                                    </div>
+                                                    <span style={{
+                                                        fontSize: '11px',
+                                                        fontWeight: '800', color: '#0F172A',
+                                                        marginTop: '6px',
+                                                        whiteSpace: 'nowrap'
+                                                    }}>
+                                                        {i === journey.legs.length - 1
+                                                            ? journey.dest : leg.from}
+                                                    </span>
+                                                    <span style={{
+                                                        fontSize: '10px',
+                                                        color: '#94A3B8',
+                                                        whiteSpace: 'nowrap'
+                                                    }}>
+                                                        {i === journey.legs.length - 1
+                                                            ? journey.destSub : leg.fromSub}
+                                                    </span>
+                                                </div>
+                                            </>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Bottom row */}
+                                <div style={{
+                                    display: 'flex', alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    paddingTop: '16px',
+                                    borderTop: '1px solid #F1F5F9',
+                                    flexWrap: 'wrap', gap: '12px'
+                                }}>
+                                    <div style={{
+                                        display: 'flex', gap: '24px',
+                                        alignItems: 'center', flexWrap: 'wrap'
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center', gap: '6px'
+                                        }}>
+                                            <Clock3 size={16} color="#94A3B8" />
+                                            <span style={{
+                                                fontSize: '14px',
+                                                fontWeight: '700', color: '#0F172A'
+                                            }}>
+                                                {journey.duration}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span style={{
+                                                fontSize: '24px',
+                                                fontWeight: '900', color: '#0EA5E9',
+                                                letterSpacing: '-1px'
+                                            }}>
+                                                {journey.total}
+                                            </span>
+                                            <span style={{
+                                                fontSize: '11px',
+                                                color: '#94A3B8', marginLeft: '4px'
+                                            }}>
+                                                / person
+                                            </span>
+                                        </div>
+                                        <div style={{
+                                            padding: '6px 12px', borderRadius: '999px',
+                                            backgroundColor: '#F1F5F9', fontSize: '12px',
+                                            fontWeight: '600', color: '#475569'
+                                        }}>
+                                            {journey.transfers}
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => navigate('/journey-builder')}
+                                        style={{
+                                            backgroundColor: '#1A56DB', color: '#fff',
+                                            padding: '12px 24px', borderRadius: '10px',
+                                            fontWeight: '700', fontSize: '14px',
+                                            border: 'none', cursor: 'pointer',
+                                            display: 'flex', alignItems: 'center', gap: '8px'
+                                        }}>
+                                        View Details <ArrowRight size={16} />
+                                    </button>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+
+                    {/* Pagination */}
+                    <div style={{
+                        textAlign: 'center', padding: '40px 0',
+                        color: '#94A3B8', fontSize: '13px'
+                    }}>
+                        Showing 4 of 4 results
+                    </div>
+                </main>
+            </div>
+        </div>
+    )
 }
+
 export default SearchResults
