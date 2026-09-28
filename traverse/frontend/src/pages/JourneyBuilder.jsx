@@ -361,7 +361,7 @@ function JourneyBuilder() {
                                         display: 'flex',
                                         flexDirection: 'column',
                                         alignItems: 'flex-end', gap: '8px',
-                                        flexShrink: 0
+                                        flexShrink: 0, maxWidth: '340px'
                                     }}>
                                         <div style={{
                                             fontSize: '11px',
@@ -374,7 +374,7 @@ function JourneyBuilder() {
                                         <div style={{
                                             display: 'flex', gap: '8px',
                                             flexWrap: 'wrap',
-                                            justifyContent: 'flex-end'
+                                            justifyContent: 'flex-end', maxWidth: '320px'
                                         }}>
                                             {leg.options.map(opt => {
                                                 const active =
