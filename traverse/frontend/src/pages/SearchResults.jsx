@@ -575,18 +575,27 @@ function SearchResults() {
                                             </div>
                                             <span style={{
                                                 fontSize: '12px', fontWeight: '800',
-                                                color: '#0F172A', marginTop: '6px'
-                                            }}>JUIT</span>
+                                                color: '#0F172A', marginTop: '6px',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                                {journey.legs[0].from}
+                                            </span>
                                             <span style={{
                                                 fontSize: '11px',
-                                                color: '#94A3B8'
-                                            }}>Campus Gate</span>
+                                                color: '#94A3B8',
+                                                whiteSpace: 'nowrap'
+                                            }}>
+                                                {journey.legs[0].fromSub}
+                                            </span>
                                         </div>
 
                                         {journey.legs.map((leg, i) => (
-                                            <>
+                                            <div key={`step-${i}`} style={{
+                                                display: 'flex', alignItems: 'center',
+                                                flex: 1
+                                            }}>
                                                 {/* Leg connector */}
-                                                <div key={`leg-${i}`} style={{
+                                                <div style={{
                                                     flex: 1,
                                                     display: 'flex', flexDirection: 'column',
                                                     alignItems: 'center', position: 'relative',
@@ -615,12 +624,12 @@ function SearchResults() {
                                                         borderRadius: '4px', zIndex: 1,
                                                         whiteSpace: 'nowrap'
                                                     }}>
-                                                        {leg.time} · {leg.price}
+                                                        {leg.price} · {leg.time}
                                                     </div>
                                                 </div>
 
                                                 {/* Stop node */}
-                                                <div key={`node-${i}`} style={{
+                                                <div style={{
                                                     display: 'flex', flexDirection: 'column',
                                                     alignItems: 'center', textAlign: 'center',
                                                     width: '80px', zIndex: 1
@@ -633,11 +642,10 @@ function SearchResults() {
                                                         display: 'flex', alignItems: 'center',
                                                         justifyContent: 'center'
                                                     }}>
-                                                        {i === journey.legs.length - 1 ? (
-                                                            <MapPin size={18} color="#1A56DB" />
-                                                        ) : (
-                                                            <Train size={18} color="#64748B" />
-                                                        )}
+                                                        <MapPin
+                                                            size={18}
+                                                            color={i === journey.legs.length - 1 ? '#1A56DB' : '#64748B'}
+                                                        />
                                                     </div>
                                                     <span style={{
                                                         fontSize: '11px',
@@ -646,7 +654,8 @@ function SearchResults() {
                                                         whiteSpace: 'nowrap'
                                                     }}>
                                                         {i === journey.legs.length - 1
-                                                            ? journey.dest : leg.from}
+                                                            ? journey.dest
+                                                            : journey.legs[i + 1].from}
                                                     </span>
                                                     <span style={{
                                                         fontSize: '10px',
@@ -654,10 +663,11 @@ function SearchResults() {
                                                         whiteSpace: 'nowrap'
                                                     }}>
                                                         {i === journey.legs.length - 1
-                                                            ? journey.destSub : leg.fromSub}
+                                                            ? journey.destSub
+                                                            : journey.legs[i + 1].fromSub}
                                                     </span>
                                                 </div>
-                                            </>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
