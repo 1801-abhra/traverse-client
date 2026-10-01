@@ -32,6 +32,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.cheapest?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.cheapest?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.cheapest?.transfers || 3) + ' transfers',
             topsisScore: computedRoutes.cheapest?.ccFinal || 0,
+            routeStops: computedRoutes.cheapest?.stopNames || [],
             rawLegs: computedRoutes.cheapest?.legs || [],
             legs: (computedRoutes.cheapest?.legs || []).map((leg, i) => ({
                 from: computedRoutes.cheapest?.stopNames?.[i] || '',
@@ -59,6 +60,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.balanced?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.balanced?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.balanced?.transfers || 3) + ' transfers',
             topsisScore: computedRoutes.balanced?.ccFinal || 0,
+            routeStops: computedRoutes.balanced?.stopNames || [],
             rawLegs: computedRoutes.balanced?.legs || [],
             legs: (computedRoutes.balanced?.legs || []).map((leg, i) => ({
                 from: computedRoutes.balanced?.stopNames?.[i] || '',
@@ -86,6 +88,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.comfort?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.comfort?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.comfort?.transfers || 2) + ' transfers',
             topsisScore: computedRoutes.comfort?.ccFinal || 0,
+            routeStops: computedRoutes.comfort?.stopNames || [],
             rawLegs: computedRoutes.comfort?.legs || [],
             legs: (computedRoutes.comfort?.legs || []).map((leg, i) => ({
                 from: computedRoutes.comfort?.stopNames?.[i] || '',
@@ -113,6 +116,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.fastest?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.fastest?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.fastest?.transfers || 3) + ' transfers',
             topsisScore: computedRoutes.fastest?.ccFinal || 0,
+            routeStops: computedRoutes.fastest?.stopNames || [],
             rawLegs: computedRoutes.fastest?.legs || [],
             legs: (computedRoutes.fastest?.legs || []).map((leg, i) => ({
                 from: computedRoutes.fastest?.stopNames?.[i] || '',
@@ -754,6 +758,7 @@ function SearchResults() {
                                                 total: journey.total,
                                                 duration: journey.duration,
                                                 topsisScore: journey.topsisScore,
+                                                routeStops: journey.routeStops || [],
                                                 fullLegs: (journey.rawLegs || []).map(leg => ({
                                                     mode: leg.mode,
                                                     operator: leg.operator,

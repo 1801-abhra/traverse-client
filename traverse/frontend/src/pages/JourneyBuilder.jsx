@@ -10,14 +10,17 @@ import { useJourney, legOptions } from '../context/JourneyContext'
 function JourneyBuilder() {
     const navigate = useNavigate()
     const { journey, updateLeg, totalCost } = useJourney()
+    const [routeStops, setRouteStops] = useState([])
+    const [dynamicLegs, setDynamicLegs] = useState([])
+    const [dynamicLegOptions, setDynamicLegOptions] = useState({})
     const [selectedRouteInfo, setSelectedRouteInfo] = useState(null)
-    const [dynamicLegOptions, setDynamicLegOptions] = useState(null)
+    const [activeLegSelections, setActiveLegSelections] = useState({})
 
     const NODE_NAMES = {
         'juit': 'JUIT Campus',
         'waknaghat': 'Waknaghat Bus Stand',
         'solan': 'Solan Bus Stand',
-        'chandigarh_isbt': 'Chandigarh ISBT',
+        'chandigarh_isbt': 'Chandigarh ISBT 43',
         'chandigarh_railway': 'Chandigarh Railway Station',
         'chandigarh_airport': 'Chandigarh Airport (IXC)',
         'ndls': 'New Delhi Railway Station',
@@ -30,75 +33,83 @@ function JourneyBuilder() {
         if (!desc) return desc
         let result = desc
         Object.entries(NODE_NAMES).forEach(([key, name]) => {
-            result = result.replace(new RegExp('\\b' + key + '\\b', 'g'), name)
+            result = result.replace(
+                new RegExp('\\b' + key + '\\b', 'g'), name
+            )
         })
         return result
     }
 
     useEffect(() => {
         const saved = localStorage.getItem('selectedRoute')
-        if (saved) {
-            try {
-                const route = JSON.parse(saved)
-                // Store for display - we just show it as info
-                setSelectedRouteInfo(route)
-            } catch (e) { }
-        }
-    }, [])
-
-    useEffect(() => {
-        const saved = localStorage.getItem('selectedRoute')
         if (!saved) return
         try {
             const route = JSON.parse(saved)
-            if (!route.fullLegs || route.fullLegs.length === 0) return
+            setSelectedRouteInfo(route)
 
-            // Map the route's full legs to journey context legs
-            const legKeys = ['leg1', 'leg2', 'leg3', 'leg4']
-            route.fullLegs.forEach((leg, i) => {
-                if (i < 4 && legKeys[i]) {
-                    updateLeg(legKeys[i], {
-                        key: leg.mode || 'cab',
-                        label: leg.operator || leg.mode,
-                        desc: cleanDesc((leg.from || '') + ' → ' + (leg.to || '')),
-                        price: leg.cost || 0
-                    })
-                }
-            })
+            // Set route stops for node labels
+            if (route.routeStops) {
+                setRouteStops(route.routeStops)
+            }
 
-            const saved2 = localStorage.getItem('selectedRoute')
-            if (saved2) {
-                const r2 = JSON.parse(saved2)
-                if (r2.fullLegs && r2.fullLegs.length > 0) {
-                    const dynOptions = {}
-                    r2.fullLegs.forEach((leg, i) => {
-                        const legKey = 'leg' + (i + 1)
-                        // Each leg gets its actual option plus alternatives
-                        dynOptions[legKey] = [
-                            {
-                                key: leg.mode,
-                                label: leg.operator,
-                                price: leg.cost,
-                                desc: cleanDesc(leg.from + ' → ' + leg.to)
-                            }
-                        ]
-                        // Add walk option only for leg1 if it goes to waknaghat
-                        if (i === 0 && leg.to === 'waknaghat') {
-                            dynOptions[legKey].push({
-                                key: 'walk',
-                                label: 'Walk (4km)',
-                                price: 0,
-                                desc: cleanDesc(leg.from + ' → ' + leg.to)
-                            })
-                        }
-                    })
-                    setDynamicLegOptions(dynOptions)
-                }
+            // Set dynamic legs
+            if (route.fullLegs && route.fullLegs.length > 0) {
+                const legs = route.fullLegs.map((leg, i) => ({
+                    key: 'leg' + (i + 1),
+                    mode: leg.mode,
+                    operator: leg.operator,
+                    from: leg.from,
+                    to: leg.to,
+                    cost: leg.cost,
+                    time: leg.time,
+                    desc: cleanDesc(leg.from + ' → ' + leg.to),
+                    price: leg.cost,
+                    label: leg.operator,
+                }))
+                setDynamicLegs(legs)
+
+                // Set initial selections
+                const initial = {}
+                legs.forEach(leg => {
+                    initial[leg.key] = {
+                        key: leg.mode,
+                        label: leg.operator,
+                        desc: leg.desc,
+                        price: leg.cost
+                    }
+                })
+                setActiveLegSelections(initial)
+
+                // Build dynamic options for each leg
+                const dynOpts = {}
+                route.fullLegs.forEach((leg, i) => {
+                    const legKey = 'leg' + (i + 1)
+                    dynOpts[legKey] = [{
+                        key: leg.mode,
+                        label: leg.operator,
+                        price: leg.cost,
+                        desc: cleanDesc(leg.from + ' → ' + leg.to)
+                    }]
+                    // Add walk alternative only for first leg 
+                    // if it goes to waknaghat
+                    if (i === 0 && leg.to === 'waknaghat') {
+                        dynOpts[legKey].push({
+                            key: 'walk',
+                            label: 'Walk (4km)',
+                            price: 0,
+                            desc: cleanDesc(leg.from + ' → ' + leg.to)
+                        })
+                    }
+                })
+                setDynamicLegOptions(dynOpts)
             }
         } catch (e) {
-            console.log('Could not load route legs', e)
+            console.error('Route load error', e)
         }
     }, [])
+
+    const dynamicTotal = Object.values(activeLegSelections)
+        .reduce((sum, leg) => sum + (leg.price || 0), 0)
 
     const getIcon = (key) => {
         if (key === 'walk') return <FootprintsIcon size={20}
@@ -112,61 +123,83 @@ function JourneyBuilder() {
         return <Car size={20} color="#1A56DB" />
     }
 
-    const nodes = [
-        {
-            label: 'JUIT Campus', sub: 'Starting Point',
-            color: '#1A56DB', tag: 'START'
-        },
-        {
-            label: 'Waknaghat Bus Stand',
-            sub: journey.leg2.key === 'cab'
-                ? 'Skipped — Direct Cab'
-                : 'Transfer Point',
-            color: '#1A56DB', tag: '25 MIN BUFFER'
-        },
-        {
-            label: journey.leg3.key === 'flight'
-                ? 'Chandigarh Airport'
-                : 'Chandigarh Railway Station',
-            sub: 'Main Departure',
-            color: '#0EA5E9', tag: 'CONNECTION'
-        },
-        {
-            label: journey.leg3.key === 'flight'
-                ? 'Delhi Airport (IGI T3)'
-                : 'New Delhi Railway Station',
-            sub: 'Arrival Point',
-            color: '#0EA5E9', tag: 'LAST MILE'
-        },
-        {
-            label: 'Final Destination',
-            sub: 'New Delhi', color: '#22C55E',
-            tag: 'DESTINATION'
-        },
-    ]
+    const nodes = routeStops.length > 0
+        ? routeStops.map((stop, i) => ({
+            label: stop,
+            sub: i === 0 ? 'Starting Point'
+                : i === routeStops.length - 1 ? 'New Delhi'
+                    : 'Transfer Point',
+            color: i === 0 ? '#1A56DB'
+                : i === routeStops.length - 1 ? '#22C55E'
+                    : '#0EA5E9',
+            tag: i === 0 ? 'START'
+                : i === routeStops.length - 1 ? 'DESTINATION'
+                    : 'CONNECTION'
+        }))
+        : [
+            {
+                label: 'JUIT Campus', sub: 'Starting Point',
+                color: '#1A56DB', tag: 'START'
+            },
+            {
+                label: 'Waknaghat Bus Stand', sub: 'Transfer Point',
+                color: '#1A56DB', tag: '25 MIN BUFFER'
+            },
+            {
+                label: 'Chandigarh Railway Station',
+                sub: 'Main Departure',
+                color: '#0EA5E9', tag: 'CONNECTION'
+            },
+            {
+                label: 'New Delhi Railway Station',
+                sub: 'Arrival Point',
+                color: '#0EA5E9', tag: 'LAST MILE'
+            },
+            {
+                label: 'Final Destination, New Delhi',
+                sub: 'New Delhi', color: '#22C55E',
+                tag: 'DESTINATION'
+            },
+        ]
 
-    const legs = [
-        {
-            key: 'leg1', options: legOptions.leg1,
-            departure: '08:30 AM', arrival: '09:00 AM',
-            duration: '30m'
-        },
-        {
-            key: 'leg2', options: legOptions.leg2,
-            departure: '09:15 AM', arrival: '11:00 AM',
-            duration: '1h 45m'
-        },
-        {
-            key: 'leg3', options: legOptions.leg3,
-            departure: '11:30 AM', arrival: '5:00 PM',
-            duration: '5h 30m'
-        },
-        {
-            key: 'leg4', options: legOptions.leg4,
-            departure: '5:15 PM', arrival: '5:45 PM',
-            duration: '30m'
-        },
-    ]
+    const legs = dynamicLegs.length > 0
+        ? dynamicLegs.map((leg, i) => ({
+            key: leg.key,
+            options: dynamicLegOptions[leg.key]
+                || [{
+                    key: leg.mode, label: leg.operator,
+                    price: leg.cost,
+                    desc: leg.desc
+                }],
+            departure: '08:30 AM',
+            arrival: '09:00 AM',
+            duration: Math.floor(leg.time / 60) > 0
+                ? Math.floor(leg.time / 60) + 'h '
+                + (leg.time % 60) + 'm'
+                : leg.time + 'm',
+        }))
+        : [
+            {
+                key: 'leg1', options: legOptions.leg1,
+                departure: '08:30 AM',
+                arrival: '09:00 AM', duration: '30m'
+            },
+            {
+                key: 'leg2', options: legOptions.leg2,
+                departure: '09:15 AM',
+                arrival: '11:00 AM', duration: '1h 45m'
+            },
+            {
+                key: 'leg3', options: legOptions.leg3,
+                departure: '11:30 AM',
+                arrival: '5:00 PM', duration: '5h 30m'
+            },
+            {
+                key: 'leg4', options: legOptions.leg4,
+                departure: '5:15 PM',
+                arrival: '5:45 PM', duration: '30m'
+            },
+        ]
 
     return (
         <div style={{
@@ -443,7 +476,7 @@ function JourneyBuilder() {
                                                 display: 'flex', alignItems: 'center',
                                                 justifyContent: 'center', flexShrink: 0
                                             }}>
-                                                {getIcon(journey[leg.key].key)}
+                                                {getIcon(activeLegSelections[leg.key]?.key || journey[leg.key]?.key || 'cab')}
                                             </div>
                                             <div>
                                                 <div style={{
@@ -454,13 +487,13 @@ function JourneyBuilder() {
                                                         fontSize: '16px',
                                                         fontWeight: '800', color: '#0F172A'
                                                     }}>
-                                                        {journey[leg.key].desc}
+                                                        {activeLegSelections[leg.key]?.desc || journey[leg.key]?.desc}
                                                     </span>
                                                     <span style={{
                                                         fontSize: '18px',
                                                         fontWeight: '900', color: '#0EA5E9'
                                                     }}>
-                                                        ₹{journey[leg.key].price}
+                                                        ₹{activeLegSelections[leg.key]?.price ?? journey[leg.key]?.price}
                                                     </span>
                                                 </div>
                                                 <div style={{
@@ -493,13 +526,18 @@ function JourneyBuilder() {
                                                 flexWrap: 'wrap',
                                                 justifyContent: 'flex-end', maxWidth: '400px'
                                             }}>
-                                                {optionsToShow.map(opt => {
+                                                {leg.options.map(opt => {
                                                     const active =
-                                                        journey[leg.key].key === opt.key
+                                                        (activeLegSelections[leg.key]?.key || journey[leg.key]?.key) === opt.key
                                                     return (
                                                         <button key={opt.key}
-                                                            onClick={() => updateLeg(
-                                                                leg.key, opt)}
+                                                            onClick={() => {
+                                                                setActiveLegSelections(prev => ({
+                                                                    ...prev,
+                                                                    [leg.key]: opt
+                                                                }))
+                                                                updateLeg(leg.key, opt)
+                                                            }}
                                                             style={{
                                                                 padding: '6px 10px',
                                                                 borderRadius: '999px',
@@ -680,7 +718,7 @@ function JourneyBuilder() {
                                     fontSize: '22px',
                                     fontWeight: '900', color: '#0EA5E9'
                                 }}>
-                                    ₹{totalCost}
+                                    ₹{dynamicLegs.length > 0 ? dynamicTotal : totalCost}
                                 </span>
                                 <span style={{
                                     fontSize: '14px',
