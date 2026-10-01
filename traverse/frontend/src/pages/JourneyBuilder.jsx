@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
     MapPin, Train, Car, Bus, ArrowRight,
@@ -9,6 +10,18 @@ import { useJourney, legOptions } from '../context/JourneyContext'
 function JourneyBuilder() {
     const navigate = useNavigate()
     const { journey, updateLeg, totalCost } = useJourney()
+    const [selectedRouteInfo, setSelectedRouteInfo] = useState(null)
+
+    useEffect(() => {
+        const saved = localStorage.getItem('selectedRoute')
+        if (saved) {
+            try {
+                const route = JSON.parse(saved)
+                // Store for display - we just show it as info
+                setSelectedRouteInfo(route)
+            } catch (e) { }
+        }
+    }, [])
 
     const getIcon = (key) => {
         if (key === 'walk') return <FootprintsIcon size={20}
@@ -214,6 +227,28 @@ function JourneyBuilder() {
                         }}>
                             Customise Your Journey
                         </h1>
+                        {selectedRouteInfo && (
+                            <div style={{
+                                backgroundColor: '#DCFCE7',
+                                borderRadius: '12px',
+                                padding: '12px 16px',
+                                marginBottom: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                border: '1px solid #BBF7D0'
+                            }}>
+                                <span style={{
+                                    fontSize: '13px',
+                                    fontWeight: '700', color: '#16A34A'
+                                }}>
+                                    ✓ {selectedRouteInfo.label} Route Selected
+                                </span>
+                                <span style={{ fontSize: '13px', color: '#64748B' }}>
+                                    {selectedRouteInfo.total} · {selectedRouteInfo.duration} · TOPSIS Score: {selectedRouteInfo.topsisScore?.toFixed(3)}
+                                </span>
+                            </div>
+                        )}
                         <p style={{
                             fontSize: '15px', color: '#64748B',
                             margin: 0

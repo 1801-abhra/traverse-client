@@ -744,7 +744,26 @@ function SearchResults() {
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => navigate('/journey-builder')}
+                                        onClick={() => {
+                                            const routeData = {
+                                                stops: journey.legs.map((leg, i) => ({
+                                                    from: journey.legs[i] ?
+                                                        (i === 0 ? 'JUIT Campus' :
+                                                            journey.legs[i - 1] ? 'Stop ' + i : 'Stop')
+                                                        : 'JUIT Campus',
+                                                    mode: leg.mode,
+                                                    operator: leg.mode,
+                                                    price: parseInt(leg.price.replace('₹', '')),
+                                                    time: leg.time,
+                                                })),
+                                                total: journey.total,
+                                                duration: journey.duration,
+                                                label: journey.badge,
+                                                topsisScore: journey.topsisScore,
+                                            }
+                                            localStorage.setItem('selectedRoute', JSON.stringify(routeData))
+                                            navigate('/journey-builder')
+                                        }}
                                         style={{
                                             backgroundColor: '#1A56DB', color: '#fff',
                                             padding: '12px 24px', borderRadius: '10px',
