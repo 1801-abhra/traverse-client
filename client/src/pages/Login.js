@@ -40,10 +40,11 @@ function Login() {
       localStorage.setItem('user', JSON.stringify(data));
       localStorage.setItem('token', data.token);
       localStorage.setItem('sessionToken', data.sessionToken);
-      if (data.role === 'student') navigate('/student');
+            if (data.role === 'student') navigate('/student');
+      else if (data.role === 'faculty') navigate('/faculty');
       else navigate('/driver');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || err.message || 'Login failed');
     }
     setLoading(false);
   };
