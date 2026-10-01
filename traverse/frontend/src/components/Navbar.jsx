@@ -76,13 +76,16 @@ function Navbar() {
                                 </Link>
                             )
                         })}
+                        <Link to="/algorithm" style={{ color: '#DC2626', fontWeight: '700' }} className="text-[13px] py-1 transition-opacity hover:opacity-80">
+                            Algorithm Demo
+                        </Link>
                     </nav>
 
                     {/* Right: Desktop Actions */}
                     <div className="hidden md:flex items-center gap-4">
                         <Link
                             to="/login"
-                            className="text-[13px] font-semibold text-slate-600 hover:text-[#0F172A] px-2 py-1.5 transition-colors"
+                            className="border-[1.5px] border-[#1A56DB] text-[#1A56DB] bg-transparent hover:bg-blue-50/60 text-[13px] font-semibold px-4 py-2 rounded-lg transition-all active:scale-95"
                         >
                             Log In
                         </Link>
@@ -131,6 +134,14 @@ function Navbar() {
                             {link.label}
                         </a>
                     ))}
+                    <Link
+                        to="/algorithm"
+                        style={{ color: '#DC2626', fontWeight: '700' }}
+                        className="text-sm py-2 border-b border-slate-50"
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Algorithm Demo
+                    </Link>
                     <div className="flex items-center gap-3 pt-3">
                         <Link
                             to="/login"

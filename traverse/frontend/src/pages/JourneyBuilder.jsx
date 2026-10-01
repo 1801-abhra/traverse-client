@@ -361,7 +361,7 @@ function JourneyBuilder() {
                                         display: 'flex',
                                         flexDirection: 'column',
                                         alignItems: 'flex-end', gap: '8px',
-                                        flexShrink: 0, maxWidth: '340px'
+                                        flexShrink: 0, maxWidth: '400px'
                                     }}>
                                         <div style={{
                                             fontSize: '11px',
@@ -372,9 +372,9 @@ function JourneyBuilder() {
                                             Switch leg mode
                                         </div>
                                         <div style={{
-                                            display: 'flex', gap: '8px',
+                                            display: 'flex', gap: '6px',
                                             flexWrap: 'wrap',
-                                            justifyContent: 'flex-end', maxWidth: '320px'
+                                            justifyContent: 'flex-end', maxWidth: '400px'
                                         }}>
                                             {leg.options.map(opt => {
                                                 const active =
@@ -384,9 +384,9 @@ function JourneyBuilder() {
                                                         onClick={() => updateLeg(
                                                             leg.key, opt)}
                                                         style={{
-                                                            padding: '8px 14px',
+                                                            padding: '6px 10px',
                                                             borderRadius: '999px',
-                                                            fontSize: '13px',
+                                                            fontSize: '12px',
                                                             fontWeight: '700',
                                                             backgroundColor: active
                                                                 ? '#1A56DB' : '#fff',

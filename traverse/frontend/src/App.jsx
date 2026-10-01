@@ -11,6 +11,7 @@ import Payment from './pages/Payment'
 import Confirmation from './pages/Confirmation'
 import MyTrips from './pages/MyTrips'
 import Profile from './pages/Profile'
+import AlgorithmDemo from './pages/AlgorithmDemo'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/algorithm" element={<AlgorithmDemo />} />
           <Route path="/journey-builder"
             element={<JourneyBuilder />} />
           <Route path="/order-summary"
