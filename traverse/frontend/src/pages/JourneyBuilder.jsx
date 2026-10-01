@@ -6,6 +6,7 @@ import {
     FootprintsIcon
 } from 'lucide-react'
 import { useJourney, legOptions } from '../context/JourneyContext'
+import { getLegAlternatives } from '../utils/routingEngine'
 
 function JourneyBuilder() {
     const navigate = useNavigate()
@@ -84,21 +85,35 @@ function JourneyBuilder() {
                 const dynOpts = {}
                 route.fullLegs.forEach((leg, i) => {
                     const legKey = 'leg' + (i + 1)
-                    dynOpts[legKey] = [{
-                        key: leg.mode,
-                        label: leg.operator,
-                        price: leg.cost,
-                        desc: cleanDesc(leg.from + ' → ' + leg.to)
-                    }]
-                    // Add walk alternative only for first leg 
-                    // if it goes to waknaghat
-                    if (i === 0 && leg.to === 'waknaghat') {
-                        dynOpts[legKey].push({
-                            key: 'walk',
-                            label: 'Walk (4km)',
-                            price: 0,
-                            desc: cleanDesc(leg.from + ' → ' + leg.to)
-                        })
+
+                    // Get ALL real alternatives from routing engine
+                    const realAlts = getLegAlternatives(leg.from, leg.to)
+
+                    if (realAlts.length > 0) {
+                        // Use real alternatives from engine
+                        dynOpts[legKey] = realAlts.map(alt => ({
+                            key: alt.key,
+                            label: alt.label + (alt.departs &&
+                                alt.departs !== 'On demand' &&
+                                alt.departs !== 'Multiple'
+                                ? ' · ' + alt.departs
+                                : ''),
+                            price: alt.price,
+                            cost: alt.price,
+                            time: alt.time,
+                            desc: cleanDesc(leg.from + ' → ' + leg.to),
+                            mode: alt.mode,
+                            departs: alt.departs,
+                        }))
+                    } else {
+                        // Fallback to just the selected leg
+                        dynOpts[legKey] = [{
+                            key: leg.mode,
+                            label: leg.operator,
+                            price: leg.cost,
+                            desc: cleanDesc(leg.from + ' → ' + leg.to),
+                            mode: leg.mode,
+                        }]
                     }
                 })
                 setDynamicLegOptions(dynOpts)

@@ -628,7 +628,41 @@ export function findCandidateRoutes() {
 }
 
 // ------------------------------------------------------------
-// 11. COMPUTE DISTANCES TABLE (for display in Algorithm Demo)
+// 11. GET ALL ALTERNATIVES FOR A SPECIFIC LEG
+// Returns all edges between two nodes as switchable options
+// Used by JourneyBuilder to show real alternatives per leg
+// ------------------------------------------------------------
+export function getLegAlternatives(fromNode, toNode) {
+    const alternatives = EDGES.filter(
+        e => e.from === fromNode && e.to === toNode
+    )
+
+    if (alternatives.length === 0) return []
+
+    return alternatives.map(e => ({
+        key: e.id,
+        mode: e.mode,
+        label: e.operator + (e.serviceNo && e.serviceNo !== 'null'
+            ? ' (Svc ' + e.serviceNo + ')' : ''),
+        operator: e.operator,
+        serviceNo: e.serviceNo,
+        price: e.cost,
+        cost: e.cost,
+        time: e.time,
+        departs: e.departs,
+        arrives: e.arrives,
+        comfort: e.comfort,
+        reliability: e.reliability,
+        desc: (NODES[fromNode]?.shortName || fromNode) +
+            ' → ' + (NODES[toNode]?.shortName || toNode),
+        from: fromNode,
+        to: toNode,
+        dataSource: e.dataSource,
+    }))
+}
+
+// ------------------------------------------------------------
+// COMPUTE DISTANCES TABLE (for display in Algorithm Demo)
 // Shows VC that distances are mathematically computed
 // ------------------------------------------------------------
 export function getCorridorDistances() {
