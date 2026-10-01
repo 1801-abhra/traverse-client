@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import {
-    MapPin, Car, Train, Bus, Plane, ArrowRight,
+    MapPin, Car, Train, Bus, Plane,
+    PersonStanding, Footprints, ArrowRight,
     ChevronRight, CheckCircle, Lock, Edit, Info
 } from 'lucide-react'
 import { useJourney } from '../context/JourneyContext'
@@ -12,7 +13,8 @@ function OrderSummary() {
     const legs = [
         {
             icon: journey.leg1.key === 'walk' ? Car : Car,
-            mode: journey.leg1.label,
+            mode: journey.leg1.key,
+            label: journey.leg1.label,
             route: journey.leg1.desc,
             time: '08:30 AM → 09:00 AM · 30m',
             price: journey.leg1.price,
@@ -20,7 +22,8 @@ function OrderSummary() {
         },
         {
             icon: journey.leg2.key === 'bus' ? Bus : Car,
-            mode: journey.leg2.label,
+            mode: journey.leg2.key,
+            label: journey.leg2.label,
             route: journey.leg2.desc,
             time: '09:15 AM → 11:00 AM · 1h 45m',
             price: journey.leg2.price,
@@ -28,7 +31,8 @@ function OrderSummary() {
         },
         {
             icon: journey.leg3.key === 'flight' ? Plane : Train,
-            mode: journey.leg3.label,
+            mode: journey.leg3.key,
+            label: journey.leg3.label,
             route: journey.leg3.desc,
             time: '11:30 AM → 5:00 PM · 5h 30m',
             price: journey.leg3.price,
@@ -36,7 +40,8 @@ function OrderSummary() {
         },
         {
             icon: Car,
-            mode: journey.leg4.label,
+            mode: journey.leg4.key,
+            label: journey.leg4.label,
             route: journey.leg4.desc,
             time: '5:15 PM → 5:45 PM · 30m',
             price: journey.leg4.price,
@@ -281,19 +286,67 @@ function OrderSummary() {
                                             alignItems: 'center', gap: '12px'
                                         }}>
                                             <div style={{
-                                                width: '48px', height: '48px',
+                                                width: '56px',
+                                                flexShrink: 0,
+                                                fontSize: '10px',
+                                                lineHeight: '1.2',
+                                                textAlign: 'center',
+                                                overflow: 'hidden',
+                                                wordBreak: 'break-word',
                                                 borderRadius: '12px',
                                                 backgroundColor: '#EFF6FF',
-                                                display: 'flex', flexDirection: 'column',
+                                                display: 'flex',
+                                                flexDirection: 'column',
                                                 alignItems: 'center',
-                                                justifyContent: 'center', gap: '2px'
+                                                justifyContent: 'center',
+                                                gap: '2px',
+                                                padding: '4px 2px'
                                             }}>
-                                                <leg.icon size={20} color="#1A56DB" />
+                                                {(() => {
+                                                    const mode = leg.mode || 
+                                                        (leg.label?.toLowerCase().includes('train') || 
+                                                         leg.label?.toLowerCase().includes('shatabdi') ||
+                                                         leg.label?.toLowerCase().includes('vande') ||
+                                                         leg.label?.toLowerCase().includes('intercity')
+                                                            ? 'train' 
+                                                            : leg.label?.toLowerCase().includes('bus') ||
+                                                              leg.label?.toLowerCase().includes('hrtc') ||
+                                                              leg.label?.toLowerCase().includes('volvo')
+                                                              ? 'bus'
+                                                              : leg.label?.toLowerCase().includes('flight') ||
+                                                                leg.label?.toLowerCase().includes('indigo') ||
+                                                                leg.label?.toLowerCase().includes('spicejet')
+                                                                ? 'flight'
+                                                                : leg.label?.toLowerCase().includes('metro')
+                                                                  ? 'metro'
+                                                                  : leg.label?.toLowerCase().includes('walk') ||
+                                                                    leg.label?.toLowerCase().includes('pedestrian')
+                                                                    ? 'walk'
+                                                                    : 'cab')
+                                                    
+                                                    if (mode === 'train') return <Train size={20} color="#1A56DB" />
+                                                    if (mode === 'bus') return <Bus size={20} color="#D97706" />
+                                                    if (mode === 'flight') return <Plane size={20} color="#7C3AED" />
+                                                    if (mode === 'metro') return <Train size={20} color="#8B5CF6" />
+                                                    if (mode === 'walk') return <Footprints size={20} color="#22C55E" />
+                                                    return <Car size={20} color="#0EA5E9" />
+                                                })()}
                                                 <span style={{
                                                     fontSize: '10px',
-                                                    fontWeight: '700', color: '#94A3B8'
+                                                    fontWeight: '700',
+                                                    color: '#94A3B8'
                                                 }}>
-                                                    {leg.mode}
+                                                    {leg.mode === 'bus' || 
+                                                     leg.label?.toLowerCase().includes('hrtc') 
+                                                        ? 'Bus'
+                                                        : leg.mode === 'train' ||
+                                                          leg.label?.toLowerCase().includes('shatabdi') ||
+                                                          leg.label?.toLowerCase().includes('vande')
+                                                          ? 'Train'
+                                                          : leg.mode === 'flight' ? 'Flight'
+                                                          : leg.mode === 'metro' ? 'Metro'
+                                                          : leg.mode === 'walk' ? 'Walk'
+                                                          : 'Cab'}
                                                 </span>
                                             </div>
                                             <div>
