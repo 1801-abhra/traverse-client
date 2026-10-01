@@ -311,7 +311,7 @@ function AdminDashboard() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@traverse.com"
+                  placeholder="Enter email address"
                   required
                   className="admin-input"
                   style={styles.input}
