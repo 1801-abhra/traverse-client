@@ -11,6 +11,29 @@ function JourneyBuilder() {
     const navigate = useNavigate()
     const { journey, updateLeg, totalCost } = useJourney()
     const [selectedRouteInfo, setSelectedRouteInfo] = useState(null)
+    const [dynamicLegOptions, setDynamicLegOptions] = useState(null)
+
+    const NODE_NAMES = {
+        'juit': 'JUIT Campus',
+        'waknaghat': 'Waknaghat Bus Stand',
+        'solan': 'Solan Bus Stand',
+        'chandigarh_isbt': 'Chandigarh ISBT',
+        'chandigarh_railway': 'Chandigarh Railway Station',
+        'chandigarh_airport': 'Chandigarh Airport (IXC)',
+        'ndls': 'New Delhi Railway Station',
+        'delhi_isbt': 'Delhi ISBT Kashmere Gate',
+        'igi': 'IGI Airport T3',
+        'delhi_cp': 'New Delhi',
+    }
+
+    const cleanDesc = (desc) => {
+        if (!desc) return desc
+        let result = desc
+        Object.entries(NODE_NAMES).forEach(([key, name]) => {
+            result = result.replace(new RegExp('\\b' + key + '\\b', 'g'), name)
+        })
+        return result
+    }
 
     useEffect(() => {
         const saved = localStorage.getItem('selectedRoute')
@@ -37,11 +60,41 @@ function JourneyBuilder() {
                     updateLeg(legKeys[i], {
                         key: leg.mode || 'cab',
                         label: leg.operator || leg.mode,
-                        desc: leg.from + ' → ' + (leg.to || 'Next Stop'),
+                        desc: cleanDesc((leg.from || '') + ' → ' + (leg.to || '')),
                         price: leg.cost || 0
                     })
                 }
             })
+
+            const saved2 = localStorage.getItem('selectedRoute')
+            if (saved2) {
+                const r2 = JSON.parse(saved2)
+                if (r2.fullLegs && r2.fullLegs.length > 0) {
+                    const dynOptions = {}
+                    r2.fullLegs.forEach((leg, i) => {
+                        const legKey = 'leg' + (i + 1)
+                        // Each leg gets its actual option plus alternatives
+                        dynOptions[legKey] = [
+                            {
+                                key: leg.mode,
+                                label: leg.operator,
+                                price: leg.cost,
+                                desc: cleanDesc(leg.from + ' → ' + leg.to)
+                            }
+                        ]
+                        // Add walk option only for leg1 if it goes to waknaghat
+                        if (i === 0 && leg.to === 'waknaghat') {
+                            dynOptions[legKey].push({
+                                key: 'walk',
+                                label: 'Walk (4km)',
+                                price: 0,
+                                desc: cleanDesc(leg.from + ' → ' + leg.to)
+                            })
+                        }
+                    })
+                    setDynamicLegOptions(dynOptions)
+                }
+            }
         } catch (e) {
             console.log('Could not load route legs', e)
         }
@@ -307,171 +360,177 @@ function JourneyBuilder() {
                         borderRadius: '4px'
                     }} />
 
-                    {legs.map((leg, i) => (
-                        <>
-                            {/* NODE */}
-                            <div key={`node-${i}`} style={{
-                                position: 'relative', marginBottom: '8px',
-                                paddingTop: '4px', paddingLeft: '20px'
-                            }}>
-                                <div style={{
-                                    position: 'absolute',
-                                    left: '-36px', width: '44px', height: '44px',
-                                    backgroundColor: nodes[i].color,
-                                    borderRadius: '999px', display: 'flex',
-                                    alignItems: 'center', justifyContent: 'center',
-                                    boxShadow: '0 0 0 4px #ffffff, 0 2px 8px rgba(0,0,0,0.12)',
-                                    zIndex: 1
+                    {legs.map((leg, i) => {
+                        const optionsToShow = dynamicLegOptions
+                            ? (dynamicLegOptions[leg.key] || legOptions[leg.key] || leg.options)
+                            : (legOptions[leg.key] || leg.options)
+
+                        return (
+                            <div key={`item-${i}`}>
+                                {/* NODE */}
+                                <div key={`node-${i}`} style={{
+                                    position: 'relative', marginBottom: '8px',
+                                    paddingTop: '4px', paddingLeft: '20px'
                                 }}>
-                                    <MapPin size={20} color="#fff" />
-                                </div>
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center', gap: '8px',
-                                    flexWrap: 'wrap', fontSize: '16px',
-                                    fontWeight: '800', color: '#0F172A'
-                                }}>
-                                    {nodes[i].label}
-                                    <span style={{
-                                        display: 'inline-block',
-                                        padding: '3px 10px', borderRadius: '999px',
-                                        fontSize: '11px', fontWeight: '700',
-                                        backgroundColor: i === 0 ? '#EFF6FF'
-                                            : i === legs.length ? '#DCFCE7'
-                                                : '#FFFBEB',
-                                        color: i === 0 ? '#1A56DB'
-                                            : i === legs.length ? '#166534'
-                                                : '#D97706',
-                                        border: `1px solid ${i === 0 ? '#BFDBFE'
-                                            : i === legs.length ? '#BBF7D0'
-                                                : '#FDE68A'}`
+                                    <div style={{
+                                        position: 'absolute',
+                                        left: '-36px', width: '44px', height: '44px',
+                                        backgroundColor: nodes[i].color,
+                                        borderRadius: '999px', display: 'flex',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        boxShadow: '0 0 0 4px #ffffff, 0 2px 8px rgba(0,0,0,0.12)',
+                                        zIndex: 1
                                     }}>
-                                        {nodes[i].tag}
-                                    </span>
-                                </div>
-                                <div style={{
-                                    fontSize: '13px',
-                                    color: '#94A3B8', marginTop: '2px'
-                                }}>
-                                    {nodes[i].sub}
-                                </div>
-                            </div>
-
-                            {/* LEG CARD */}
-                            <div key={`leg-${i}`} style={{
-                                margin: '16px 0 24px',
-                                backgroundColor: '#fff', borderRadius: '16px',
-                                border: '1px solid #E2E8F0',
-                                borderLeft: '4px solid #1A56DB',
-                                padding: '20px',
-                                boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
-                            }}>
-                                <div style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'flex-start',
-                                    flexWrap: 'wrap', gap: '16px'
-                                }}>
-
-                                    {/* Left — current selection */}
+                                        <MapPin size={20} color="#fff" />
+                                    </div>
                                     <div style={{
                                         display: 'flex',
-                                        alignItems: 'flex-start', gap: '12px'
+                                        alignItems: 'center', gap: '8px',
+                                        flexWrap: 'wrap', fontSize: '16px',
+                                        fontWeight: '800', color: '#0F172A'
                                     }}>
-                                        <div style={{
-                                            width: '40px', height: '40px',
-                                            borderRadius: '999px',
-                                            backgroundColor: '#EFF6FF',
-                                            display: 'flex', alignItems: 'center',
-                                            justifyContent: 'center', flexShrink: 0
+                                        {nodes[i].label}
+                                        <span style={{
+                                            display: 'inline-block',
+                                            padding: '3px 10px', borderRadius: '999px',
+                                            fontSize: '11px', fontWeight: '700',
+                                            backgroundColor: i === 0 ? '#EFF6FF'
+                                                : i === legs.length ? '#DCFCE7'
+                                                    : '#FFFBEB',
+                                            color: i === 0 ? '#1A56DB'
+                                                : i === legs.length ? '#166534'
+                                                    : '#D97706',
+                                            border: `1px solid ${i === 0 ? '#BFDBFE'
+                                                : i === legs.length ? '#BBF7D0'
+                                                    : '#FDE68A'}`
                                         }}>
-                                            {getIcon(journey[leg.key].key)}
-                                        </div>
-                                        <div>
+                                            {nodes[i].tag}
+                                        </span>
+                                    </div>
+                                    <div style={{
+                                        fontSize: '13px',
+                                        color: '#94A3B8', marginTop: '2px'
+                                    }}>
+                                        {nodes[i].sub}
+                                    </div>
+                                </div>
+
+                                {/* LEG CARD */}
+                                <div key={`leg-${i}`} style={{
+                                    margin: '16px 0 24px',
+                                    backgroundColor: '#fff', borderRadius: '16px',
+                                    border: '1px solid #E2E8F0',
+                                    borderLeft: '4px solid #1A56DB',
+                                    padding: '20px',
+                                    boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
+                                }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'flex-start',
+                                        flexWrap: 'wrap', gap: '16px'
+                                    }}>
+
+                                        {/* Left — current selection */}
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'flex-start', gap: '12px'
+                                        }}>
                                             <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center', gap: '8px'
+                                                width: '40px', height: '40px',
+                                                borderRadius: '999px',
+                                                backgroundColor: '#EFF6FF',
+                                                display: 'flex', alignItems: 'center',
+                                                justifyContent: 'center', flexShrink: 0
                                             }}>
-                                                <span style={{
-                                                    fontSize: '16px',
-                                                    fontWeight: '800', color: '#0F172A'
+                                                {getIcon(journey[leg.key].key)}
+                                            </div>
+                                            <div>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center', gap: '8px'
                                                 }}>
-                                                    {journey[leg.key].desc}
-                                                </span>
-                                                <span style={{
-                                                    fontSize: '18px',
-                                                    fontWeight: '900', color: '#0EA5E9'
+                                                    <span style={{
+                                                        fontSize: '16px',
+                                                        fontWeight: '800', color: '#0F172A'
+                                                    }}>
+                                                        {journey[leg.key].desc}
+                                                    </span>
+                                                    <span style={{
+                                                        fontSize: '18px',
+                                                        fontWeight: '900', color: '#0EA5E9'
+                                                    }}>
+                                                        ₹{journey[leg.key].price}
+                                                    </span>
+                                                </div>
+                                                <div style={{
+                                                    fontSize: '13px',
+                                                    color: '#94A3B8', marginTop: '4px'
                                                 }}>
-                                                    ₹{journey[leg.key].price}
-                                                </span>
+                                                    {leg.departure} → {leg.arrival}
+                                                    · {leg.duration}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Right — switch options */}
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'flex-end', gap: '8px',
+                                            flexShrink: 0, maxWidth: '400px'
+                                        }}>
+                                            <div style={{
+                                                fontSize: '11px',
+                                                fontWeight: '700', color: '#94A3B8',
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.08em'
+                                            }}>
+                                                Switch leg mode
                                             </div>
                                             <div style={{
-                                                fontSize: '13px',
-                                                color: '#94A3B8', marginTop: '4px'
+                                                display: 'flex', gap: '6px',
+                                                flexWrap: 'wrap',
+                                                justifyContent: 'flex-end', maxWidth: '400px'
                                             }}>
-                                                {leg.departure} → {leg.arrival}
-                                                · {leg.duration}
+                                                {optionsToShow.map(opt => {
+                                                    const active =
+                                                        journey[leg.key].key === opt.key
+                                                    return (
+                                                        <button key={opt.key}
+                                                            onClick={() => updateLeg(
+                                                                leg.key, opt)}
+                                                            style={{
+                                                                padding: '6px 10px',
+                                                                borderRadius: '999px',
+                                                                fontSize: '12px',
+                                                                fontWeight: '700',
+                                                                backgroundColor: active
+                                                                    ? '#1A56DB' : '#fff',
+                                                                color: active
+                                                                    ? '#fff' : '#64748B',
+                                                                border: active
+                                                                    ? 'none'
+                                                                    : '1.5px solid #E2E8F0',
+                                                                cursor: 'pointer',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '4px'
+                                                            }}>
+                                                            {active && (
+                                                                <CheckCircle size={12} />
+                                                            )}
+                                                            {opt.label} ₹{opt.price}
+                                                        </button>
+                                                    )
+                                                })}
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Right — switch options */}
-                                    <div style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'flex-end', gap: '8px',
-                                        flexShrink: 0, maxWidth: '400px'
-                                    }}>
-                                        <div style={{
-                                            fontSize: '11px',
-                                            fontWeight: '700', color: '#94A3B8',
-                                            textTransform: 'uppercase',
-                                            letterSpacing: '0.08em'
-                                        }}>
-                                            Switch leg mode
-                                        </div>
-                                        <div style={{
-                                            display: 'flex', gap: '6px',
-                                            flexWrap: 'wrap',
-                                            justifyContent: 'flex-end', maxWidth: '400px'
-                                        }}>
-                                            {leg.options.map(opt => {
-                                                const active =
-                                                    journey[leg.key].key === opt.key
-                                                return (
-                                                    <button key={opt.key}
-                                                        onClick={() => updateLeg(
-                                                            leg.key, opt)}
-                                                        style={{
-                                                            padding: '6px 10px',
-                                                            borderRadius: '999px',
-                                                            fontSize: '12px',
-                                                            fontWeight: '700',
-                                                            backgroundColor: active
-                                                                ? '#1A56DB' : '#fff',
-                                                            color: active
-                                                                ? '#fff' : '#64748B',
-                                                            border: active
-                                                                ? 'none'
-                                                                : '1.5px solid #E2E8F0',
-                                                            cursor: 'pointer',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '4px'
-                                                        }}>
-                                                        {active && (
-                                                            <CheckCircle size={12} />
-                                                        )}
-                                                        {opt.label} ₹{opt.price}
-                                                    </button>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-                        </>
-                    ))}
+                        )
+                    })}
 
                     {/* DESTINATION NODE */}
                     <div style={{
