@@ -5,9 +5,19 @@ import {
     Clock3, ArrowRight, SlidersHorizontal,
     CheckCircle
 } from 'lucide-react'
+import { findCandidateRoutes } from '../utils/routingEngine'
+import { runTOPSIS } from '../utils/topsisEngine'
 
 function SearchResults() {
     const navigate = useNavigate()
+
+    const candidates = findCandidateRoutes()
+    const computedRoutes = {
+        cheapest: runTOPSIS(candidates, 'cheapest')[0],
+        balanced: runTOPSIS(candidates, 'balanced')[0],
+        comfort: runTOPSIS(candidates, 'comfort')[0],
+        fastest: runTOPSIS(candidates, 'fastest')[0],
+    }
 
     const journeys = [
         {
@@ -18,23 +28,21 @@ function SearchResults() {
             tag: 'Cheapest',
             tagColor: '#059669',
             tagBg: '#ECFDF5',
-            legs: [
-                { from: 'JUIT', fromSub: 'Campus Gate',
-                    mode: 'Cab', time: '30m', price: '₹300',
-                    color: '#0EA5E9', bg: '#F0F9FF' },
-                { from: 'Waknaghat', fromSub: 'Bus Stand',
-                    mode: 'Bus', time: '1h 45m', price: '₹300',
-                    color: '#D97706', bg: '#FFFBEB' },
-                { from: 'Chandigarh', fromSub: 'Railway Stn',
-                    mode: 'Intercity Train', time: '5h 30m',
-                    price: '₹400', color: '#1A56DB',
-                    bg: '#EFF6FF' },
-            ],
-            dest: 'New Delhi',
+            total: '₹' + (computedRoutes.cheapest?.totalCost || 1300),
+            duration: Math.floor((computedRoutes.cheapest?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.cheapest?.totalTime || 510) % 60) + 'm',
+            transfers: (computedRoutes.cheapest?.transfers || 3) + ' transfers',
+            topsisScore: computedRoutes.cheapest?.ccFinal || 0,
+            legs: (computedRoutes.cheapest?.legs || []).map((leg, i) => ({
+                from: computedRoutes.cheapest?.stopNames?.[i] || '',
+                fromSub: '',
+                mode: leg.operator,
+                time: leg.time + 'm',
+                price: '₹' + leg.cost,
+                color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
+                bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
+            })),
+            dest: computedRoutes.cheapest?.stopNames?.slice(-1)[0] || 'New Delhi',
             destSub: 'Railway Station',
-            total: '₹1,300',
-            duration: '~7h 30m',
-            transfers: '3 transfers',
         },
         {
             id: 2,
@@ -44,23 +52,21 @@ function SearchResults() {
             tag: 'Popular',
             tagColor: '#64748B',
             tagBg: '#F1F5F9',
-            legs: [
-                { from: 'JUIT', fromSub: 'Campus Gate',
-                    mode: 'Cab', time: '30m', price: '₹300',
-                    color: '#0EA5E9', bg: '#F0F9FF' },
-                { from: 'Waknaghat', fromSub: 'Bus Stand',
-                    mode: 'Bus', time: '1h 45m', price: '₹300',
-                    color: '#D97706', bg: '#FFFBEB' },
-                { from: 'Chandigarh', fromSub: 'Railway Stn',
-                    mode: 'Shatabdi Exp', time: '3h 30m',
-                    price: '₹800', color: '#7C3AED',
-                    bg: '#F5F3FF' },
-            ],
-            dest: 'New Delhi',
+            total: '₹' + (computedRoutes.balanced?.totalCost || 1700),
+            duration: Math.floor((computedRoutes.balanced?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.balanced?.totalTime || 510) % 60) + 'm',
+            transfers: (computedRoutes.balanced?.transfers || 3) + ' transfers',
+            topsisScore: computedRoutes.balanced?.ccFinal || 0,
+            legs: (computedRoutes.balanced?.legs || []).map((leg, i) => ({
+                from: computedRoutes.balanced?.stopNames?.[i] || '',
+                fromSub: '',
+                mode: leg.operator,
+                time: leg.time + 'm',
+                price: '₹' + leg.cost,
+                color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
+                bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
+            })),
+            dest: computedRoutes.balanced?.stopNames?.slice(-1)[0] || 'New Delhi',
             destSub: 'Railway Station',
-            total: '₹1,700',
-            duration: '~6h 30m',
-            transfers: '3 transfers',
         },
         {
             id: 3,
@@ -70,21 +76,21 @@ function SearchResults() {
             tag: 'Premium',
             tagColor: '#7C3AED',
             tagBg: '#F5F3FF',
-            legs: [
-                { from: 'JUIT', fromSub: 'Campus Gate',
-                    mode: 'Direct Cab', time: '1h 15m',
-                    price: '₹3,000', color: '#1A56DB',
-                    bg: '#EFF6FF' },
-                { from: 'Chandigarh', fromSub: 'Railway Stn',
-                    mode: 'Vande Bharat', time: '3h',
-                    price: '₹1,200', color: '#4F46E5',
-                    bg: '#EEF2FF' },
-            ],
-            dest: 'New Delhi',
+            total: '₹' + (computedRoutes.comfort?.totalCost || 4500),
+            duration: Math.floor((computedRoutes.comfort?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.comfort?.totalTime || 510) % 60) + 'm',
+            transfers: (computedRoutes.comfort?.transfers || 2) + ' transfers',
+            topsisScore: computedRoutes.comfort?.ccFinal || 0,
+            legs: (computedRoutes.comfort?.legs || []).map((leg, i) => ({
+                from: computedRoutes.comfort?.stopNames?.[i] || '',
+                fromSub: '',
+                mode: leg.operator,
+                time: leg.time + 'm',
+                price: '₹' + leg.cost,
+                color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
+                bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
+            })),
+            dest: computedRoutes.comfort?.stopNames?.slice(-1)[0] || 'New Delhi',
             destSub: 'Railway Station',
-            total: '₹4,500',
-            duration: '~5h',
-            transfers: '2 transfers',
         },
         {
             id: 4,
@@ -94,22 +100,21 @@ function SearchResults() {
             tag: 'Save 3h',
             tagColor: '#059669',
             tagBg: '#ECFDF5',
-            legs: [
-                { from: 'JUIT', fromSub: 'Campus Gate',
-                    mode: 'Cab', time: '30m', price: '₹300',
-                    color: '#0EA5E9', bg: '#F0F9FF' },
-                { from: 'Waknaghat', fromSub: 'Bus Stand',
-                    mode: 'Bus', time: '1h 45m', price: '₹300',
-                    color: '#D97706', bg: '#FFFBEB' },
-                { from: 'Chandigarh', fromSub: 'Airport (IXC)',
-                    mode: 'Flight', time: '1h', price: '₹4,500',
-                    color: '#0EA5E9', bg: '#F0F9FF' },
-            ],
-            dest: 'Delhi Airport',
-            destSub: 'IGI T3',
-            total: '₹5,600',
-            duration: '~4h 30m',
-            transfers: '3 transfers',
+            total: '₹' + (computedRoutes.fastest?.totalCost || 5900),
+            duration: Math.floor((computedRoutes.fastest?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.fastest?.totalTime || 510) % 60) + 'm',
+            transfers: (computedRoutes.fastest?.transfers || 3) + ' transfers',
+            topsisScore: computedRoutes.fastest?.ccFinal || 0,
+            legs: (computedRoutes.fastest?.legs || []).map((leg, i) => ({
+                from: computedRoutes.fastest?.stopNames?.[i] || '',
+                fromSub: '',
+                mode: leg.operator,
+                time: leg.time + 'm',
+                price: '₹' + leg.cost,
+                color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
+                bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
+            })),
+            dest: computedRoutes.fastest?.stopNames?.slice(-1)[0] || 'New Delhi',
+            destSub: 'Delhi Airport',
         },
     ]
 
@@ -709,6 +714,17 @@ function SearchResults() {
                                                 color: '#94A3B8', marginLeft: '4px'
                                             }}>
                                                 / person
+                                            </span>
+                                            <span style={{
+                                                fontSize: '11px',
+                                                fontWeight: '700',
+                                                color: '#1A56DB',
+                                                backgroundColor: '#EFF6FF',
+                                                padding: '2px 8px',
+                                                borderRadius: '999px',
+                                                marginLeft: '8px'
+                                            }}>
+                                                TOPSIS: {journey.topsisScore ? journey.topsisScore.toFixed(3) : '0.000'}
                                             </span>
                                         </div>
                                         <div style={{
