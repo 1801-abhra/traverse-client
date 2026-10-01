@@ -36,7 +36,9 @@ function SearchResults() {
                 from: computedRoutes.cheapest?.stopNames?.[i] || '',
                 fromSub: '',
                 mode: leg.operator,
-                time: leg.time + 'm',
+                time: Math.floor(leg.time / 60) > 0
+                    ? Math.floor(leg.time / 60) + 'h ' + (leg.time % 60) + 'm'
+                    : leg.time + 'm',
                 price: '₹' + leg.cost,
                 color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
                 bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
@@ -60,7 +62,9 @@ function SearchResults() {
                 from: computedRoutes.balanced?.stopNames?.[i] || '',
                 fromSub: '',
                 mode: leg.operator,
-                time: leg.time + 'm',
+                time: Math.floor(leg.time / 60) > 0
+                    ? Math.floor(leg.time / 60) + 'h ' + (leg.time % 60) + 'm'
+                    : leg.time + 'm',
                 price: '₹' + leg.cost,
                 color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
                 bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
@@ -84,7 +88,9 @@ function SearchResults() {
                 from: computedRoutes.comfort?.stopNames?.[i] || '',
                 fromSub: '',
                 mode: leg.operator,
-                time: leg.time + 'm',
+                time: Math.floor(leg.time / 60) > 0
+                    ? Math.floor(leg.time / 60) + 'h ' + (leg.time % 60) + 'm'
+                    : leg.time + 'm',
                 price: '₹' + leg.cost,
                 color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
                 bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',
@@ -108,7 +114,9 @@ function SearchResults() {
                 from: computedRoutes.fastest?.stopNames?.[i] || '',
                 fromSub: '',
                 mode: leg.operator,
-                time: leg.time + 'm',
+                time: Math.floor(leg.time / 60) > 0
+                    ? Math.floor(leg.time / 60) + 'h ' + (leg.time % 60) + 'm'
+                    : leg.time + 'm',
                 price: '₹' + leg.cost,
                 color: leg.mode === 'bus' ? '#D97706' : leg.mode === 'train' ? '#1A56DB' : '#0EA5E9',
                 bg: leg.mode === 'bus' ? '#FFFBEB' : leg.mode === 'train' ? '#EFF6FF' : '#F0F9FF',

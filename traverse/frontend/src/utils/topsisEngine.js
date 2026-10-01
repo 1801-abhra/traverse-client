@@ -32,7 +32,7 @@ export const CRITERIA = {
 // ------------------------------------------------------------
 export const PERSONA_BOOST = {
     cheapest: { cost: 2.5, time: 0.8, comfort: 0.5, reliability: 0.6, transfers: 0.8 },
-    fastest: { cost: 0.5, time: 2.5, comfort: 0.6, reliability: 0.8, transfers: 1.2 },
+    fastest: { cost: 0.2, time: 5.0, comfort: 0.4, reliability: 0.6, transfers: 0.8 },
     comfort: { cost: 0.4, time: 0.6, comfort: 2.5, reliability: 2.0, transfers: 0.8 },
     balanced: { cost: 1.0, time: 1.0, comfort: 1.0, reliability: 1.0, transfers: 1.0 },
 }
