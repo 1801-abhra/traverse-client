@@ -32,6 +32,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.cheapest?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.cheapest?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.cheapest?.transfers || 3) + ' transfers',
             topsisScore: computedRoutes.cheapest?.ccFinal || 0,
+            rawLegs: computedRoutes.cheapest?.legs || [],
             legs: (computedRoutes.cheapest?.legs || []).map((leg, i) => ({
                 from: computedRoutes.cheapest?.stopNames?.[i] || '',
                 fromSub: '',
@@ -58,6 +59,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.balanced?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.balanced?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.balanced?.transfers || 3) + ' transfers',
             topsisScore: computedRoutes.balanced?.ccFinal || 0,
+            rawLegs: computedRoutes.balanced?.legs || [],
             legs: (computedRoutes.balanced?.legs || []).map((leg, i) => ({
                 from: computedRoutes.balanced?.stopNames?.[i] || '',
                 fromSub: '',
@@ -84,6 +86,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.comfort?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.comfort?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.comfort?.transfers || 2) + ' transfers',
             topsisScore: computedRoutes.comfort?.ccFinal || 0,
+            rawLegs: computedRoutes.comfort?.legs || [],
             legs: (computedRoutes.comfort?.legs || []).map((leg, i) => ({
                 from: computedRoutes.comfort?.stopNames?.[i] || '',
                 fromSub: '',
@@ -110,6 +113,7 @@ function SearchResults() {
             duration: Math.floor((computedRoutes.fastest?.totalTime || 510) / 60) + 'h ' + ((computedRoutes.fastest?.totalTime || 510) % 60) + 'm',
             transfers: (computedRoutes.fastest?.transfers || 3) + ' transfers',
             topsisScore: computedRoutes.fastest?.ccFinal || 0,
+            rawLegs: computedRoutes.fastest?.legs || [],
             legs: (computedRoutes.fastest?.legs || []).map((leg, i) => ({
                 from: computedRoutes.fastest?.stopNames?.[i] || '',
                 fromSub: '',
@@ -746,20 +750,19 @@ function SearchResults() {
                                     <button
                                         onClick={() => {
                                             const routeData = {
-                                                stops: journey.legs.map((leg, i) => ({
-                                                    from: journey.legs[i] ?
-                                                        (i === 0 ? 'JUIT Campus' :
-                                                            journey.legs[i - 1] ? 'Stop ' + i : 'Stop')
-                                                        : 'JUIT Campus',
-                                                    mode: leg.mode,
-                                                    operator: leg.mode,
-                                                    price: parseInt(leg.price.replace('₹', '')),
-                                                    time: leg.time,
-                                                })),
+                                                label: journey.badge,
                                                 total: journey.total,
                                                 duration: journey.duration,
-                                                label: journey.badge,
                                                 topsisScore: journey.topsisScore,
+                                                fullLegs: (journey.rawLegs || []).map(leg => ({
+                                                    mode: leg.mode,
+                                                    operator: leg.operator,
+                                                    from: leg.from || '',
+                                                    to: leg.to || '',
+                                                    cost: leg.cost || 0,
+                                                    time: leg.time || 0,
+                                                    serviceNo: leg.serviceNo || null,
+                                                }))
                                             }
                                             localStorage.setItem('selectedRoute', JSON.stringify(routeData))
                                             navigate('/journey-builder')

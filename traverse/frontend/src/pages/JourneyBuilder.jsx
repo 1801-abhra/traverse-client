@@ -23,6 +23,30 @@ function JourneyBuilder() {
         }
     }, [])
 
+    useEffect(() => {
+        const saved = localStorage.getItem('selectedRoute')
+        if (!saved) return
+        try {
+            const route = JSON.parse(saved)
+            if (!route.fullLegs || route.fullLegs.length === 0) return
+
+            // Map the route's full legs to journey context legs
+            const legKeys = ['leg1', 'leg2', 'leg3', 'leg4']
+            route.fullLegs.forEach((leg, i) => {
+                if (i < 4 && legKeys[i]) {
+                    updateLeg(legKeys[i], {
+                        key: leg.mode || 'cab',
+                        label: leg.operator || leg.mode,
+                        desc: leg.from + ' → ' + (leg.to || 'Next Stop'),
+                        price: leg.cost || 0
+                    })
+                }
+            })
+        } catch (e) {
+            console.log('Could not load route legs', e)
+        }
+    }, [])
+
     const getIcon = (key) => {
         if (key === 'walk') return <FootprintsIcon size={20}
             color="#1A56DB" />
