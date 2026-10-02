@@ -118,7 +118,7 @@ function HimachalBackground() {
         }}
       />
 
-      {/* PERFECTLY PROPORTIONED VECTOR SCENE (Tailored for Phone & Laptop Viewports) */}
+      {/* PERFECTLY PROPORTIONED VECTOR SCENE */}
       <svg
         viewBox="0 0 500 540"
         preserveAspectRatio="xMidYMax slice"
@@ -158,16 +158,16 @@ function HimachalBackground() {
             <stop offset="100%" stopColor="#94a3b8" stopOpacity="0.75" />
           </linearGradient>
 
-          {/* Mid Ridge Gradient */}
+          {/* Mid Ridge Plain Gradient */}
           <linearGradient id="midRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#475569" stopOpacity="0.85" />
-            <stop offset="60%" stopColor="#1e293b" stopOpacity="0.92" />
+            <stop offset="0%" stopColor="#475569" stopOpacity="0.9" />
+            <stop offset="55%" stopColor="#1e293b" stopOpacity="0.96" />
             <stop offset="100%" stopColor="#0a0a0a" stopOpacity="1" />
           </linearGradient>
 
           {/* Foreground Slopes Gradient */}
           <linearGradient id="foreRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#334155" stopOpacity="0.9" />
+            <stop offset="0%" stopColor="#334155" stopOpacity="0.92" />
             <stop offset="60%" stopColor="#1e293b" stopOpacity="0.98" />
             <stop offset="100%" stopColor="#080808" stopOpacity="1" />
           </linearGradient>
@@ -187,28 +187,29 @@ function HimachalBackground() {
         </defs>
 
         {/* ========================================================
-            1. DISTANT HIMALAYAN PEAKS (1 Big Center Peak + 2 Side Peaks)
+            1. DISTANT HIMALAYAN PEAKS (Extended Deeply Into Plain)
             ======================================================== */}
-        {/* Left Side Peak (x=80, y=240) */}
-        <polygon points="80,240 0,350 80,350" fill="url(#peakLitGrad)" />
-        <polygon points="80,240 80,350 160,350" fill="url(#peakShadowGrad)" />
+        {/* Left Side Peak (x=80, y=240) - Seamlessly Rooted into Plain */}
+        <polygon points="80,240 -20,410 80,410" fill="url(#peakLitGrad)" />
+        <polygon points="80,240 80,410 180,410" fill="url(#peakShadowGrad)" />
         {/* Left Peak 3D Snow Cap */}
         <polygon points="80,240 45,285 65,275 80,285" fill="url(#snowLitGrad)" />
         <polygon points="80,240 80,285 95,275 115,285" fill="url(#snowShadowGrad)" />
         <line x1="80" y1="240" x2="80" y2="285" stroke="#ffffff" strokeWidth="1" />
 
-        {/* Right Side Peak (x=420, y=240) */}
-        <polygon points="420,240 340,350 420,350" fill="url(#peakLitGrad)" />
-        <polygon points="420,240 420,350 500,350" fill="url(#peakShadowGrad)" />
+        {/* Right Side Peak (x=420, y=240) - Seamlessly Rooted into Plain */}
+        <polygon points="420,240 320,410 420,410" fill="url(#peakLitGrad)" />
+        <polygon points="420,240 420,410 520,410" fill="url(#peakShadowGrad)" />
         {/* Right Peak 3D Snow Cap */}
         <polygon points="420,240 385,285 405,275 420,285" fill="url(#snowLitGrad)" />
         <polygon points="420,240 420,285 435,275 455,285" fill="url(#snowShadowGrad)" />
         <line x1="420" y1="240" x2="420" y2="285" stroke="#ffffff" strokeWidth="1" />
 
-        {/* BIG PROMINENT CENTER ROHTANG PEAK (x=250, y=160) */}
-        <polygon points="250,160 80,380 250,380" fill="url(#peakLitGrad)" />
-        <polygon points="250,160 250,380 420,380" fill="url(#peakShadowGrad)" />
-        <line x1="250" y1="160" x2="250" y2="380" stroke="rgba(255,255,255,0.3)" strokeWidth="1.2" />
+        {/* BIG PROMINENT CENTER ROHTANG PEAK (x=250, y=160) - Seamlessly Connected Behind Plain */}
+        <polygon points="250,160 50,420 250,420" fill="url(#peakLitGrad)" />
+        <polygon points="250,160 250,420 450,420" fill="url(#peakShadowGrad)" />
+        {/* Mountain Spine Crease (Smoothly blends above the plain) */}
+        <line x1="250" y1="160" x2="250" y2="335" stroke="rgba(255,255,255,0.25)" strokeWidth="1.2" />
 
         {/* Multi-Faceted 3D Snow Cap on Big Center Peak */}
         <polygon points="250,160 180,255 215,240 235,260 250,245" fill="url(#snowLitGrad)" />
@@ -216,12 +217,12 @@ function HimachalBackground() {
         <line x1="250" y1="160" x2="250" y2="245" stroke="#ffffff" strokeWidth="1.5" />
 
         {/* ========================================================
-            2. MID-GROUND MOUNTAIN RIDGE
+            2. MID-GROUND MOUNTAIN RIDGE & PLAIN (Covers Mountain Bases Cleanly)
             ======================================================== */}
         <path
-          d="M0 380 Q125 330 250 355 T500 365 L500 540 L0 540 Z"
+          d="M0 375 Q125 325 250 348 T500 358 L500 540 L0 540 Z"
           fill="url(#midRidgeGrad)"
-          stroke="rgba(148, 163, 184, 0.3)"
+          stroke="rgba(148, 163, 184, 0.35)"
           strokeWidth="1"
         />
 
@@ -239,24 +240,8 @@ function HimachalBackground() {
         {/* 3D MOUNTAIN WOODEN COTTAGE 1 (Left Slope with Glowing Golden Window) */}
         <MountainCottage3D x={110} y={335} scale={0.85} />
 
-        {/* SHIMLA CHRIST CHURCH (Right Side, Visible on Phone & Laptop) */}
-        <g opacity="0.85" transform="translate(415, 255) scale(0.78)">
-          <polygon points="0,105 0,78 48,58 96,78 96,105" fill="#64748b" stroke="#94a3b8" strokeWidth="1" />
-          <rect x="64" y="20" width="28" height="85" rx="1" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <rect x="62" y="16" width="6" height="6" fill="#cbd5e1" />
-          <rect x="75" y="16" width="6" height="6" fill="#cbd5e1" />
-          <rect x="88" y="16" width="6" height="6" fill="#cbd5e1" />
-          <polygon points="71,16 77,-2 83,16" fill="#e2e8f0" />
-          <line x1="77" y1="-2" x2="77" y2="-10" stroke="#ffffff" strokeWidth="2" />
-          <line x1="73" y1="-7" x2="81" y2="-7" stroke="#ffffff" strokeWidth="2" />
-          <circle cx="77" cy="38" r="5.5" fill="#ffffff" stroke="#1e293b" strokeWidth="1" />
-          <circle cx="77" cy="38" r="9" fill="rgba(255, 255, 255, 0.35)" />
-          <path d="M73 56 Q77 48 81 56 L81 68 L73 68 Z" fill="#1e293b" />
-          <path d="M16 80 Q22 70 28 80 L28 94 L16 94 Z" fill="#1e293b" />
-        </g>
-
         {/* 3D MOUNTAIN WOODEN COTTAGE 2 (Right Slope with Glowing Golden Window) */}
-        <MountainCottage3D x={355} y={335} scale={0.8} />
+        <MountainCottage3D x={365} y={335} scale={0.85} />
 
         {/* MINIMAL 3D DEODAR TREES (Grounded on Mountain Slopes) */}
         {/* Left Slope (2 Trees) */}
