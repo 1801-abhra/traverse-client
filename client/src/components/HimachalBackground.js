@@ -1,5 +1,44 @@
 import React from 'react';
 
+/* 3D Faceted Deodar / Pine Tree Component with Mountain Slope Integration */
+function Tree3D({ x, y, scale = 1, opacity = 0.88 }) {
+  return (
+    <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity={opacity}>
+      {/* Soft Ground Shadow anchored onto mountain slope */}
+      <ellipse cx="0" cy="2" rx="14" ry="4" fill="#090d16" opacity="0.8" />
+      {/* Tree Trunk */}
+      <polygon points="-2.5,-3 2.5,-3 2,3 -2,3" fill="#1b2333" />
+
+      {/* Tier 4 - Bottom boughs */}
+      <polygon points="0,-16 -23,-3 -2,-5" fill="#64748b" />
+      <polygon points="0,-16 2,-5 23,-3" fill="#334155" />
+      <polygon points="-23,-3 0,-16 -17,-6" fill="#94a3b8" opacity="0.35" />
+      <line x1="0" y1="-16" x2="0" y2="-5" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+
+      {/* Tier 3 */}
+      <polygon points="0,-32 -19,-15 -2,-17" fill="#718096" />
+      <polygon points="0,-32 2,-17 19,-15" fill="#3a485a" />
+      <polygon points="-19,-15 0,-32 -14,-19" fill="#a0aec0" opacity="0.35" />
+      <line x1="0" y1="-32" x2="0" y2="-17" stroke="rgba(255,255,255,0.45)" strokeWidth="0.8" />
+
+      {/* Tier 2 */}
+      <polygon points="0,-48 -14,-31 -2,-33" fill="#8494aa" />
+      <polygon points="0,-48 2,-33 14,-31" fill="#445468" />
+      <polygon points="-14,-31 0,-48 -10,-35" fill="#cbd5e1" opacity="0.4" />
+      <line x1="0" y1="-48" x2="0" y2="-33" stroke="rgba(255,255,255,0.45)" strokeWidth="0.8" />
+
+      {/* Tier 1 - Spire crown */}
+      <polygon points="0,-64 -10,-47 -2,-49" fill="#94a3b8" />
+      <polygon points="0,-64 2,-49 10,-47" fill="#4b5c73" />
+      <line x1="0" y1="-64" x2="0" y2="-49" stroke="rgba(255,255,255,0.55)" strokeWidth="0.8" />
+
+      {/* Snow / Frost Tip */}
+      <polygon points="0,-64 -3,-54 0,-52" fill="#ffffff" opacity="0.95" />
+      <polygon points="0,-64 0,-52 3,-54" fill="#cbd5e1" opacity="0.75" />
+    </g>
+  );
+}
+
 function HimachalBackground() {
   return (
     <div
@@ -52,7 +91,7 @@ function HimachalBackground() {
         }}
       />
 
-      {/* SVG HIMACHAL VECTOR ART (Light Grey, Crisp, Aesthetic) */}
+      {/* SVG HIMACHAL VECTOR ART (Light Grey, 3D Mountain Integration) */}
       <svg
         viewBox="0 0 1000 520"
         preserveAspectRatio="xMidYMax slice"
@@ -83,7 +122,7 @@ function HimachalBackground() {
 
           {/* Mid Ridge Gradient (Medium Slate Grey) */}
           <linearGradient id="himaMidRidge" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#475569" stopOpacity="0.8" />
+            <stop offset="0%" stopColor="#475569" stopOpacity="0.85" />
             <stop offset="55%" stopColor="#1e293b" stopOpacity="0.9" />
             <stop offset="100%" stopColor="#0a0a0a" stopOpacity="1" />
           </linearGradient>
@@ -109,7 +148,7 @@ function HimachalBackground() {
           </linearGradient>
         </defs>
 
-        {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass and Pir Panjal Range) */}
+        {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass & Pir Panjal Range) */}
         <path
           d="M0 350 L75 260 L170 320 L275 195 L375 285 L500 170 L620 280 L725 185 L825 295 L915 215 L1000 285 L1000 520 L0 520 Z"
           fill="url(#himaPeakGrad)"
@@ -123,6 +162,15 @@ function HimachalBackground() {
         <polygon points="500,170 460,225 540,225" fill="url(#himaSnowCap)" />
         <polygon points="725,185 695,230 755,230" fill="url(#himaSnowCap)" />
         <polygon points="915,215 890,250 940,250" fill="url(#himaSnowCap)" />
+
+        {/* High Ridgeline Distant Pines (Climbing the Mountain Crests) */}
+        <Tree3D x={110} y={305} scale={0.35} opacity={0.65} />
+        <Tree3D x={145} y={322} scale={0.4} opacity={0.65} />
+        <Tree3D x={205} y={328} scale={0.42} opacity={0.7} />
+        <Tree3D x={450} y={342} scale={0.42} opacity={0.7} />
+        <Tree3D x={585} y={335} scale={0.45} opacity={0.7} />
+        <Tree3D x={790} y={330} scale={0.4} opacity={0.65} />
+        <Tree3D x={845} y={315} scale={0.36} opacity={0.65} />
 
         {/* 2. MID-GROUND MOUNTAIN RIDGE */}
         <path
@@ -148,6 +196,14 @@ function HimachalBackground() {
           <circle cx="45" cy="3" r="6" fill="rgba(245, 158, 11, 0.4)" />
         </g>
 
+        {/* Sacred Deodar Grove Nestled Naturally Around Hadimba Temple */}
+        <Tree3D x={245} y={355} scale={0.65} opacity={0.8} />
+        <Tree3D x={270} y={368} scale={0.78} opacity={0.85} />
+        <Tree3D x={292} y={358} scale={0.68} opacity={0.8} />
+        <Tree3D x={375} y={352} scale={0.75} opacity={0.85} />
+        <Tree3D x={402} y={368} scale={0.85} opacity={0.88} />
+        <Tree3D x={428} y={380} scale={0.72} opacity={0.82} />
+
         {/* SHIMLA RIDGE AND CHRIST CHURCH SILHOUETTE (Right-Center, Shimla Neo-Gothic landmark) */}
         <g opacity="0.8" transform="translate(630, 220)">
           {/* Main Church Hall */}
@@ -170,40 +226,31 @@ function HimachalBackground() {
           <path d="M16 80 Q22 70 28 80 L28 94 L16 94 Z" fill="#1e293b" />
         </g>
 
-        {/* KULLU / SHIMLA DEODAR AND PINE TREE GROVES (Light slate grey) */}
-        <g opacity="0.7" fill="#64748b" stroke="#94a3b8" strokeWidth="0.6">
-          {/* Left Forest Group */}
-          <polygon points="70,390 77,330 84,390" />
-          <polygon points="68,365 77,315 86,365" />
-          <polygon points="72,340 77,300 82,340" />
-          <polygon points="95,395 103,325 111,395" />
-          <polygon points="93,360 103,305 113,360" />
-          <polygon points="125,400 131,345 137,400" />
-
-          {/* Center-Left Cluster */}
-          <polygon points="260,395 268,335 276,395" />
-          <polygon points="258,365 268,315 278,365" />
-          <polygon points="395,400 402,340 409,400" />
-          <polygon points="393,370 402,320 411,370" />
-
-          {/* Center-Right Cluster */}
-          <polygon points="560,400 568,335 576,400" />
-          <polygon points="558,370 568,315 578,370" />
-          <polygon points="745,400 753,330 761,400" />
-          <polygon points="743,365 753,310 763,365" />
-
-          {/* Right Forest Group */}
-          <polygon points="860,395 868,330 876,395" />
-          <polygon points="858,360 868,310 878,360" />
-          <polygon points="930,405 938,340 946,405" />
-          <polygon points="928,370 938,320 948,370" />
-        </g>
+        {/* Shimla Hillside Pines Flanking Christ Church */}
+        <Tree3D x={565} y={358} scale={0.72} opacity={0.82} />
+        <Tree3D x={592} y={345} scale={0.64} opacity={0.78} />
+        <Tree3D x={715} y={350} scale={0.72} opacity={0.82} />
+        <Tree3D x={742} y={365} scale={0.84} opacity={0.88} />
+        <Tree3D x={772} y={378} scale={0.76} opacity={0.84} />
 
         {/* 3. FOREGROUND MOUNTAIN ROAD AND HILL SLOPES */}
         <path
           d="M0 435 Q280 395 520 420 T1000 430 L1000 520 L0 520 Z"
           fill="url(#himaForeRidge)"
         />
+
+        {/* Beautiful Foreground Mountain Slope Pines (Rooted on Lower Slopes) */}
+        {/* Left Slope Cluster */}
+        <Tree3D x={45} y={420} scale={0.95} opacity={0.92} />
+        <Tree3D x={80} y={432} scale={1.12} opacity={0.96} />
+        <Tree3D x={118} y={418} scale={0.88} opacity={0.9} />
+        <Tree3D x={160} y={424} scale={0.78} opacity={0.85} />
+
+        {/* Right Slope Cluster */}
+        <Tree3D x={820} y={415} scale={0.88} opacity={0.9} />
+        <Tree3D x={865} y={428} scale={1.08} opacity={0.95} />
+        <Tree3D x={915} y={438} scale={1.18} opacity={0.98} />
+        <Tree3D x={965} y={425} scale={0.95} opacity={0.92} />
 
         {/* WINDING MOUNTAIN HIGHWAY RIBBON */}
         <path
