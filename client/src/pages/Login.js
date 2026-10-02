@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import AboutModal from '../components/AboutModal';
@@ -8,24 +8,9 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showCarAnimation, setShowCarAnimation] = useState(true);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [aboutModalTab, setAboutModalTab] = useState('about');
-  const animTimerRef = useRef(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Clean up animation elements from DOM after 5 seconds
-    animTimerRef.current = setTimeout(() => {
-      setShowCarAnimation(false);
-    }, 5000);
-
-    return () => {
-      if (animTimerRef.current) {
-        clearTimeout(animTimerRef.current);
-      }
-    };
-  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -199,331 +184,248 @@ function Login() {
         }
       `}</style>
 
-      {/* Floating Ambient Light Spots */}
-      <div style={styles.glowSpot1} />
-      <div style={styles.glowSpot2} />
-
-      {/* 3D Car Driving Animation Scene (Passes seamlessly behind login portal card) */}
-      {showCarAnimation && (
+{/* HIMACHAL HERITAGE & MOUNTAIN NIGHT SILHOUETTE BACKGROUND */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0,
+          overflow: 'hidden',
+          background: '#0a0a0a'
+        }}
+        aria-hidden="true"
+      >
+        {/* Subtle Ambient Night Sky Vignette */}
         <div
           style={{
             position: 'absolute',
+            top: 0,
             left: 0,
             right: 0,
-            top: '290px',
-            height: '150px',
-            pointerEvents: 'none',
-            zIndex: 0,
-            overflow: 'hidden',
-            animation: 'fadeOutRoadScene 4.6s ease-out forwards'
+            height: '420px',
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.12) 0%, rgba(10, 10, 10, 0) 70%)',
+            opacity: 0.85
           }}
+        />
+
+        {/* Night Stars / Himalayan Sky Sparkles */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '320px',
+            backgroundImage: `
+              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.35) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.5) 50%, transparent 100%),
+              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.4) 50%, transparent 100%),
+              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.55) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.35) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.5) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.4) 50%, transparent 100%)
+            `,
+            backgroundSize: '1440px 320px',
+            animation: 'starPulse 7s ease-in-out infinite'
+          }}
+        />
+
+        {/* Vector Mountain Skyline & Himachal Landmarks */}
+        <svg
+          viewBox="0 0 1440 620"
+          preserveAspectRatio="xMidYMax slice"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            maxHeight: '620px',
+            opacity: 0.95
+          }}
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Glowing Cyber Highway Track passing behind the login card */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '92px',
-              left: '-10%',
-              width: '120%',
-              height: '3px',
-              background: 'linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.3) 15%, #e63946 50%, rgba(230, 57, 70, 0.3) 85%, transparent 100%)',
-              boxShadow: '0 0 16px rgba(230, 57, 70, 0.7), 0 0 32px rgba(230, 57, 70, 0.35)'
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              top: '74px',
-              left: '-10%',
-              width: '120%',
-              height: '24px',
-              background: 'linear-gradient(180deg, rgba(230, 57, 70, 0.06) 0%, rgba(230, 57, 70, 0) 100%)',
-              borderBottom: '1px dashed rgba(230, 57, 70, 0.25)'
-            }}
+          <defs>
+            <linearGradient id="peakDistantGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#1e2228" stopOpacity="0.35" />
+              <stop offset="60%" stopColor="#121519" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.9" />
+            </linearGradient>
+            <linearGradient id="snowCapGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="midRidgeGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#171a1f" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.98" />
+            </linearGradient>
+            <linearGradient id="foregroundRidgeGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#121418" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#080808" stopOpacity="1" />
+            </linearGradient>
+            <linearGradient id="roadSurface" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#15171b" stopOpacity="0.4" />
+              <stop offset="50%" stopColor="#22262d" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#15171b" stopOpacity="0.4" />
+            </linearGradient>
+          </defs>
+
+          {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass range) */}
+          <path
+            d="M0 380 L110 280 L230 350 L380 210 L490 300 L620 230 L740 330 L880 180 L1010 290 L1140 220 L1280 320 L1440 240 L1440 620 L0 620 Z"
+            fill="url(#peakDistantGrad)"
           />
 
-          {/* 3D Moving Car Track */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '36px',
-              left: 0,
-              width: '100%',
-              animation: 'driveAcross3D 3.6s cubic-bezier(0.22, 0.45, 0.35, 0.98) forwards'
-            }}
+          {/* Snow highlights on major peaks */}
+          <polygon points="380,210 345,255 415,255" fill="url(#snowCapGrad)" />
+          <polygon points="620,230 590,270 650,270" fill="url(#snowCapGrad)" />
+          <polygon points="880,180 840,240 920,240" fill="url(#snowCapGrad)" />
+          <polygon points="1140,220 1110,265 1170,265" fill="url(#snowCapGrad)" />
+
+          {/* 2. MID-GROUND MOUNTAIN RIDGE WITH LANDMARKS & PINE FORESTS */}
+          <path
+            d="M0 430 Q180 390 340 410 T700 420 Q950 370 1180 410 T1440 420 L1440 620 L0 620 Z"
+            fill="url(#midRidgeGrad)"
+          />
+
+          {/* HADIMBA PAGODA TEMPLE SILHOUETTE (Kullu/Manali wooden pagoda - Left midground) */}
+          <g opacity="0.22" transform="translate(180, 290)">
+            <rect x="20" y="70" width="40" height="30" fill="#2a2e36" />
+            <polygon points="10,70 40,48 70,70" fill="#353b45" />
+            <polygon points="20,48 40,32 60,48" fill="#3f4754" />
+            <polygon points="28,32 40,18 52,32" fill="#4a5362" />
+            <line x1="40" y1="18" x2="40" y2="8" stroke="#8892a2" strokeWidth="1.5" />
+            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.6" />
+          </g>
+
+          {/* SHIMLA RIDGE & CHRIST CHURCH SILHOUETTE (Center-Right midground) */}
+          <g opacity="0.25" transform="translate(1080, 260)">
+            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#2c3038" />
+            <rect x="65" y="30" width="28" height="80" fill="#363c47" />
+            <rect x="63" y="27" width="6" height="5" fill="#3f4754" />
+            <rect x="73" y="27" width="6" height="5" fill="#3f4754" />
+            <rect x="83" y="27" width="6" height="5" fill="#3f4754" />
+            <rect x="91" y="27" width="6" height="5" fill="#3f4754" />
+            <polygon points="72,27 79,8 86,27" fill="#4b5463" />
+            <line x1="79" y1="8" x2="79" y2="0" stroke="#778091" strokeWidth="1.5" />
+            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.3)" strokeWidth="1" fill="#1b1e24" />
+            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#181a20" />
+            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#181a20" />
+          </g>
+
+          {/* KULLU / SHIMLA DEODAR & PINE TREE SILHOUETTES */}
+          <g opacity="0.28" fill="#1c2026">
+            <polygon points="70,410 77,360 84,410" />
+            <polygon points="68,390 77,345 86,390" />
+            <polygon points="72,365 77,330 82,365" />
+            <polygon points="95,415 103,355 111,415" />
+            <polygon points="93,390 103,340 113,390" />
+            <polygon points="97,360 103,320 109,360" />
+            <polygon points="125,420 131,375 137,420" />
+            <polygon points="123,400 131,360 139,400" />
+            <polygon points="280,425 287,370 294,425" />
+            <polygon points="278,400 287,355 296,400" />
+            <polygon points="282,375 287,340 292,375" />
+            <polygon points="460,430 467,375 474,430" />
+            <polygon points="458,405 467,360 476,405" />
+            <polygon points="490,435 496,385 502,435" />
+            <polygon points="860,430 868,365 876,430" />
+            <polygon points="858,398 868,350 878,398" />
+            <polygon points="862,370 868,335 874,370" />
+            <polygon points="890,435 896,380 902,435" />
+            <polygon points="1240,425 1247,370 1254,425" />
+            <polygon points="1238,398 1247,350 1256,398" />
+            <polygon points="1270,430 1276,380 1282,430" />
+            <polygon points="1350,425 1358,360 1366,425" />
+            <polygon points="1348,395 1358,340 1368,395" />
+          </g>
+
+          {/* 3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES */}
+          <path
+            d="M0 490 Q220 460 480 480 T980 470 Q1220 465 1440 500 L1440 620 L0 620 Z"
+            fill="url(#foregroundRidgeGrad)"
+          />
+
+          {/* WINDING MOUNTAIN HIGHWAY RIBBON */}
+          <path
+            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
+            stroke="url(#roadSurface)"
+            strokeWidth="28"
+            strokeLinecap="round"
+          />
+          <path
+            d="M-20 526 Q 260 486, 520 511 T 1020 496 Q 1260 486, 1460 521"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="1.5"
+            fill="none"
+          />
+          <path
+            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
+            stroke="rgba(255,255,255,0.14)"
+            strokeWidth="1.5"
+            strokeDasharray="12 16"
+            fill="none"
+          />
+
+          {/* 4. VEHICLE SILHOUETTES */}
+          {/* Primary Sedan Cab Profile on Mountain Road */}
+          <g opacity="0.32" transform="translate(680, 488)">
+            <path
+              d="M0 16 L12 8 Q24 0 42 0 L66 0 Q78 0 88 8 L98 16 L108 17 Q112 18 112 22 L112 28 L0 28 Z"
+              fill="#2f3540"
+            />
+            <path
+              d="M20 8 L32 2 L52 2 L52 8 Z"
+              fill="rgba(255,255,255,0.08)"
+            />
+            <path
+              d="M56 2 L72 2 L80 8 L56 8 Z"
+              fill="rgba(255,255,255,0.08)"
+            />
+            <rect x="44" y="-3" width="12" height="3" rx="1" fill="#e63946" opacity="0.85" />
+            <polygon points="112,20 148,15 148,27 112,24" fill="rgba(255,255,255,0.05)" />
+            <circle cx="2" cy="20" r="2" fill="#e63946" opacity="0.8" />
+            <circle cx="24" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
+            <circle cx="24" cy="28" r="2.5" fill="#667080" />
+            <circle cx="86" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
+            <circle cx="86" cy="28" r="2.5" fill="#667080" />
+          </g>
+
+          {/* Distant Small Cab */}
+          <g opacity="0.22" transform="translate(240, 482) scale(0.65)">
+            <path
+              d="M0 16 L10 8 Q20 0 38 0 L58 0 Q70 0 78 8 L88 16 L96 17 L96 26 L0 26 Z"
+              fill="#2a2f38"
+            />
+            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.7" />
+            <circle cx="20" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
+            <circle cx="76" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
+          </g>
+
+          {/* 5. SUBTLE CULTURAL & GEOGRAPHIC TYPOGRAPHY WATERMARK */}
+          <text
+            x="720"
+            y="592"
+            textAnchor="middle"
+            fill="#22262d"
+            fontSize="11"
+            fontWeight="700"
+            letterSpacing="5"
+            fontFamily="'Inter', -apple-system, sans-serif"
           >
-            <div
-              style={{
-                position: 'relative',
-                width: '190px',
-                height: '65px',
-                transformStyle: 'preserve-3d',
-                filter: 'drop-shadow(0 14px 24px rgba(0,0,0,0.95))'
-              }}
-            >
-              {/* Blurred Underbody Shadow */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '-10px',
-                  left: '-10px',
-                  width: '210px',
-                  height: '20px',
-                  background: 'rgba(0, 0, 0, 0.8)',
-                  borderRadius: '50%',
-                  filter: 'blur(9px)'
-                }}
-              />
+            BUILT FOR THE HILLS • HIMACHAL KI APNI CAB SERVICE
+          </text>
+        </svg>
+      </div>
 
-              {/* Headlight Beam Projecting Forward */}
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '-160px',
-                  bottom: '8px',
-                  width: '160px',
-                  height: '42px',
-                  background: 'linear-gradient(90deg, rgba(255, 255, 230, 0.55) 0%, rgba(255, 240, 180, 0.18) 60%, rgba(255, 240, 180, 0) 100%)',
-                  clipPath: 'polygon(0% 40%, 100% 0%, 100% 100%, 0% 60%)',
-                  filter: 'blur(2px)'
-                }}
-              />
-
-              {/* Speed Lines Behind Car */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-120px',
-                  top: '18px',
-                  width: '110px',
-                  height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 75%, transparent 100%)',
-                  borderRadius: '2px',
-                  filter: 'blur(0.5px)'
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-150px',
-                  top: '28px',
-                  width: '140px',
-                  height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(230,57,70,0.6) 80%, transparent 100%)',
-                  borderRadius: '2px',
-                  filter: 'blur(0.5px)'
-                }}
-              />
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '-95px',
-                  top: '38px',
-                  width: '85px',
-                  height: '2px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 70%, transparent 100%)',
-                  borderRadius: '2px',
-                  filter: 'blur(0.5px)'
-                }}
-              />
-
-              {/* Main 3D Car Body */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: 0,
-                  width: '175px',
-                  height: '34px',
-                  background: 'linear-gradient(180deg, #ff4d5a 0%, #e63946 45%, #9e1522 100%)',
-                  borderRadius: '14px 30px 6px 8px',
-                  boxShadow: 'inset 0 2.5px 5px rgba(255,255,255,0.45), inset 0 -3px 6px rgba(0,0,0,0.55), 0 0 16px rgba(230,57,70,0.4)',
-                  border: '1px solid rgba(255,255,255,0.2)'
-                }}
-              >
-                {/* Subtle Reflection Highlight Stripe */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '2px',
-                    left: '8px',
-                    width: '140px',
-                    height: '4px',
-                    background: 'linear-gradient(90deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 100%)',
-                    borderRadius: '2px'
-                  }}
-                />
-
-                {/* Chrome Side Trim Accent */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '8px',
-                    left: '42px',
-                    width: '80px',
-                    height: '2px',
-                    background: 'linear-gradient(90deg, #aaaaaa, #ffffff, #888888)',
-                    boxShadow: '0 0 4px rgba(255,255,255,0.5)'
-                  }}
-                />
-
-                {/* Front Headlight */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '3px',
-                    top: '8px',
-                    width: '9px',
-                    height: '9px',
-                    background: '#ffffff',
-                    borderRadius: '50%',
-                    boxShadow: '0 0 12px #ffffff, 0 0 24px #ffd166, 0 0 35px #e63946'
-                  }}
-                />
-
-                {/* Rear Glowing Taillight */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '0px',
-                    top: '6px',
-                    width: '6px',
-                    height: '12px',
-                    background: '#ff2a3b',
-                    borderRadius: '3px 0 0 3px',
-                    boxShadow: '-4px 0 12px #ff2a3b, -10px 0 24px rgba(255,42,59,0.7)'
-                  }}
-                />
-
-                {/* Front Bumper Air Vent */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '8px',
-                    bottom: '4px',
-                    width: '16px',
-                    height: '5px',
-                    background: '#111111',
-                    borderRadius: '2px',
-                    border: '0.5px solid #333333'
-                  }}
-                />
-              </div>
-
-              {/* 3D Car Cabin & Roof */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-1px',
-                  left: '46px',
-                  width: '78px',
-                  height: '26px',
-                  background: 'linear-gradient(180deg, #b81d2c 0%, #87121e 100%)',
-                  borderRadius: '14px 24px 0 0',
-                  transform: 'perspective(300px) rotateX(6deg) skewX(-11deg)',
-                  boxShadow: 'inset 0 2px 3px rgba(255,255,255,0.35)',
-                  borderTop: '1px solid rgba(255,255,255,0.25)'
-                }}
-              >
-                {/* Windshield */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '-2px',
-                    top: '3px',
-                    width: '24px',
-                    height: '19px',
-                    background: 'rgba(17, 21, 28, 0.85)',
-                    borderRadius: '2px 9px 0 0',
-                    border: '1px solid rgba(255,255,255,0.25)',
-                    backdropFilter: 'blur(2px)',
-                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)'
-                  }}
-                />
-                {/* Side Windows */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '6px',
-                    top: '3px',
-                    width: '46px',
-                    height: '19px',
-                    background: 'rgba(17, 21, 28, 0.85)',
-                    borderRadius: '7px 2px 0 0',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    backdropFilter: 'blur(2px)',
-                    boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)'
-                  }}
-                />
-              </div>
-
-              {/* Front Wheel */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '2px',
-                  right: '18px',
-                  width: '28px',
-                  height: '28px',
-                  background: 'radial-gradient(circle, #252525 35%, #111111 65%, #000000 100%)',
-                  borderRadius: '50%',
-                  border: '2px solid #2e2e2e',
-                  boxShadow: '0 5px 10px rgba(0,0,0,0.85), inset 0 0 6px rgba(230,57,70,0.5)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2
-                }}
-              >
-                {/* 3D Chrome Rim */}
-                <div
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle, #ffffff 15%, #c0c0c0 50%, #444444 100%)',
-                    border: '1px solid #ffffff',
-                    animation: 'wheelSpinAnim 0.3s linear infinite'
-                  }}
-                />
-              </div>
-
-              {/* Rear Wheel */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '2px',
-                  left: '22px',
-                  width: '28px',
-                  height: '28px',
-                  background: 'radial-gradient(circle, #252525 35%, #111111 65%, #000000 100%)',
-                  borderRadius: '50%',
-                  border: '2px solid #2e2e2e',
-                  boxShadow: '0 5px 10px rgba(0,0,0,0.85), inset 0 0 6px rgba(230,57,70,0.5)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2
-                }}
-              >
-                {/* 3D Chrome Rim */}
-                <div
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle, #ffffff 15%, #c0c0c0 50%, #444444 100%)',
-                    border: '1px solid #ffffff',
-                    animation: 'wheelSpinAnim 0.3s linear infinite'
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content Container (Higher z-index so car drives smoothly behind the portal) */}
+            {/* Main Content Container (Higher z-index so car drives smoothly behind the portal) */}
       <div style={styles.contentContainer}>
         {/* Top Floating Logo & Brand Header */}
         <div style={styles.header}>
