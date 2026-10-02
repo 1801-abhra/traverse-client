@@ -345,7 +345,25 @@ function DriverDashboard() {
     return () => clearInterval(interval);
   }, [activeRide]);
 
-    const startScheduledRide = async (rideId) => {
+    const showToast = (msg, type = 'info') => {
+    setMessage(msg);
+  };
+
+  const cancelScheduledRide = async (rideId) => {
+    try {
+      await axios.put(
+        `${API}/api/rides/cancel-accepted/${rideId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMyScheduledRides(prev => prev.filter(r => r._id !== rideId));
+      showToast('Scheduled ride cancelled successfully', 'warning');
+    } catch (err) {
+      console.log('Cancel error:', err);
+    }
+  };
+
+  const startScheduledRide = async (rideId) => {
     try {
       const res = await axios.put(
         `${API}/api/rides/start-scheduled/${rideId}`,
@@ -1267,6 +1285,25 @@ const preAcceptRide = async (rideId) => {
                             onClick={() => startScheduledRide(ride._id)}
                             style={{ ...styles.acceptBtn, marginTop: '8px', width: '100%', justifyContent: 'center' }}>
                             🚗 Start Now — Begin This Ride
+                          </button>
+                          <button
+                            onClick={() => cancelScheduledRide(ride._id)}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              background: 'rgba(230, 57, 70, 0.08)',
+                              color: '#f87171',
+                              border: '1.5px solid rgba(230, 57, 70, 0.5)',
+                              borderRadius: '10px',
+                              cursor: 'pointer',
+                              fontSize: '13px',
+                              fontWeight: '700',
+                              marginTop: '8px',
+                              fontFamily: 'inherit',
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            Cancel Scheduled Ride
                           </button>
                           </div>
                         </div>

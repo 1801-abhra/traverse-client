@@ -425,6 +425,12 @@ function FacultyDashboard() {
             const isNight = hour >= 21 || hour < 7;
             finalFare = selectedVehicle === '4+1' ? (isNight ? 300 : 200) : (isNight ? 450 : 300);
         }
+        if (!finalFare || finalFare <= 0) {
+            setMessage('Please select destination and vehicle again');
+            setBooking(false);
+            return;
+        }
+
         try {
             const pickup = selectedPickup;
             const dropoff = selectedRoute.destination;
@@ -451,7 +457,9 @@ function FacultyDashboard() {
             );
             setActiveRide(null);
             setFare(null);
-            setMessage(res.data.message || 'Ride cancelled');
+            setSelectedVehicle(null);
+            setSelectedRoute(null);
+            setMessage('');
             showToast('Ride cancelled', 'warning');
         } catch (err) {
             setMessage(err.response?.data?.message || 'Cannot cancel');
@@ -466,8 +474,11 @@ function FacultyDashboard() {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setActiveRide(null);
+            setFare(null);
+            setSelectedVehicle(null);
+            setSelectedRoute(null);
+            setMessage('');
             setShowCancelPopup(false);
-            setMessage('Ride cancelled successfully.');
             if (res.data.warning) setMessage(res.data.warning);
         } catch (err) {
             setMessage(err.response?.data?.message || 'Cannot cancel');

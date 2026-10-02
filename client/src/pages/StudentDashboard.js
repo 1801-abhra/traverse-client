@@ -384,6 +384,12 @@ function StudentDashboard() {
       }
     }
 
+    if (!finalFare || finalFare <= 0) {
+      setMessage('Please select destination and vehicle again');
+      setBooking(false);
+      return;
+    }
+
     try {
       const pickup = selectedPickup;
       const dropoff = selectedRoute.destination;
@@ -421,7 +427,9 @@ function StudentDashboard() {
       );
       setActiveRide(null);
       setFare(null);
-      setMessage(res.data.message || 'Ride cancelled');
+      setSelectedVehicle(null);
+      setSelectedRoute(null);
+      setMessage('');
       showToast(res.data.message || 'Ride cancelled', 'warning');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Cannot cancel');
@@ -578,7 +586,10 @@ function StudentDashboard() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setActiveRide(null);
-      setMessage('Left shared ride successfully');
+      setFare(null);
+      setSelectedVehicle(null);
+      setSelectedRoute(null);
+      setMessage('');
       showToast('You left the shared ride', 'warning');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Failed to leave ride');
@@ -604,8 +615,11 @@ function StudentDashboard() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setActiveRide(null);
+      setFare(null);
+      setSelectedVehicle(null);
+      setSelectedRoute(null);
+      setMessage('');
       setShowCancelPopup(false);
-      setMessage('Ride cancelled successfully.');
       if (res.data.warning) {
         setMessage(res.data.warning);
       }
