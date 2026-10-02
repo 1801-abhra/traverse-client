@@ -1,6 +1,6 @@
 import React from 'react';
 
-/* 3D Faceted Deodar Pine Tree (Grounded on Mountain Slope) */
+/* 3D Faceted Deodar Pine Tree (Grounded on Plain) */
 function Tree3D({ x, y, scale = 1, opacity = 0.9 }) {
   return (
     <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity={opacity}>
@@ -63,6 +63,49 @@ function MountainCottage3D({ x, y, scale = 1, opacity = 0.92 }) {
 
       {/* Cabin Door */}
       <rect x="17" y="13" width="5" height="9" fill="#1e293b" />
+    </g>
+  );
+}
+
+/* 3D Faceted Himachali Wooden Pagoda Temple with Golden Spire */
+function PagodaTemple3D({ x, y, scale = 1, opacity = 0.92 }) {
+  return (
+    <g transform={`translate(${x}, ${y}) scale(${scale})`} opacity={opacity}>
+      {/* Ground Shadow */}
+      <ellipse cx="20" cy="38" rx="28" ry="6" fill="#080c14" opacity="0.8" />
+
+      {/* Base Hall - Front Wall */}
+      <polygon points="4,22 36,22 36,38 4,38" fill="#334155" stroke="#475569" strokeWidth="0.8" />
+      {/* Base Hall - Side Depth Wall */}
+      <polygon points="36,22 46,16 46,32 36,38" fill="#1e293b" stroke="#334155" strokeWidth="0.8" />
+
+      {/* Tier 1 Roof (Bottom Pagoda Eaves) */}
+      <polygon points="-2,22 20,8 42,22" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="0.8" />
+      <polygon points="20,8 52,2 52,14 42,22" fill="#475569" stroke="#64748b" strokeWidth="0.8" />
+      <line x1="20" y1="8" x2="52" y2="2" stroke="#f8fafc" strokeWidth="1.5" />
+
+      {/* Tier 2 Middle Wall */}
+      <polygon points="8,8 32,8 32,16 8,16" fill="#2d3748" />
+      <polygon points="32,8 40,3 40,11 32,16" fill="#1a202c" />
+
+      {/* Tier 2 Roof */}
+      <polygon points="4,8 20,-2 36,8" fill="#8494aa" stroke="#cbd5e1" strokeWidth="0.8" />
+      <polygon points="20,-2 46,-7 46,3 36,8" fill="#3f4d63" stroke="#5a6b82" strokeWidth="0.8" />
+      <line x1="20" y1="-2" x2="46" y2="-7" stroke="#f8fafc" strokeWidth="1.5" />
+
+      {/* Tier 3 Top Roof Peak */}
+      <polygon points="10,-2 20,-12 30,-2" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="0.8" />
+      <polygon points="20,-12 40,-16 40,-6 30,-2" fill="#475569" stroke="#64748b" strokeWidth="0.8" />
+      <line x1="20" y1="-12" x2="40" y2="-16" stroke="#f8fafc" strokeWidth="1.5" />
+
+      {/* Golden Kalash / Brass Spire Finial */}
+      <line x1="20" y1="-12" x2="20" y2="-22" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="20" cy="-22" r="3.5" fill="#f59e0b" />
+      <circle cx="20" cy="-22" r="7" fill="rgba(245, 158, 11, 0.35)" />
+
+      {/* Temple Entrance with Warm Golden Light */}
+      <polygon points="16,28 24,28 24,38 16,38" fill="#f59e0b" />
+      <circle cx="20" cy="33" r="6" fill="rgba(245, 158, 11, 0.25)" />
     </g>
   );
 }
@@ -187,9 +230,9 @@ function HimachalBackground() {
         </defs>
 
         {/* ========================================================
-            1. DISTANT HIMALAYAN PEAKS (Extended Deeply Into Plain)
+            1. DISTANT HIMALAYAN PEAKS (Extended Deeply Behind Plain)
             ======================================================== */}
-        {/* Left Side Peak (x=80, y=240) - Seamlessly Rooted into Plain */}
+        {/* Left Side Peak (x=80, y=240) */}
         <polygon points="80,240 -20,410 80,410" fill="url(#peakLitGrad)" />
         <polygon points="80,240 80,410 180,410" fill="url(#peakShadowGrad)" />
         {/* Left Peak 3D Snow Cap */}
@@ -197,7 +240,7 @@ function HimachalBackground() {
         <polygon points="80,240 80,285 95,275 115,285" fill="url(#snowShadowGrad)" />
         <line x1="80" y1="240" x2="80" y2="285" stroke="#ffffff" strokeWidth="1" />
 
-        {/* Right Side Peak (x=420, y=240) - Seamlessly Rooted into Plain */}
+        {/* Right Side Peak (x=420, y=240) */}
         <polygon points="420,240 320,410 420,410" fill="url(#peakLitGrad)" />
         <polygon points="420,240 420,410 520,410" fill="url(#peakShadowGrad)" />
         {/* Right Peak 3D Snow Cap */}
@@ -205,10 +248,9 @@ function HimachalBackground() {
         <polygon points="420,240 420,285 435,275 455,285" fill="url(#snowShadowGrad)" />
         <line x1="420" y1="240" x2="420" y2="285" stroke="#ffffff" strokeWidth="1" />
 
-        {/* BIG PROMINENT CENTER ROHTANG PEAK (x=250, y=160) - Seamlessly Connected Behind Plain */}
+        {/* BIG PROMINENT CENTER ROHTANG PEAK (x=250, y=160) */}
         <polygon points="250,160 50,420 250,420" fill="url(#peakLitGrad)" />
         <polygon points="250,160 250,420 450,420" fill="url(#peakShadowGrad)" />
-        {/* Mountain Spine Crease (Smoothly blends above the plain) */}
         <line x1="250" y1="160" x2="250" y2="335" stroke="rgba(255,255,255,0.25)" strokeWidth="1.2" />
 
         {/* Multi-Faceted 3D Snow Cap on Big Center Peak */}
@@ -217,7 +259,7 @@ function HimachalBackground() {
         <line x1="250" y1="160" x2="250" y2="245" stroke="#ffffff" strokeWidth="1.5" />
 
         {/* ========================================================
-            2. MID-GROUND MOUNTAIN RIDGE & PLAIN (Covers Mountain Bases Cleanly)
+            2. MID-GROUND MOUNTAIN RIDGE & PLAIN
             ======================================================== */}
         <path
           d="M0 375 Q125 325 250 348 T500 358 L500 540 L0 540 Z"
@@ -226,31 +268,23 @@ function HimachalBackground() {
           strokeWidth="1"
         />
 
-        {/* HADIMBA PAGODA TEMPLE (Left Side, Visible on Phone & Laptop) */}
-        <g opacity="0.85" transform="translate(45, 270) scale(0.78)">
-          <rect x="22" y="72" width="46" height="32" rx="2" fill="#64748b" stroke="#94a3b8" strokeWidth="1" />
-          <polygon points="10,72 45,46 80,72" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          <polygon points="22,46 45,28 68,46" fill="#cbd5e1" />
-          <polygon points="30,28 45,14 60,28" fill="#e2e8f0" />
-          <line x1="45" y1="14" x2="45" y2="3" stroke="#f59e0b" strokeWidth="2.5" />
-          <circle cx="45" cy="3" r="3.5" fill="#f59e0b" />
-          <circle cx="45" cy="3" r="6" fill="rgba(245, 158, 11, 0.4)" />
-        </g>
+        {/* 3D PAGODA TEMPLE (Left Plain - Full 3D Faceted Structure) */}
+        <PagodaTemple3D x={40} y={335} scale={0.82} />
 
-        {/* 3D MOUNTAIN WOODEN COTTAGE 1 (Left Slope with Glowing Golden Window) */}
-        <MountainCottage3D x={110} y={335} scale={0.85} />
+        {/* 3D MOUNTAIN WOODEN COTTAGE 1 (Left Plain with Glowing Golden Window) */}
+        <MountainCottage3D x={115} y={355} scale={0.85} />
 
-        {/* 3D MOUNTAIN WOODEN COTTAGE 2 (Right Slope with Glowing Golden Window) */}
-        <MountainCottage3D x={365} y={335} scale={0.85} />
+        {/* 3D MOUNTAIN WOODEN COTTAGE 2 (Right Plain with Glowing Golden Window - Moved Down to Plain) */}
+        <MountainCottage3D x={365} y={358} scale={0.85} />
 
-        {/* MINIMAL 3D DEODAR TREES (Grounded on Mountain Slopes) */}
-        {/* Left Slope (2 Trees) */}
-        <Tree3D x={25} y={358} scale={0.75} opacity={0.88} />
-        <Tree3D x={155} y={362} scale={0.7} opacity={0.88} />
+        {/* MINIMAL 3D DEODAR TREES (Grounded on Plain) */}
+        {/* Left Plain Trees */}
+        <Tree3D x={20} y={375} scale={0.75} opacity={0.88} />
+        <Tree3D x={165} y={378} scale={0.72} opacity={0.88} />
 
-        {/* Right Slope (2 Trees) */}
-        <Tree3D x={330} y={362} scale={0.7} opacity={0.88} />
-        <Tree3D x={465} y={358} scale={0.75} opacity={0.88} />
+        {/* Right Plain Trees (Moved Down to Plain) */}
+        <Tree3D x={325} y={380} scale={0.72} opacity={0.88} />
+        <Tree3D x={465} y={375} scale={0.75} opacity={0.88} />
 
         {/* ========================================================
             3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES
