@@ -108,3 +108,23 @@ select:focus {
     opacity: 0.5;
   }
 }
+
+/* Himachal Heritage Background Tagline Responsiveness */
+.himachal-tagline-text {
+  font-size: 10.5px;
+  letter-spacing: 1.5px;
+}
+
+@media (max-width: 480px) {
+  .himachal-tagline-text {
+    font-size: 9px !important;
+    letter-spacing: 0.8px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .himachal-tagline-text {
+    font-size: 8px !important;
+    letter-spacing: 0.5px !important;
+  }
+}
