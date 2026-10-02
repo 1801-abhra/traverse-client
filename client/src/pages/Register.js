@@ -107,6 +107,23 @@ function Register() {
       color: #ffffff !important;
       background: rgba(255, 255, 255, 0.05) !important;
     }
+    
+    @media (max-width: 480px) {
+      .mobile-peek-container {
+        padding-top: 88px !important;
+      }
+      .mobile-glass-card {
+        background: rgba(10, 10, 10, 0.75) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(230, 57, 70, 0.15) !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 24px rgba(230, 57, 70, 0.08) !important;
+      }
+      .mobile-peek-header {
+        margin-bottom: 22px !important;
+      }
+    }
+
     .role-tab.active {
       background: linear-gradient(135deg, #e63946 0%, #b81d2c 100%) !important;
       color: #ffffff !important;
@@ -141,8 +158,8 @@ function Register() {
             left: 0,
             right: 0,
             height: '420px',
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.12) 0%, rgba(10, 10, 10, 0) 70%)',
-            opacity: 0.85
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.16) 0%, rgba(10, 10, 10, 0) 70%)',
+            opacity: 0.9
           }}
         />
 
@@ -153,26 +170,26 @@ function Register() {
             top: 0,
             left: 0,
             right: 0,
-            height: '320px',
+            height: '340px',
             backgroundImage: `
-              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.45) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.6) 50%, transparent 100%),
-              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.35) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.5) 50%, transparent 100%),
-              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.4) 50%, transparent 100%),
-              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.55) 50%, transparent 100%),
-              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.35) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.5) 50%, transparent 100%),
-              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.4) 50%, transparent 100%)
+              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.55) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.7) 50%, transparent 100%),
+              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.5) 50%, transparent 100%),
+              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.65) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.5) 50%, transparent 100%)
             `,
-            backgroundSize: '1440px 320px',
+            backgroundSize: '1440px 340px',
             animation: 'starPulse 7s ease-in-out infinite'
           }}
         />
 
         {/* Vector Mountain Skyline & Himachal Landmarks */}
         <svg
-          viewBox="0 0 1440 620"
+          viewBox="0 0 1440 640"
           preserveAspectRatio="xMidYMax slice"
           style={{
             position: 'absolute',
@@ -180,82 +197,82 @@ function Register() {
             left: 0,
             width: '100%',
             height: '100%',
-            maxHeight: '620px',
-            opacity: 0.95
+            maxHeight: '680px',
+            opacity: 1
           }}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
             <linearGradient id="peakDistantGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1e2228" stopOpacity="0.35" />
-              <stop offset="60%" stopColor="#121519" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.9" />
+              <stop offset="0%" stopColor="#2c333e" stopOpacity="0.55" />
+              <stop offset="50%" stopColor="#1a1e24" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.95" />
             </linearGradient>
             <linearGradient id="snowCapGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.02" />
             </linearGradient>
             <linearGradient id="midRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#171a1f" stopOpacity="0.65" />
+              <stop offset="0%" stopColor="#232832" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.98" />
             </linearGradient>
             <linearGradient id="foregroundRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#121418" stopOpacity="0.85" />
+              <stop offset="0%" stopColor="#1a1e24" stopOpacity="0.92" />
               <stop offset="100%" stopColor="#080808" stopOpacity="1" />
             </linearGradient>
             <linearGradient id="roadSurface" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#15171b" stopOpacity="0.4" />
-              <stop offset="50%" stopColor="#22262d" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#15171b" stopOpacity="0.4" />
+              <stop offset="0%" stopColor="#1c2027" stopOpacity="0.6" />
+              <stop offset="50%" stopColor="#2e3540" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#1c2027" stopOpacity="0.6" />
             </linearGradient>
           </defs>
 
           {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass range) */}
           <path
-            d="M0 380 L110 280 L230 350 L380 210 L490 300 L620 230 L740 330 L880 180 L1010 290 L1140 220 L1280 320 L1440 240 L1440 620 L0 620 Z"
+            d="M0 360 L110 260 L230 330 L380 180 L490 280 L620 200 L740 310 L880 150 L1010 270 L1140 190 L1280 300 L1440 210 L1440 640 L0 640 Z"
             fill="url(#peakDistantGrad)"
           />
 
           {/* Snow highlights on major peaks */}
-          <polygon points="380,210 345,255 415,255" fill="url(#snowCapGrad)" />
-          <polygon points="620,230 590,270 650,270" fill="url(#snowCapGrad)" />
-          <polygon points="880,180 840,240 920,240" fill="url(#snowCapGrad)" />
-          <polygon points="1140,220 1110,265 1170,265" fill="url(#snowCapGrad)" />
+          <polygon points="380,180 340,230 420,230" fill="url(#snowCapGrad)" />
+          <polygon points="620,200 585,245 655,245" fill="url(#snowCapGrad)" />
+          <polygon points="880,150 835,215 925,215" fill="url(#snowCapGrad)" />
+          <polygon points="1140,190 1105,240 1175,240" fill="url(#snowCapGrad)" />
 
           {/* 2. MID-GROUND MOUNTAIN RIDGE WITH LANDMARKS & PINE FORESTS */}
           <path
-            d="M0 430 Q180 390 340 410 T700 420 Q950 370 1180 410 T1440 420 L1440 620 L0 620 Z"
+            d="M0 410 Q180 370 340 390 T700 400 Q950 350 1180 390 T1440 400 L1440 640 L0 640 Z"
             fill="url(#midRidgeGrad)"
           />
 
           {/* HADIMBA PAGODA TEMPLE SILHOUETTE (Kullu/Manali wooden pagoda - Left midground) */}
-          <g opacity="0.22" transform="translate(180, 290)">
-            <rect x="20" y="70" width="40" height="30" fill="#2a2e36" />
-            <polygon points="10,70 40,48 70,70" fill="#353b45" />
-            <polygon points="20,48 40,32 60,48" fill="#3f4754" />
-            <polygon points="28,32 40,18 52,32" fill="#4a5362" />
-            <line x1="40" y1="18" x2="40" y2="8" stroke="#8892a2" strokeWidth="1.5" />
-            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.6" />
+          <g opacity="0.32" transform="translate(180, 265)">
+            <rect x="20" y="70" width="40" height="30" fill="#363c47" />
+            <polygon points="10,70 40,48 70,70" fill="#464e5c" />
+            <polygon points="20,48 40,32 60,48" fill="#525b6b" />
+            <polygon points="28,32 40,18 52,32" fill="#616c7d" />
+            <line x1="40" y1="18" x2="40" y2="8" stroke="#a0abbd" strokeWidth="1.5" />
+            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.8" />
           </g>
 
           {/* SHIMLA RIDGE & CHRIST CHURCH SILHOUETTE (Center-Right midground) */}
-          <g opacity="0.25" transform="translate(1080, 260)">
-            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#2c3038" />
-            <rect x="65" y="30" width="28" height="80" fill="#363c47" />
-            <rect x="63" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="73" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="83" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="91" y="27" width="6" height="5" fill="#3f4754" />
-            <polygon points="72,27 79,8 86,27" fill="#4b5463" />
-            <line x1="79" y1="8" x2="79" y2="0" stroke="#778091" strokeWidth="1.5" />
-            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.3)" strokeWidth="1" fill="#1b1e24" />
-            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#181a20" />
-            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#181a20" />
+          <g opacity="0.35" transform="translate(1080, 235)">
+            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#383e4a" />
+            <rect x="65" y="30" width="28" height="80" fill="#454c59" />
+            <rect x="63" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="73" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="83" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="91" y="27" width="6" height="5" fill="#545d6e" />
+            <polygon points="72,27 79,8 86,27" fill="#626d7f" />
+            <line x1="79" y1="8" x2="79" y2="0" stroke="#9aa5b8" strokeWidth="1.5" />
+            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1" fill="#20242c" />
+            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#1e222a" />
+            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#1e222a" />
           </g>
 
           {/* KULLU / SHIMLA DEODAR & PINE TREE SILHOUETTES */}
-          <g opacity="0.28" fill="#1c2026">
+          <g opacity="0.38" fill="#282e38">
             <polygon points="70,410 77,360 84,410" />
             <polygon points="68,390 77,345 86,390" />
             <polygon points="72,365 77,330 82,365" />
@@ -283,73 +300,73 @@ function Register() {
 
           {/* 3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES */}
           <path
-            d="M0 490 Q220 460 480 480 T980 470 Q1220 465 1440 500 L1440 620 L0 620 Z"
+            d="M0 480 Q220 445 480 465 T980 455 Q1220 445 1440 485 L1440 640 L0 640 Z"
             fill="url(#foregroundRidgeGrad)"
           />
 
           {/* WINDING MOUNTAIN HIGHWAY RIBBON */}
           <path
-            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
+            d="M-20 535 Q 260 490, 520 515 T 1020 500 Q 1260 490, 1460 525"
             stroke="url(#roadSurface)"
-            strokeWidth="28"
+            strokeWidth="32"
             strokeLinecap="round"
           />
           <path
-            d="M-20 526 Q 260 486, 520 511 T 1020 496 Q 1260 486, 1460 521"
-            stroke="rgba(255,255,255,0.06)"
+            d="M-20 519 Q 260 474, 520 499 T 1020 484 Q 1260 474, 1460 509"
+            stroke="rgba(255,255,255,0.1)"
             strokeWidth="1.5"
             fill="none"
           />
           <path
-            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
-            stroke="rgba(255,255,255,0.14)"
-            strokeWidth="1.5"
-            strokeDasharray="12 16"
+            d="M-20 535 Q 260 490, 520 515 T 1020 500 Q 1260 490, 1460 525"
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth="2"
+            strokeDasharray="14 18"
             fill="none"
           />
 
           {/* 4. VEHICLE SILHOUETTES */}
           {/* Primary Sedan Cab Profile on Mountain Road */}
-          <g opacity="0.32" transform="translate(680, 488)">
+          <g opacity="0.45" transform="translate(680, 476)">
             <path
-              d="M0 16 L12 8 Q24 0 42 0 L66 0 Q78 0 88 8 L98 16 L108 17 Q112 18 112 22 L112 28 L0 28 Z"
-              fill="#2f3540"
+              d="M0 18 L14 9 Q26 0 46 0 L72 0 Q84 0 94 9 L106 18 L116 19 Q120 20 120 25 L120 31 L0 31 Z"
+              fill="#3e4654"
             />
             <path
-              d="M20 8 L32 2 L52 2 L52 8 Z"
-              fill="rgba(255,255,255,0.08)"
+              d="M22 9 L35 2 L56 2 L56 9 Z"
+              fill="rgba(255,255,255,0.18)"
             />
             <path
-              d="M56 2 L72 2 L80 8 L56 8 Z"
-              fill="rgba(255,255,255,0.08)"
+              d="M60 2 L78 2 L86 9 L60 9 Z"
+              fill="rgba(255,255,255,0.18)"
             />
-            <rect x="44" y="-3" width="12" height="3" rx="1" fill="#e63946" opacity="0.85" />
-            <polygon points="112,20 148,15 148,27 112,24" fill="rgba(255,255,255,0.05)" />
-            <circle cx="2" cy="20" r="2" fill="#e63946" opacity="0.8" />
-            <circle cx="24" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
-            <circle cx="24" cy="28" r="2.5" fill="#667080" />
-            <circle cx="86" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
-            <circle cx="86" cy="28" r="2.5" fill="#667080" />
+            <rect x="48" y="-4" width="14" height="4" rx="1.5" fill="#e63946" opacity="0.95" />
+            <polygon points="120,22 165,16 165,30 120,26" fill="rgba(255,255,255,0.1)" />
+            <circle cx="2" cy="22" r="2.5" fill="#e63946" opacity="0.9" />
+            <circle cx="26" cy="31" r="8" fill="#14171d" stroke="#353c48" strokeWidth="2.5" />
+            <circle cx="26" cy="31" r="3" fill="#8895aa" />
+            <circle cx="94" cy="31" r="8" fill="#14171d" stroke="#353c48" strokeWidth="2.5" />
+            <circle cx="94" cy="31" r="3" fill="#8895aa" />
           </g>
 
           {/* Distant Small Cab */}
-          <g opacity="0.22" transform="translate(240, 482) scale(0.65)">
+          <g opacity="0.32" transform="translate(240, 468) scale(0.72)">
             <path
               d="M0 16 L10 8 Q20 0 38 0 L58 0 Q70 0 78 8 L88 16 L96 17 L96 26 L0 26 Z"
-              fill="#2a2f38"
+              fill="#38404d"
             />
-            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.7" />
-            <circle cx="20" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
-            <circle cx="76" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
+            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.85" />
+            <circle cx="20" cy="26" r="6" fill="#12151a" stroke="#2c333e" strokeWidth="1.5" />
+            <circle cx="76" cy="26" r="6" fill="#12151a" stroke="#2c333e" strokeWidth="1.5" />
           </g>
 
           {/* 5. SUBTLE CULTURAL & GEOGRAPHIC TYPOGRAPHY WATERMARK */}
           <text
             x="720"
-            y="592"
+            y="612"
             textAnchor="middle"
-            fill="#22262d"
-            fontSize="11"
+            fill="#323842"
+            fontSize="11.5"
             fontWeight="700"
             letterSpacing="5"
             fontFamily="'Inter', -apple-system, sans-serif"
@@ -359,9 +376,9 @@ function Register() {
         </svg>
       </div>
 
-        <div style={styles.mobileContainer}>
+        <div className="mobile-peek-container" style={styles.mobileContainer}>
           <div style={styles.cardPerspective}>
-            <div style={{ ...styles.formCard, textAlign: 'center' }}>
+            <div className="mobile-glass-card" style={{ ...styles.formCard, textAlign: 'center' }}>
               <div style={styles.statusBadgeWarning}>
                 <span style={{ fontSize: '38px', lineHeight: 1 }}>⏳</span>
               </div>
@@ -414,8 +431,8 @@ function Register() {
             left: 0,
             right: 0,
             height: '420px',
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.12) 0%, rgba(10, 10, 10, 0) 70%)',
-            opacity: 0.85
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.16) 0%, rgba(10, 10, 10, 0) 70%)',
+            opacity: 0.9
           }}
         />
 
@@ -426,26 +443,26 @@ function Register() {
             top: 0,
             left: 0,
             right: 0,
-            height: '320px',
+            height: '340px',
             backgroundImage: `
-              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.45) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.6) 50%, transparent 100%),
-              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.35) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.5) 50%, transparent 100%),
-              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.4) 50%, transparent 100%),
-              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.55) 50%, transparent 100%),
-              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.35) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.5) 50%, transparent 100%),
-              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.4) 50%, transparent 100%)
+              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.55) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.7) 50%, transparent 100%),
+              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.5) 50%, transparent 100%),
+              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.65) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.5) 50%, transparent 100%)
             `,
-            backgroundSize: '1440px 320px',
+            backgroundSize: '1440px 340px',
             animation: 'starPulse 7s ease-in-out infinite'
           }}
         />
 
         {/* Vector Mountain Skyline & Himachal Landmarks */}
         <svg
-          viewBox="0 0 1440 620"
+          viewBox="0 0 1440 640"
           preserveAspectRatio="xMidYMax slice"
           style={{
             position: 'absolute',
@@ -453,82 +470,82 @@ function Register() {
             left: 0,
             width: '100%',
             height: '100%',
-            maxHeight: '620px',
-            opacity: 0.95
+            maxHeight: '680px',
+            opacity: 1
           }}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
             <linearGradient id="peakDistantGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1e2228" stopOpacity="0.35" />
-              <stop offset="60%" stopColor="#121519" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.9" />
+              <stop offset="0%" stopColor="#2c333e" stopOpacity="0.55" />
+              <stop offset="50%" stopColor="#1a1e24" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.95" />
             </linearGradient>
             <linearGradient id="snowCapGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.02" />
             </linearGradient>
             <linearGradient id="midRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#171a1f" stopOpacity="0.65" />
+              <stop offset="0%" stopColor="#232832" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.98" />
             </linearGradient>
             <linearGradient id="foregroundRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#121418" stopOpacity="0.85" />
+              <stop offset="0%" stopColor="#1a1e24" stopOpacity="0.92" />
               <stop offset="100%" stopColor="#080808" stopOpacity="1" />
             </linearGradient>
             <linearGradient id="roadSurface" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#15171b" stopOpacity="0.4" />
-              <stop offset="50%" stopColor="#22262d" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#15171b" stopOpacity="0.4" />
+              <stop offset="0%" stopColor="#1c2027" stopOpacity="0.6" />
+              <stop offset="50%" stopColor="#2e3540" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#1c2027" stopOpacity="0.6" />
             </linearGradient>
           </defs>
 
           {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass range) */}
           <path
-            d="M0 380 L110 280 L230 350 L380 210 L490 300 L620 230 L740 330 L880 180 L1010 290 L1140 220 L1280 320 L1440 240 L1440 620 L0 620 Z"
+            d="M0 360 L110 260 L230 330 L380 180 L490 280 L620 200 L740 310 L880 150 L1010 270 L1140 190 L1280 300 L1440 210 L1440 640 L0 640 Z"
             fill="url(#peakDistantGrad)"
           />
 
           {/* Snow highlights on major peaks */}
-          <polygon points="380,210 345,255 415,255" fill="url(#snowCapGrad)" />
-          <polygon points="620,230 590,270 650,270" fill="url(#snowCapGrad)" />
-          <polygon points="880,180 840,240 920,240" fill="url(#snowCapGrad)" />
-          <polygon points="1140,220 1110,265 1170,265" fill="url(#snowCapGrad)" />
+          <polygon points="380,180 340,230 420,230" fill="url(#snowCapGrad)" />
+          <polygon points="620,200 585,245 655,245" fill="url(#snowCapGrad)" />
+          <polygon points="880,150 835,215 925,215" fill="url(#snowCapGrad)" />
+          <polygon points="1140,190 1105,240 1175,240" fill="url(#snowCapGrad)" />
 
           {/* 2. MID-GROUND MOUNTAIN RIDGE WITH LANDMARKS & PINE FORESTS */}
           <path
-            d="M0 430 Q180 390 340 410 T700 420 Q950 370 1180 410 T1440 420 L1440 620 L0 620 Z"
+            d="M0 410 Q180 370 340 390 T700 400 Q950 350 1180 390 T1440 400 L1440 640 L0 640 Z"
             fill="url(#midRidgeGrad)"
           />
 
           {/* HADIMBA PAGODA TEMPLE SILHOUETTE (Kullu/Manali wooden pagoda - Left midground) */}
-          <g opacity="0.22" transform="translate(180, 290)">
-            <rect x="20" y="70" width="40" height="30" fill="#2a2e36" />
-            <polygon points="10,70 40,48 70,70" fill="#353b45" />
-            <polygon points="20,48 40,32 60,48" fill="#3f4754" />
-            <polygon points="28,32 40,18 52,32" fill="#4a5362" />
-            <line x1="40" y1="18" x2="40" y2="8" stroke="#8892a2" strokeWidth="1.5" />
-            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.6" />
+          <g opacity="0.32" transform="translate(180, 265)">
+            <rect x="20" y="70" width="40" height="30" fill="#363c47" />
+            <polygon points="10,70 40,48 70,70" fill="#464e5c" />
+            <polygon points="20,48 40,32 60,48" fill="#525b6b" />
+            <polygon points="28,32 40,18 52,32" fill="#616c7d" />
+            <line x1="40" y1="18" x2="40" y2="8" stroke="#a0abbd" strokeWidth="1.5" />
+            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.8" />
           </g>
 
           {/* SHIMLA RIDGE & CHRIST CHURCH SILHOUETTE (Center-Right midground) */}
-          <g opacity="0.25" transform="translate(1080, 260)">
-            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#2c3038" />
-            <rect x="65" y="30" width="28" height="80" fill="#363c47" />
-            <rect x="63" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="73" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="83" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="91" y="27" width="6" height="5" fill="#3f4754" />
-            <polygon points="72,27 79,8 86,27" fill="#4b5463" />
-            <line x1="79" y1="8" x2="79" y2="0" stroke="#778091" strokeWidth="1.5" />
-            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.3)" strokeWidth="1" fill="#1b1e24" />
-            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#181a20" />
-            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#181a20" />
+          <g opacity="0.35" transform="translate(1080, 235)">
+            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#383e4a" />
+            <rect x="65" y="30" width="28" height="80" fill="#454c59" />
+            <rect x="63" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="73" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="83" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="91" y="27" width="6" height="5" fill="#545d6e" />
+            <polygon points="72,27 79,8 86,27" fill="#626d7f" />
+            <line x1="79" y1="8" x2="79" y2="0" stroke="#9aa5b8" strokeWidth="1.5" />
+            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1" fill="#20242c" />
+            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#1e222a" />
+            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#1e222a" />
           </g>
 
           {/* KULLU / SHIMLA DEODAR & PINE TREE SILHOUETTES */}
-          <g opacity="0.28" fill="#1c2026">
+          <g opacity="0.38" fill="#282e38">
             <polygon points="70,410 77,360 84,410" />
             <polygon points="68,390 77,345 86,390" />
             <polygon points="72,365 77,330 82,365" />
@@ -556,73 +573,73 @@ function Register() {
 
           {/* 3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES */}
           <path
-            d="M0 490 Q220 460 480 480 T980 470 Q1220 465 1440 500 L1440 620 L0 620 Z"
+            d="M0 480 Q220 445 480 465 T980 455 Q1220 445 1440 485 L1440 640 L0 640 Z"
             fill="url(#foregroundRidgeGrad)"
           />
 
           {/* WINDING MOUNTAIN HIGHWAY RIBBON */}
           <path
-            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
+            d="M-20 535 Q 260 490, 520 515 T 1020 500 Q 1260 490, 1460 525"
             stroke="url(#roadSurface)"
-            strokeWidth="28"
+            strokeWidth="32"
             strokeLinecap="round"
           />
           <path
-            d="M-20 526 Q 260 486, 520 511 T 1020 496 Q 1260 486, 1460 521"
-            stroke="rgba(255,255,255,0.06)"
+            d="M-20 519 Q 260 474, 520 499 T 1020 484 Q 1260 474, 1460 509"
+            stroke="rgba(255,255,255,0.1)"
             strokeWidth="1.5"
             fill="none"
           />
           <path
-            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
-            stroke="rgba(255,255,255,0.14)"
-            strokeWidth="1.5"
-            strokeDasharray="12 16"
+            d="M-20 535 Q 260 490, 520 515 T 1020 500 Q 1260 490, 1460 525"
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth="2"
+            strokeDasharray="14 18"
             fill="none"
           />
 
           {/* 4. VEHICLE SILHOUETTES */}
           {/* Primary Sedan Cab Profile on Mountain Road */}
-          <g opacity="0.32" transform="translate(680, 488)">
+          <g opacity="0.45" transform="translate(680, 476)">
             <path
-              d="M0 16 L12 8 Q24 0 42 0 L66 0 Q78 0 88 8 L98 16 L108 17 Q112 18 112 22 L112 28 L0 28 Z"
-              fill="#2f3540"
+              d="M0 18 L14 9 Q26 0 46 0 L72 0 Q84 0 94 9 L106 18 L116 19 Q120 20 120 25 L120 31 L0 31 Z"
+              fill="#3e4654"
             />
             <path
-              d="M20 8 L32 2 L52 2 L52 8 Z"
-              fill="rgba(255,255,255,0.08)"
+              d="M22 9 L35 2 L56 2 L56 9 Z"
+              fill="rgba(255,255,255,0.18)"
             />
             <path
-              d="M56 2 L72 2 L80 8 L56 8 Z"
-              fill="rgba(255,255,255,0.08)"
+              d="M60 2 L78 2 L86 9 L60 9 Z"
+              fill="rgba(255,255,255,0.18)"
             />
-            <rect x="44" y="-3" width="12" height="3" rx="1" fill="#e63946" opacity="0.85" />
-            <polygon points="112,20 148,15 148,27 112,24" fill="rgba(255,255,255,0.05)" />
-            <circle cx="2" cy="20" r="2" fill="#e63946" opacity="0.8" />
-            <circle cx="24" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
-            <circle cx="24" cy="28" r="2.5" fill="#667080" />
-            <circle cx="86" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
-            <circle cx="86" cy="28" r="2.5" fill="#667080" />
+            <rect x="48" y="-4" width="14" height="4" rx="1.5" fill="#e63946" opacity="0.95" />
+            <polygon points="120,22 165,16 165,30 120,26" fill="rgba(255,255,255,0.1)" />
+            <circle cx="2" cy="22" r="2.5" fill="#e63946" opacity="0.9" />
+            <circle cx="26" cy="31" r="8" fill="#14171d" stroke="#353c48" strokeWidth="2.5" />
+            <circle cx="26" cy="31" r="3" fill="#8895aa" />
+            <circle cx="94" cy="31" r="8" fill="#14171d" stroke="#353c48" strokeWidth="2.5" />
+            <circle cx="94" cy="31" r="3" fill="#8895aa" />
           </g>
 
           {/* Distant Small Cab */}
-          <g opacity="0.22" transform="translate(240, 482) scale(0.65)">
+          <g opacity="0.32" transform="translate(240, 468) scale(0.72)">
             <path
               d="M0 16 L10 8 Q20 0 38 0 L58 0 Q70 0 78 8 L88 16 L96 17 L96 26 L0 26 Z"
-              fill="#2a2f38"
+              fill="#38404d"
             />
-            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.7" />
-            <circle cx="20" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
-            <circle cx="76" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
+            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.85" />
+            <circle cx="20" cy="26" r="6" fill="#12151a" stroke="#2c333e" strokeWidth="1.5" />
+            <circle cx="76" cy="26" r="6" fill="#12151a" stroke="#2c333e" strokeWidth="1.5" />
           </g>
 
           {/* 5. SUBTLE CULTURAL & GEOGRAPHIC TYPOGRAPHY WATERMARK */}
           <text
             x="720"
-            y="592"
+            y="612"
             textAnchor="middle"
-            fill="#22262d"
-            fontSize="11"
+            fill="#323842"
+            fontSize="11.5"
             fontWeight="700"
             letterSpacing="5"
             fontFamily="'Inter', -apple-system, sans-serif"
@@ -688,8 +705,8 @@ function Register() {
             left: 0,
             right: 0,
             height: '420px',
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.12) 0%, rgba(10, 10, 10, 0) 70%)',
-            opacity: 0.85
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(230, 57, 70, 0.16) 0%, rgba(10, 10, 10, 0) 70%)',
+            opacity: 0.9
           }}
         />
 
@@ -700,26 +717,26 @@ function Register() {
             top: 0,
             left: 0,
             right: 0,
-            height: '320px',
+            height: '340px',
             backgroundImage: `
-              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.45) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.6) 50%, transparent 100%),
-              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.35) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.5) 50%, transparent 100%),
-              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.4) 50%, transparent 100%),
-              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.55) 50%, transparent 100%),
-              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.35) 50%, transparent 100%),
-              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.5) 50%, transparent 100%),
-              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.4) 50%, transparent 100%)
+              radial-gradient(1px 1px at 80px 45px, rgba(255,255,255,0.55) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 220px 85px, rgba(255,255,255,0.7) 50%, transparent 100%),
+              radial-gradient(1px 1px at 380px 30px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 540px 110px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 720px 50px, rgba(255,255,255,0.5) 50%, transparent 100%),
+              radial-gradient(2px 2px at 890px 95px, rgba(255,255,255,0.65) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1040px 40px, rgba(255,255,255,0.45) 50%, transparent 100%),
+              radial-gradient(1.5px 1.5px at 1200px 75px, rgba(255,255,255,0.6) 50%, transparent 100%),
+              radial-gradient(1px 1px at 1360px 120px, rgba(255,255,255,0.5) 50%, transparent 100%)
             `,
-            backgroundSize: '1440px 320px',
+            backgroundSize: '1440px 340px',
             animation: 'starPulse 7s ease-in-out infinite'
           }}
         />
 
         {/* Vector Mountain Skyline & Himachal Landmarks */}
         <svg
-          viewBox="0 0 1440 620"
+          viewBox="0 0 1440 640"
           preserveAspectRatio="xMidYMax slice"
           style={{
             position: 'absolute',
@@ -727,82 +744,82 @@ function Register() {
             left: 0,
             width: '100%',
             height: '100%',
-            maxHeight: '620px',
-            opacity: 0.95
+            maxHeight: '680px',
+            opacity: 1
           }}
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
             <linearGradient id="peakDistantGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1e2228" stopOpacity="0.35" />
-              <stop offset="60%" stopColor="#121519" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.9" />
+              <stop offset="0%" stopColor="#2c333e" stopOpacity="0.55" />
+              <stop offset="50%" stopColor="#1a1e24" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.95" />
             </linearGradient>
             <linearGradient id="snowCapGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0.02" />
             </linearGradient>
             <linearGradient id="midRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#171a1f" stopOpacity="0.65" />
+              <stop offset="0%" stopColor="#232832" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#0a0a0a" stopOpacity="0.98" />
             </linearGradient>
             <linearGradient id="foregroundRidgeGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#121418" stopOpacity="0.85" />
+              <stop offset="0%" stopColor="#1a1e24" stopOpacity="0.92" />
               <stop offset="100%" stopColor="#080808" stopOpacity="1" />
             </linearGradient>
             <linearGradient id="roadSurface" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#15171b" stopOpacity="0.4" />
-              <stop offset="50%" stopColor="#22262d" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#15171b" stopOpacity="0.4" />
+              <stop offset="0%" stopColor="#1c2027" stopOpacity="0.6" />
+              <stop offset="50%" stopColor="#2e3540" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#1c2027" stopOpacity="0.6" />
             </linearGradient>
           </defs>
 
           {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass range) */}
           <path
-            d="M0 380 L110 280 L230 350 L380 210 L490 300 L620 230 L740 330 L880 180 L1010 290 L1140 220 L1280 320 L1440 240 L1440 620 L0 620 Z"
+            d="M0 360 L110 260 L230 330 L380 180 L490 280 L620 200 L740 310 L880 150 L1010 270 L1140 190 L1280 300 L1440 210 L1440 640 L0 640 Z"
             fill="url(#peakDistantGrad)"
           />
 
           {/* Snow highlights on major peaks */}
-          <polygon points="380,210 345,255 415,255" fill="url(#snowCapGrad)" />
-          <polygon points="620,230 590,270 650,270" fill="url(#snowCapGrad)" />
-          <polygon points="880,180 840,240 920,240" fill="url(#snowCapGrad)" />
-          <polygon points="1140,220 1110,265 1170,265" fill="url(#snowCapGrad)" />
+          <polygon points="380,180 340,230 420,230" fill="url(#snowCapGrad)" />
+          <polygon points="620,200 585,245 655,245" fill="url(#snowCapGrad)" />
+          <polygon points="880,150 835,215 925,215" fill="url(#snowCapGrad)" />
+          <polygon points="1140,190 1105,240 1175,240" fill="url(#snowCapGrad)" />
 
           {/* 2. MID-GROUND MOUNTAIN RIDGE WITH LANDMARKS & PINE FORESTS */}
           <path
-            d="M0 430 Q180 390 340 410 T700 420 Q950 370 1180 410 T1440 420 L1440 620 L0 620 Z"
+            d="M0 410 Q180 370 340 390 T700 400 Q950 350 1180 390 T1440 400 L1440 640 L0 640 Z"
             fill="url(#midRidgeGrad)"
           />
 
           {/* HADIMBA PAGODA TEMPLE SILHOUETTE (Kullu/Manali wooden pagoda - Left midground) */}
-          <g opacity="0.22" transform="translate(180, 290)">
-            <rect x="20" y="70" width="40" height="30" fill="#2a2e36" />
-            <polygon points="10,70 40,48 70,70" fill="#353b45" />
-            <polygon points="20,48 40,32 60,48" fill="#3f4754" />
-            <polygon points="28,32 40,18 52,32" fill="#4a5362" />
-            <line x1="40" y1="18" x2="40" y2="8" stroke="#8892a2" strokeWidth="1.5" />
-            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.6" />
+          <g opacity="0.32" transform="translate(180, 265)">
+            <rect x="20" y="70" width="40" height="30" fill="#363c47" />
+            <polygon points="10,70 40,48 70,70" fill="#464e5c" />
+            <polygon points="20,48 40,32 60,48" fill="#525b6b" />
+            <polygon points="28,32 40,18 52,32" fill="#616c7d" />
+            <line x1="40" y1="18" x2="40" y2="8" stroke="#a0abbd" strokeWidth="1.5" />
+            <circle cx="40" cy="8" r="1.5" fill="#e63946" opacity="0.8" />
           </g>
 
           {/* SHIMLA RIDGE & CHRIST CHURCH SILHOUETTE (Center-Right midground) */}
-          <g opacity="0.25" transform="translate(1080, 260)">
-            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#2c3038" />
-            <rect x="65" y="30" width="28" height="80" fill="#363c47" />
-            <rect x="63" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="73" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="83" y="27" width="6" height="5" fill="#3f4754" />
-            <rect x="91" y="27" width="6" height="5" fill="#3f4754" />
-            <polygon points="72,27 79,8 86,27" fill="#4b5463" />
-            <line x1="79" y1="8" x2="79" y2="0" stroke="#778091" strokeWidth="1.5" />
-            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.3)" strokeWidth="1" fill="#1b1e24" />
-            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#181a20" />
-            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#181a20" />
+          <g opacity="0.35" transform="translate(1080, 235)">
+            <polygon points="0,110 0,85 50,70 100,85 100,110" fill="#383e4a" />
+            <rect x="65" y="30" width="28" height="80" fill="#454c59" />
+            <rect x="63" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="73" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="83" y="27" width="6" height="5" fill="#545d6e" />
+            <rect x="91" y="27" width="6" height="5" fill="#545d6e" />
+            <polygon points="72,27 79,8 86,27" fill="#626d7f" />
+            <line x1="79" y1="8" x2="79" y2="0" stroke="#9aa5b8" strokeWidth="1.5" />
+            <circle cx="79" cy="45" r="4.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1" fill="#20242c" />
+            <path d="M75 62 Q79 55 83 62 L83 72 L75 72 Z" fill="#1e222a" />
+            <path d="M18 90 Q24 82 30 90 L30 100 L18 100 Z" fill="#1e222a" />
           </g>
 
           {/* KULLU / SHIMLA DEODAR & PINE TREE SILHOUETTES */}
-          <g opacity="0.28" fill="#1c2026">
+          <g opacity="0.38" fill="#282e38">
             <polygon points="70,410 77,360 84,410" />
             <polygon points="68,390 77,345 86,390" />
             <polygon points="72,365 77,330 82,365" />
@@ -830,73 +847,73 @@ function Register() {
 
           {/* 3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES */}
           <path
-            d="M0 490 Q220 460 480 480 T980 470 Q1220 465 1440 500 L1440 620 L0 620 Z"
+            d="M0 480 Q220 445 480 465 T980 455 Q1220 445 1440 485 L1440 640 L0 640 Z"
             fill="url(#foregroundRidgeGrad)"
           />
 
           {/* WINDING MOUNTAIN HIGHWAY RIBBON */}
           <path
-            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
+            d="M-20 535 Q 260 490, 520 515 T 1020 500 Q 1260 490, 1460 525"
             stroke="url(#roadSurface)"
-            strokeWidth="28"
+            strokeWidth="32"
             strokeLinecap="round"
           />
           <path
-            d="M-20 526 Q 260 486, 520 511 T 1020 496 Q 1260 486, 1460 521"
-            stroke="rgba(255,255,255,0.06)"
+            d="M-20 519 Q 260 474, 520 499 T 1020 484 Q 1260 474, 1460 509"
+            stroke="rgba(255,255,255,0.1)"
             strokeWidth="1.5"
             fill="none"
           />
           <path
-            d="M-20 540 Q 260 500, 520 525 T 1020 510 Q 1260 500, 1460 535"
-            stroke="rgba(255,255,255,0.14)"
-            strokeWidth="1.5"
-            strokeDasharray="12 16"
+            d="M-20 535 Q 260 490, 520 515 T 1020 500 Q 1260 490, 1460 525"
+            stroke="rgba(255,255,255,0.22)"
+            strokeWidth="2"
+            strokeDasharray="14 18"
             fill="none"
           />
 
           {/* 4. VEHICLE SILHOUETTES */}
           {/* Primary Sedan Cab Profile on Mountain Road */}
-          <g opacity="0.32" transform="translate(680, 488)">
+          <g opacity="0.45" transform="translate(680, 476)">
             <path
-              d="M0 16 L12 8 Q24 0 42 0 L66 0 Q78 0 88 8 L98 16 L108 17 Q112 18 112 22 L112 28 L0 28 Z"
-              fill="#2f3540"
+              d="M0 18 L14 9 Q26 0 46 0 L72 0 Q84 0 94 9 L106 18 L116 19 Q120 20 120 25 L120 31 L0 31 Z"
+              fill="#3e4654"
             />
             <path
-              d="M20 8 L32 2 L52 2 L52 8 Z"
-              fill="rgba(255,255,255,0.08)"
+              d="M22 9 L35 2 L56 2 L56 9 Z"
+              fill="rgba(255,255,255,0.18)"
             />
             <path
-              d="M56 2 L72 2 L80 8 L56 8 Z"
-              fill="rgba(255,255,255,0.08)"
+              d="M60 2 L78 2 L86 9 L60 9 Z"
+              fill="rgba(255,255,255,0.18)"
             />
-            <rect x="44" y="-3" width="12" height="3" rx="1" fill="#e63946" opacity="0.85" />
-            <polygon points="112,20 148,15 148,27 112,24" fill="rgba(255,255,255,0.05)" />
-            <circle cx="2" cy="20" r="2" fill="#e63946" opacity="0.8" />
-            <circle cx="24" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
-            <circle cx="24" cy="28" r="2.5" fill="#667080" />
-            <circle cx="86" cy="28" r="7" fill="#101216" stroke="#252932" strokeWidth="2" />
-            <circle cx="86" cy="28" r="2.5" fill="#667080" />
+            <rect x="48" y="-4" width="14" height="4" rx="1.5" fill="#e63946" opacity="0.95" />
+            <polygon points="120,22 165,16 165,30 120,26" fill="rgba(255,255,255,0.1)" />
+            <circle cx="2" cy="22" r="2.5" fill="#e63946" opacity="0.9" />
+            <circle cx="26" cy="31" r="8" fill="#14171d" stroke="#353c48" strokeWidth="2.5" />
+            <circle cx="26" cy="31" r="3" fill="#8895aa" />
+            <circle cx="94" cy="31" r="8" fill="#14171d" stroke="#353c48" strokeWidth="2.5" />
+            <circle cx="94" cy="31" r="3" fill="#8895aa" />
           </g>
 
           {/* Distant Small Cab */}
-          <g opacity="0.22" transform="translate(240, 482) scale(0.65)">
+          <g opacity="0.32" transform="translate(240, 468) scale(0.72)">
             <path
               d="M0 16 L10 8 Q20 0 38 0 L58 0 Q70 0 78 8 L88 16 L96 17 L96 26 L0 26 Z"
-              fill="#2a2f38"
+              fill="#38404d"
             />
-            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.7" />
-            <circle cx="20" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
-            <circle cx="76" cy="26" r="6" fill="#0f1114" stroke="#20242c" strokeWidth="1.5" />
+            <rect x="36" y="-3" width="10" height="3" rx="1" fill="#e63946" opacity="0.85" />
+            <circle cx="20" cy="26" r="6" fill="#12151a" stroke="#2c333e" strokeWidth="1.5" />
+            <circle cx="76" cy="26" r="6" fill="#12151a" stroke="#2c333e" strokeWidth="1.5" />
           </g>
 
           {/* 5. SUBTLE CULTURAL & GEOGRAPHIC TYPOGRAPHY WATERMARK */}
           <text
             x="720"
-            y="592"
+            y="612"
             textAnchor="middle"
-            fill="#22262d"
-            fontSize="11"
+            fill="#323842"
+            fontSize="11.5"
             fontWeight="700"
             letterSpacing="5"
             fontFamily="'Inter', -apple-system, sans-serif"
@@ -909,7 +926,7 @@ function Register() {
       {/* Main Mobile-First App Shell */}
       <div style={styles.mobileContainer}>
         {/* Header Branding Area consistent with Login.js */}
-        <header style={styles.header}>
+        <header className="mobile-peek-header" style={styles.header}>
           <div style={styles.logoBadge}>
             <img
               src="/3d-taxi.webp"
@@ -932,7 +949,7 @@ function Register() {
 
         {/* 3D Form Card with Perspective */}
         <div style={styles.cardPerspective}>
-          <div style={styles.formCard}>
+          <div className="mobile-glass-card" style={styles.formCard}>
             <div style={styles.cardHeader}>
               <h2 style={styles.cardTitle}>Create Account</h2>
               <p style={styles.cardSubtitle}>Fill in your details to get started</p>
