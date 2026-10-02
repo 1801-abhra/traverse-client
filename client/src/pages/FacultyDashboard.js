@@ -558,8 +558,8 @@ function FacultyDashboard() {
 
     const statusLabel = {
         searching: '🔍 Searching for driver...',
-        accepted: '✅ Driver Accepted',
-        ontheway: '🚗 Driver On The Way',
+        accepted: 'Driver is Coming ✓',
+        ontheway: 'Ride In Progress 🚗',
         completed: '✅ Ride Completed',
         cancelled: 'Cancelled'
     };
