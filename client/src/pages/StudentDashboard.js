@@ -1990,7 +1990,7 @@ function StudentDashboard() {
               )}
 
               {/* Dynamic Availability Status Indicator */}
-              {selectedVehicle && availabilityInfo && (
+              {selectedVehicle && availabilityInfo && !isScheduled && (
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -2015,12 +2015,32 @@ function StudentDashboard() {
                 </div>
               )}
 
+              {/* Positive Confirmation for Scheduled Rides */}
+              {selectedVehicle && isScheduled && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  marginBottom: '14px',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.4)',
+                  color: '#34d399'
+                }}>
+                  <span>✅</span>
+                  <span>Scheduled ride will be confirmed. Driver will be assigned at scheduled time.</span>
+                </div>
+              )}
+
               {/* Rapido-Style Large Bold Red Gradient Button */}
               <button
-                className={selectedVehicle && driversAvailable && !booking ? "traverse-btn-primary" : ""}
-                style={selectedVehicle && driversAvailable && !booking ? styles.bookBtn : styles.bookBtnDisabled}
+                className={selectedVehicle && (driversAvailable || isScheduled) && !booking ? "traverse-btn-primary" : ""}
+                style={selectedVehicle && (driversAvailable || isScheduled) && !booking ? styles.bookBtn : styles.bookBtnDisabled}
                 type='submit'
-                disabled={!selectedVehicle || !driversAvailable || booking}
+                disabled={!selectedVehicle || (!driversAvailable && !isScheduled) || booking}
               >
                 {booking ? (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -2028,7 +2048,7 @@ function StudentDashboard() {
                     Booking...
                   </div>
                 ) : !selectedVehicle ? 'Select a Vehicle to Continue' :
-                  !driversAvailable ? (availabilityInfo?.reason === 'all_busy' ? 'All Drivers Busy' : 'No Drivers Online') :
+                  (!driversAvailable && !isScheduled) ? (availabilityInfo?.reason === 'all_busy' ? 'All Drivers Busy' : 'No Drivers Online') :
                     `🚖 Request ${selectedVehicle} Ride — ₹${fare}`}
               </button>
             </form>

@@ -1751,7 +1751,7 @@ function FacultyDashboard() {
                             )}
 
                             {/* Dynamic Availability Status Indicator */}
-                            {selectedVehicle && availabilityInfo && (
+                            {selectedVehicle && availabilityInfo && !isScheduled && (
                                 <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -1776,19 +1776,39 @@ function FacultyDashboard() {
                                 </div>
                             )}
 
+                            {/* Positive Confirmation for Scheduled Rides */}
+                            {selectedVehicle && isScheduled && (
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '10px 14px',
+                                    borderRadius: '8px',
+                                    marginBottom: '14px',
+                                    fontSize: '13px',
+                                    fontWeight: '600',
+                                    background: 'rgba(16, 185, 129, 0.12)',
+                                    border: '1px solid rgba(16, 185, 129, 0.4)',
+                                    color: '#34d399'
+                                }}>
+                                    <span>✅</span>
+                                    <span>Scheduled ride will be confirmed. Driver will be assigned at scheduled time.</span>
+                                </div>
+                            )}
+
                             {/* Large Bold Red Gradient Button */}
                             <button
-                                className={selectedVehicle && driversAvailable && !booking ? "traverse-btn-primary" : ""}
-                                style={selectedVehicle && driversAvailable && !booking ? styles.bookBtn : styles.bookBtnDisabled}
+                                className={selectedVehicle && (driversAvailable || isScheduled) && !booking ? "traverse-btn-primary" : ""}
+                                style={selectedVehicle && (driversAvailable || isScheduled) && !booking ? styles.bookBtn : styles.bookBtnDisabled}
                                 type='submit'
-                                disabled={!selectedVehicle || !driversAvailable || booking}>
+                                disabled={!selectedVehicle || (!driversAvailable && !isScheduled) || booking}>
                                 {booking ? (
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                         <div style={{ width: '16px', height: '16px', border: '2px solid white', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                                         Booking...
                                     </div>
                                 ) : !selectedVehicle ? 'Select vehicle to continue' :
-                                    !driversAvailable ? (availabilityInfo?.reason === 'all_busy' ? 'All Drivers Busy' : 'No Drivers Online') :
+                                    (!driversAvailable && !isScheduled) ? (availabilityInfo?.reason === 'all_busy' ? 'All Drivers Busy' : 'No Drivers Online') :
                                         `🚖 Request ${selectedVehicle} Ride — ₹${fare}`}
                             </button>
                         </form>
