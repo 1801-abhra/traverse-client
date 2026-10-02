@@ -128,3 +128,21 @@ select:focus {
     letter-spacing: 0.5px !important;
   }
 }
+
+
+/* Dual Responsive Himachal Background Display */
+.himachal-bg-desktop {
+  display: block;
+}
+.himachal-bg-mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .himachal-bg-desktop {
+    display: none !important;
+  }
+  .himachal-bg-mobile {
+    display: block !important;
+  }
+}

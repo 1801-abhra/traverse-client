@@ -55,7 +55,7 @@ function HimachalBackground() {
       }}
       aria-hidden="true"
     >
-      {/* Subtle Ambient Crimson-Night Glow */}
+      {/* Ambient Crimson-Night Atmosphere Glow */}
       <div
         style={{
           position: 'absolute',
@@ -91,8 +91,11 @@ function HimachalBackground() {
         }}
       />
 
-      {/* SVG HIMACHAL VECTOR ART (Light Grey, 3D Mountain Integration) */}
+      {/* ========================================================
+          1. DESKTOP / TABLET SVG (Wide 1000px ViewBox)
+          ======================================================== */}
       <svg
+        className="himachal-bg-desktop"
         viewBox="0 0 1000 520"
         preserveAspectRatio="xMidYMax slice"
         style={{
@@ -107,63 +110,50 @@ function HimachalBackground() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          {/* Distant Peaks Gradient (Light Slate Grey) */}
-          <linearGradient id="himaPeakGrad" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="himaPeakGradDesk" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#64748b" stopOpacity="0.75" />
             <stop offset="50%" stopColor="#334155" stopOpacity="0.85" />
             <stop offset="100%" stopColor="#0f172a" stopOpacity="0.95" />
           </linearGradient>
-
-          {/* Snow Cap Highlights */}
-          <linearGradient id="himaSnowCap" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="himaSnowCapDesk" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
             <stop offset="100%" stopColor="#cbd5e1" stopOpacity="0.4" />
           </linearGradient>
-
-          {/* Mid Ridge Gradient (Medium Slate Grey) */}
-          <linearGradient id="himaMidRidge" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="himaMidRidgeDesk" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#475569" stopOpacity="0.85" />
             <stop offset="55%" stopColor="#1e293b" stopOpacity="0.9" />
             <stop offset="100%" stopColor="#0a0a0a" stopOpacity="1" />
           </linearGradient>
-
-          {/* Foreground Slopes Gradient (Defined Dark-Slate Grey) */}
-          <linearGradient id="himaForeRidge" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="himaForeRidgeDesk" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#334155" stopOpacity="0.9" />
             <stop offset="60%" stopColor="#1e293b" stopOpacity="0.98" />
             <stop offset="100%" stopColor="#080808" stopOpacity="1" />
           </linearGradient>
-
-          {/* Road Surface Gradient */}
-          <linearGradient id="himaRoadSurface" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="himaRoadSurfaceDesk" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="#1e293b" stopOpacity="0.6" />
             <stop offset="50%" stopColor="#334155" stopOpacity="0.95" />
             <stop offset="100%" stopColor="#1e293b" stopOpacity="0.6" />
           </linearGradient>
-
-          {/* Headlight Beam Gradient */}
-          <linearGradient id="himaHeadlight" x1="0" y1="0" x2="1" y2="0">
+          <linearGradient id="himaHeadlightDesk" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="rgba(255, 255, 255, 0.45)" />
             <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
           </linearGradient>
         </defs>
 
-        {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Rohtang Pass & Pir Panjal Range) */}
+        {/* 1. DISTANT HIMALAYAN SNOW PEAKS */}
         <path
           d="M0 350 L75 260 L170 320 L275 195 L375 285 L500 170 L620 280 L725 185 L825 295 L915 215 L1000 285 L1000 520 L0 520 Z"
-          fill="url(#himaPeakGrad)"
+          fill="url(#himaPeakGradDesk)"
           stroke="rgba(203, 213, 225, 0.35)"
           strokeWidth="1.2"
         />
+        <polygon points="75,260 55,290 95,290" fill="url(#himaSnowCapDesk)" />
+        <polygon points="275,195 245,235 305,235" fill="url(#himaSnowCapDesk)" />
+        <polygon points="500,170 460,225 540,225" fill="url(#himaSnowCapDesk)" />
+        <polygon points="725,185 695,230 755,230" fill="url(#himaSnowCapDesk)" />
+        <polygon points="915,215 890,250 940,250" fill="url(#himaSnowCapDesk)" />
 
-        {/* Snow Cap Highlights on Mountain Peaks */}
-        <polygon points="75,260 55,290 95,290" fill="url(#himaSnowCap)" />
-        <polygon points="275,195 245,235 305,235" fill="url(#himaSnowCap)" />
-        <polygon points="500,170 460,225 540,225" fill="url(#himaSnowCap)" />
-        <polygon points="725,185 695,230 755,230" fill="url(#himaSnowCap)" />
-        <polygon points="915,215 890,250 940,250" fill="url(#himaSnowCap)" />
-
-        {/* High Ridgeline Distant Pines (Climbing the Mountain Crests) */}
+        {/* High Ridgeline Distant Pines */}
         <Tree3D x={110} y={305} scale={0.35} opacity={0.65} />
         <Tree3D x={145} y={322} scale={0.4} opacity={0.65} />
         <Tree3D x={205} y={328} scale={0.42} opacity={0.7} />
@@ -175,28 +165,23 @@ function HimachalBackground() {
         {/* 2. MID-GROUND MOUNTAIN RIDGE */}
         <path
           d="M0 385 Q250 335 500 355 T1000 365 L1000 520 L0 520 Z"
-          fill="url(#himaMidRidge)"
+          fill="url(#himaMidRidgeDesk)"
           stroke="rgba(148, 163, 184, 0.3)"
           strokeWidth="1"
         />
 
-        {/* HADIMBA PAGODA TEMPLE SILHOUETTE (Left-Center, Kullu/Manali wooden pagoda) */}
+        {/* HADIMBA PAGODA TEMPLE SILHOUETTE */}
         <g opacity="0.75" transform="translate(310, 240)">
-          {/* Base structure */}
           <rect x="22" y="72" width="46" height="32" rx="2" fill="#64748b" stroke="#94a3b8" strokeWidth="1" />
-          {/* Tier 1 roof */}
           <polygon points="10,72 45,46 80,72" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          {/* Tier 2 roof */}
           <polygon points="22,46 45,28 68,46" fill="#cbd5e1" />
-          {/* Tier 3 top roof */}
           <polygon points="30,28 45,14 60,28" fill="#e2e8f0" />
-          {/* Kalash / Golden Finial */}
           <line x1="45" y1="14" x2="45" y2="3" stroke="#f59e0b" strokeWidth="2.5" />
           <circle cx="45" cy="3" r="3.5" fill="#f59e0b" />
           <circle cx="45" cy="3" r="6" fill="rgba(245, 158, 11, 0.4)" />
         </g>
 
-        {/* Sacred Deodar Grove Nestled Naturally Around Hadimba Temple */}
+        {/* Hadimba Deodar Grove */}
         <Tree3D x={245} y={355} scale={0.65} opacity={0.8} />
         <Tree3D x={270} y={368} scale={0.78} opacity={0.85} />
         <Tree3D x={292} y={358} scale={0.68} opacity={0.8} />
@@ -204,58 +189,49 @@ function HimachalBackground() {
         <Tree3D x={402} y={368} scale={0.85} opacity={0.88} />
         <Tree3D x={428} y={380} scale={0.72} opacity={0.82} />
 
-        {/* SHIMLA RIDGE AND CHRIST CHURCH SILHOUETTE (Right-Center, Shimla Neo-Gothic landmark) */}
+        {/* SHIMLA CHRIST CHURCH SILHOUETTE */}
         <g opacity="0.8" transform="translate(630, 220)">
-          {/* Main Church Hall */}
           <polygon points="0,105 0,78 48,58 96,78 96,105" fill="#64748b" stroke="#94a3b8" strokeWidth="1" />
-          {/* Central Bell / Clock Tower */}
           <rect x="64" y="20" width="28" height="85" rx="1" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
-          {/* Crenellations */}
           <rect x="62" y="16" width="6" height="6" fill="#cbd5e1" />
           <rect x="75" y="16" width="6" height="6" fill="#cbd5e1" />
           <rect x="88" y="16" width="6" height="6" fill="#cbd5e1" />
-          {/* Spire with Cross */}
           <polygon points="71,16 77,-2 83,16" fill="#e2e8f0" />
           <line x1="77" y1="-2" x2="77" y2="-10" stroke="#ffffff" strokeWidth="2" />
           <line x1="73" y1="-7" x2="81" y2="-7" stroke="#ffffff" strokeWidth="2" />
-          {/* Glowing Clock Face */}
           <circle cx="77" cy="38" r="5.5" fill="#ffffff" stroke="#1e293b" strokeWidth="1" />
           <circle cx="77" cy="38" r="9" fill="rgba(255, 255, 255, 0.35)" />
-          {/* Gothic Windows */}
           <path d="M73 56 Q77 48 81 56 L81 68 L73 68 Z" fill="#1e293b" />
           <path d="M16 80 Q22 70 28 80 L28 94 L16 94 Z" fill="#1e293b" />
         </g>
 
-        {/* Shimla Hillside Pines Flanking Christ Church */}
+        {/* Shimla Pines */}
         <Tree3D x={565} y={358} scale={0.72} opacity={0.82} />
         <Tree3D x={592} y={345} scale={0.64} opacity={0.78} />
         <Tree3D x={715} y={350} scale={0.72} opacity={0.82} />
         <Tree3D x={742} y={365} scale={0.84} opacity={0.88} />
         <Tree3D x={772} y={378} scale={0.76} opacity={0.84} />
 
-        {/* 3. FOREGROUND MOUNTAIN ROAD AND HILL SLOPES */}
+        {/* 3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES */}
         <path
           d="M0 435 Q280 395 520 420 T1000 430 L1000 520 L0 520 Z"
-          fill="url(#himaForeRidge)"
+          fill="url(#himaForeRidgeDesk)"
         />
 
-        {/* Beautiful Foreground Mountain Slope Pines (Rooted on Lower Slopes) */}
-        {/* Left Slope Cluster */}
+        {/* Foreground Slope Pines */}
         <Tree3D x={45} y={420} scale={0.95} opacity={0.92} />
         <Tree3D x={80} y={432} scale={1.12} opacity={0.96} />
         <Tree3D x={118} y={418} scale={0.88} opacity={0.9} />
         <Tree3D x={160} y={424} scale={0.78} opacity={0.85} />
-
-        {/* Right Slope Cluster */}
         <Tree3D x={820} y={415} scale={0.88} opacity={0.9} />
         <Tree3D x={865} y={428} scale={1.08} opacity={0.95} />
         <Tree3D x={915} y={438} scale={1.18} opacity={0.98} />
         <Tree3D x={965} y={425} scale={0.95} opacity={0.92} />
 
-        {/* WINDING MOUNTAIN HIGHWAY RIBBON */}
+        {/* HIGHWAY RIBBON */}
         <path
           d="M-20 475 Q 260 435, 520 458 T 1020 468"
-          stroke="url(#himaRoadSurface)"
+          stroke="url(#himaRoadSurfaceDesk)"
           strokeWidth="32"
           strokeLinecap="round"
         />
@@ -274,36 +250,29 @@ function HimachalBackground() {
           opacity="0.7"
         />
 
-        {/* 4. VEHICLE SILHOUETTES */}
-        {/* Primary Sedan Cab Profile on Highway (Center, visible on all screens!) */}
+        {/* TRAVERSE CAB */}
         <g opacity="0.92" transform="translate(460, 422)">
-          {/* Cab body */}
           <path
             d="M0 16 L14 8 Q26 0 46 0 L72 0 Q84 0 96 8 L108 16 L118 17 Q124 18 124 23 L124 30 L0 30 Z"
             fill="#64748b"
             stroke="#cbd5e1"
             strokeWidth="1"
           />
-          {/* Windows */}
           <path d="M22 8 L35 2 L56 2 L56 8 Z" fill="#cbd5e1" opacity="0.5" />
           <path d="M60 2 L78 2 L88 8 L60 8 Z" fill="#cbd5e1" opacity="0.5" />
-          {/* Crimson / Amber Taxi Roof Sign */}
           <rect x="48" y="-4" width="18" height="4.5" rx="1.5" fill="#e63946" />
           <circle cx="57" cy="-2" r="6" fill="rgba(230, 57, 70, 0.55)" />
-          {/* Headlight beam */}
-          <polygon points="124,20 180,12 180,28 124,24" fill="url(#himaHeadlight)" />
+          <polygon points="124,20 180,12 180,28 124,24" fill="url(#himaHeadlightDesk)" />
           <circle cx="123" cy="22" r="2.5" fill="#ffffff" />
-          {/* Tail light */}
           <circle cx="2" cy="22" r="2.5" fill="#ef4444" />
           <circle cx="2" cy="22" r="6" fill="rgba(239, 68, 68, 0.45)" />
-          {/* Wheels */}
           <circle cx="26" cy="30" r="8" fill="#0f172a" stroke="#94a3b8" strokeWidth="2" />
           <circle cx="26" cy="30" r="3" fill="#e2e8f0" />
           <circle cx="96" cy="30" r="8" fill="#0f172a" stroke="#94a3b8" strokeWidth="2" />
           <circle cx="96" cy="30" r="3" fill="#e2e8f0" />
         </g>
 
-        {/* Distant Mini Cab on Upper Curve */}
+        {/* Distant Mini Cab */}
         <g opacity="0.8" transform="translate(210, 412) scale(0.65)">
           <path
             d="M0 16 L10 8 Q20 0 38 0 L58 0 Q70 0 78 8 L88 16 L96 17 L96 26 L0 26 Z"
@@ -317,7 +286,184 @@ function HimachalBackground() {
         </g>
       </svg>
 
-      {/* 5. CULTURAL AND GEOGRAPHIC WATERMARK FOOTER (100% Fit and Readable on Mobile and Desktop) */}
+      {/* ========================================================
+          2. MOBILE-SPECIFIC SVG (Portrait 420x560 ViewBox)
+          All Landmarks, 3D Trees, Peaks & Cabs Fit Perfectly on Mobile!
+          ======================================================== */}
+      <svg
+        className="himachal-bg-mobile"
+        viewBox="0 0 420 560"
+        preserveAspectRatio="xMidYMax meet"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          maxHeight: '580px'
+        }}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="himaPeakGradMob" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#64748b" stopOpacity="0.8" />
+            <stop offset="50%" stopColor="#334155" stopOpacity="0.88" />
+            <stop offset="100%" stopColor="#0f172a" stopOpacity="0.96" />
+          </linearGradient>
+          <linearGradient id="himaSnowCapMob" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#cbd5e1" stopOpacity="0.4" />
+          </linearGradient>
+          <linearGradient id="himaMidRidgeMob" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#475569" stopOpacity="0.85" />
+            <stop offset="55%" stopColor="#1e293b" stopOpacity="0.92" />
+            <stop offset="100%" stopColor="#0a0a0a" stopOpacity="1" />
+          </linearGradient>
+          <linearGradient id="himaForeRidgeMob" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#334155" stopOpacity="0.92" />
+            <stop offset="60%" stopColor="#1e293b" stopOpacity="0.98" />
+            <stop offset="100%" stopColor="#080808" stopOpacity="1" />
+          </linearGradient>
+          <linearGradient id="himaRoadSurfaceMob" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#1e293b" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="#334155" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#1e293b" stopOpacity="0.6" />
+          </linearGradient>
+          <linearGradient id="himaHeadlightMob" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.45)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
+          </linearGradient>
+        </defs>
+
+        {/* 1. DISTANT HIMALAYAN SNOW PEAKS (Mobile View) */}
+        <path
+          d="M0 380 L65 250 L135 310 L210 180 L285 300 L355 240 L420 310 L420 560 L0 560 Z"
+          fill="url(#himaPeakGradMob)"
+          stroke="rgba(203, 213, 225, 0.35)"
+          strokeWidth="1.2"
+        />
+        <polygon points="65,250 48,275 82,275" fill="url(#himaSnowCapMob)" />
+        <polygon points="210,180 180,225 240,225" fill="url(#himaSnowCapMob)" />
+        <polygon points="355,240 338,265 372,265" fill="url(#himaSnowCapMob)" />
+
+        {/* Distant Ridge Pines (Mobile) */}
+        <Tree3D x={30} y={305} scale={0.32} opacity={0.65} />
+        <Tree3D x={105} y={305} scale={0.36} opacity={0.65} />
+        <Tree3D x={175} y={325} scale={0.38} opacity={0.7} />
+        <Tree3D x={245} y={320} scale={0.38} opacity={0.7} />
+        <Tree3D x={315} y={300} scale={0.35} opacity={0.65} />
+        <Tree3D x={390} y={295} scale={0.32} opacity={0.65} />
+
+        {/* 2. MID-GROUND MOUNTAIN RIDGE */}
+        <path
+          d="M0 405 Q105 345 210 370 T420 380 L420 560 L0 560 Z"
+          fill="url(#himaMidRidgeMob)"
+          stroke="rgba(148, 163, 184, 0.3)"
+          strokeWidth="1"
+        />
+
+        {/* HADIMBA PAGODA TEMPLE SILHOUETTE (Left Side on Mobile Viewport) */}
+        <g opacity="0.8" transform="translate(48, 275) scale(0.88)">
+          <rect x="22" y="72" width="46" height="32" rx="2" fill="#64748b" stroke="#94a3b8" strokeWidth="1" />
+          <polygon points="10,72 45,46 80,72" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+          <polygon points="22,46 45,28 68,46" fill="#cbd5e1" />
+          <polygon points="30,28 45,14 60,28" fill="#e2e8f0" />
+          <line x1="45" y1="14" x2="45" y2="3" stroke="#f59e0b" strokeWidth="2.5" />
+          <circle cx="45" cy="3" r="3.5" fill="#f59e0b" />
+          <circle cx="45" cy="3" r="6" fill="rgba(245, 158, 11, 0.4)" />
+        </g>
+
+        {/* Left Slope 3D Pines Flanking Hadimba */}
+        <Tree3D x={18} y={380} scale={0.68} opacity={0.82} />
+        <Tree3D x={35} y={395} scale={0.82} opacity={0.88} />
+        <Tree3D x={115} y={375} scale={0.7} opacity={0.82} />
+        <Tree3D x={138} y={390} scale={0.82} opacity={0.88} />
+
+        {/* SHIMLA CHRIST CHURCH SILHOUETTE (Right Side on Mobile Viewport) */}
+        <g opacity="0.85" transform="translate(315, 255) scale(0.85)">
+          <polygon points="0,105 0,78 48,58 96,78 96,105" fill="#64748b" stroke="#94a3b8" strokeWidth="1" />
+          <rect x="64" y="20" width="28" height="85" rx="1" fill="#94a3b8" stroke="#cbd5e1" strokeWidth="1" />
+          <rect x="62" y="16" width="6" height="6" fill="#cbd5e1" />
+          <rect x="75" y="16" width="6" height="6" fill="#cbd5e1" />
+          <rect x="88" y="16" width="6" height="6" fill="#cbd5e1" />
+          <polygon points="71,16 77,-2 83,16" fill="#e2e8f0" />
+          <line x1="77" y1="-2" x2="77" y2="-10" stroke="#ffffff" strokeWidth="2" />
+          <line x1="73" y1="-7" x2="81" y2="-7" stroke="#ffffff" strokeWidth="2" />
+          <circle cx="77" cy="38" r="5.5" fill="#ffffff" stroke="#1e293b" strokeWidth="1" />
+          <circle cx="77" cy="38" r="9" fill="rgba(255, 255, 255, 0.35)" />
+          <path d="M73 56 Q77 48 81 56 L81 68 L73 68 Z" fill="#1e293b" />
+          <path d="M16 80 Q22 70 28 80 L28 94 L16 94 Z" fill="#1e293b" />
+        </g>
+
+        {/* Right Slope 3D Pines Flanking Church */}
+        <Tree3D x={280} y={375} scale={0.72} opacity={0.82} />
+        <Tree3D x={302} y={390} scale={0.84} opacity={0.88} />
+        <Tree3D x={380} y={375} scale={0.7} opacity={0.82} />
+        <Tree3D x={402} y={390} scale={0.82} opacity={0.88} />
+
+        {/* 3. FOREGROUND MOUNTAIN ROAD & HILL SLOPES */}
+        <path
+          d="M0 450 Q110 415 210 435 T420 445 L420 560 L0 560 Z"
+          fill="url(#himaForeRidgeMob)"
+        />
+
+        {/* Foreground Bank Pines */}
+        <Tree3D x={16} y={445} scale={0.92} opacity={0.94} />
+        <Tree3D x={48} y={458} scale={1.08} opacity={0.98} />
+        <Tree3D x={82} y={448} scale={0.85} opacity={0.9} />
+        <Tree3D x={340} y={445} scale={0.85} opacity={0.9} />
+        <Tree3D x={372} y={458} scale={1.08} opacity={0.98} />
+        <Tree3D x={404} y={448} scale={0.92} opacity={0.94} />
+
+        {/* HIGHWAY RIBBON (Mobile Curve) */}
+        <path
+          d="M-20 495 Q 110 458, 210 480 T 440 490"
+          stroke="url(#himaRoadSurfaceMob)"
+          strokeWidth="32"
+          strokeLinecap="round"
+        />
+        <path
+          d="M-20 479 Q 110 442, 210 464 T 440 474"
+          stroke="rgba(148, 163, 184, 0.4)"
+          strokeWidth="1.5"
+          fill="none"
+        />
+        <path
+          d="M-20 495 Q 110 458, 210 480 T 440 490"
+          stroke="#f8fafc"
+          strokeWidth="2"
+          strokeDasharray="12 16"
+          fill="none"
+          opacity="0.75"
+        />
+
+        {/* TRAVERSE CAB ON MOBILE HIGHWAY */}
+        <g opacity="0.94" transform="translate(160, 442) scale(0.92)">
+          <path
+            d="M0 16 L14 8 Q26 0 46 0 L72 0 Q84 0 96 8 L108 16 L118 17 Q124 18 124 23 L124 30 L0 30 Z"
+            fill="#64748b"
+            stroke="#cbd5e1"
+            strokeWidth="1"
+          />
+          <path d="M22 8 L35 2 L56 2 L56 8 Z" fill="#cbd5e1" opacity="0.5" />
+          <path d="M60 2 L78 2 L88 8 L60 8 Z" fill="#cbd5e1" opacity="0.5" />
+          <rect x="48" y="-4" width="18" height="4.5" rx="1.5" fill="#e63946" />
+          <circle cx="57" cy="-2" r="6" fill="rgba(230, 57, 70, 0.55)" />
+          <polygon points="124,20 180,12 180,28 124,24" fill="url(#himaHeadlightMob)" />
+          <circle cx="123" cy="22" r="2.5" fill="#ffffff" />
+          <circle cx="2" cy="22" r="2.5" fill="#ef4444" />
+          <circle cx="2" cy="22" r="6" fill="rgba(239, 68, 68, 0.45)" />
+          <circle cx="26" cy="30" r="8" fill="#0f172a" stroke="#94a3b8" strokeWidth="2" />
+          <circle cx="26" cy="30" r="3" fill="#e2e8f0" />
+          <circle cx="96" cy="30" r="8" fill="#0f172a" stroke="#94a3b8" strokeWidth="2" />
+          <circle cx="96" cy="30" r="3" fill="#e2e8f0" />
+        </g>
+      </svg>
+
+      {/* ========================================================
+          3. CULTURAL WATERMARK FOOTER (Responsive & 100% Readable)
+          ======================================================== */}
       <div
         style={{
           position: 'absolute',
