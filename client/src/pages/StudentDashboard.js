@@ -2426,10 +2426,12 @@ const styles = {
   },
   content: {
     width: '100%',
-    maxWidth: '430px',
+    maxWidth: '440px',
     margin: '16px auto 0',
-    padding: '0 14px',
-    boxSizing: 'border-box'
+    padding: '0 14px 40px',
+    boxSizing: 'border-box',
+    position: 'relative',
+    zIndex: 1
   },
   messagebox: {
     background: 'rgba(28, 28, 28, 0.9)',
@@ -2446,12 +2448,14 @@ const styles = {
   },
   messageIcon: { marginRight: '8px', fontSize: '16px' },
   rideCard: {
-    background: 'linear-gradient(165deg, rgba(26, 26, 26, 0.95) 0%, rgba(14, 14, 14, 0.98) 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.25)',
+    background: 'linear-gradient(165deg, #1c1c1c 0%, #121212 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.3)',
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(230, 57, 70, 0.15)',
+    position: 'relative',
+    zIndex: 1,
     padding: '20px 16px',
     borderRadius: '20px',
     marginBottom: '20px',
-    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(230, 57, 70, 0.12)',
     animation: 'slideUpIn 0.45s cubic-bezier(0.16, 1, 0.3, 1)'
   },
   rideCardHeader: {
@@ -3050,11 +3054,13 @@ const styles = {
     fontWeight: '700'
   },
   bookCard: {
-    background: 'linear-gradient(165deg, rgba(26, 26, 26, 0.95) 0%, rgba(14, 14, 14, 0.98) 100%)',
-    border: '1px solid rgba(230, 57, 70, 0.22)',
+    background: 'linear-gradient(165deg, #1c1c1c 0%, #121212 100%)',
+    border: '1px solid rgba(230, 57, 70, 0.28)',
+    boxShadow: '0 20px 48px rgba(0, 0, 0, 0.9), 0 0 35px rgba(230, 57, 70, 0.15)',
+    position: 'relative',
+    zIndex: 1,
     padding: '22px 18px',
     borderRadius: '20px',
-    boxShadow: '0 20px 48px rgba(0, 0, 0, 0.85), 0 0 35px rgba(230, 57, 70, 0.12)',
     animation: 'slideUpIn 0.45s cubic-bezier(0.16, 1, 0.3, 1)'
   },
   bookCardHeader: {

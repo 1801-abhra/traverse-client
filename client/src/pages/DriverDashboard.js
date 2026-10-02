@@ -1843,7 +1843,9 @@ const styles = {
   content: {
     maxWidth: '680px',
     margin: '20px auto 0',
-    padding: '0 14px'
+    padding: '0 14px',
+    position: 'relative',
+    zIndex: 1
   },
   ratingCard: {
     background: 'linear-gradient(145deg, #161616 0%, #111111 100%)',
